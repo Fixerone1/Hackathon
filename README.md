@@ -17,47 +17,20 @@ npm run build && npm start
 Requires Node 18.17+ . No database or API key is needed for the demo.
 
 ### Optional: real AI feedback
-Copy `.env.example` to `.env.local` and fill in your Azure OpenAI values. Without them the app uses built-in local coaching rules (`src/lib/coach.ts`) and everything still works.
+The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `.env.example`. Without those values it responds with a local-fallback marker. The current demo UI does not call this endpoint.
 
-## Site map and navigation
+## Routes in this preview
 
-**Public (visitors)**: `/` Home · `/how-it-works` · `/opportunities` (browse, filter, search) · `/partners` (analytics demo for banks/universities/NGOs) · `/about` (+ privacy, contact) · `/login` · `/signup`
+- `/` is the public introduction page.
+- `/app` is an interactive starter dashboard with a checklist and progress indicator.
+- `/signup` is a visual form. Account creation is not connected.
+- `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
 
-**Signed-in app (6 primary items, per the design note)**
+The checklist exists in memory only and resets on reload. No account details or personal data are saved. The Prisma schema is a production data-model starting point, not a connected database.
 
-| Menu | Pages |
-|---|---|
-| Dashboard `/app` | Score ring, pillar scores, next steps with points, journey stage, badges |
-| Employment Hub | Overview · Assessment · CV builder · Interview coach · Opportunities · Skills Academy |
-| Money Skills | Overview · Salary planner · Savings goals · Lessons |
-| Growth Studio | Overview · Side hustles · Idea validator · Business tools (pricing, cash-flow) · Readiness checklist |
-| Profile | Details, progress summary, achievements |
-| Settings | Text size, high contrast, reduce motion, data export/delete |
-
-Wayfinding aids: sticky sidebar (bottom tab bar on phones), section tabs, breadcrumbs, global search (press `/`), "next steps" cards, skip-to-content links, footer sitemap.
-
-## How the score works (`src/lib/scoring.ts`)
-Every action has a weight inside its pillar and a progress value 0–1. Pillar score = weighted progress. Overall = 0.70·Employment + 0.15·Money + 0.15·Growth. "Next steps" show the actions worth the most overall points.
-
-## Security (what is real in this demo vs. production)
-
-| Feature | In this repo | Production plan |
-|---|---|---|
-| Password storage | Salted PBKDF2-SHA256 (150k) hash in the browser, never plain text | Argon2id on the server (`prisma/schema.prisma` has `passwordHash`) |
-| MFA | Demo one-time code shown on screen | Email/SMS OTP provider |
-| Login throttling | 5 failures → 5-minute lock (client-side) | Server-side per-IP + per-account limits |
-| Sessions | 12-hour local session | httpOnly cookie / JWT with refresh tokens |
-| AI route | Rate limit 20/hr/IP, size caps, prompt-injection screening, audit log lines | Redis rate limiting, central audit log table |
-| Headers | HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy | Add a strict CSP |
-| Data isolation | Per-account storage key | PostgreSQL Row-Level Security |
-| Uploads | No upload feature yet | Type/size checks + virus scanning |
-
-**Important:** this prototype stores data in the user's browser (localStorage). That is fine for a demo, but it is **not** production-grade security. Do not collect real personal data until the server-side items above are built.
+The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
 ## Notes
-- Opportunity listings, partner analytics numbers and employer names are **sample/demo data**, labelled as such in the UI.
-- Lesson content is general education. Confirm current rules with CIPC, SARS, Seda, NYDA and sefa before giving legal or financial guidance.
-- Voice input in the interview coach uses the browser Web Speech API (Chrome/Edge). Scores are rule-based (length, STAR structure, specifics, filler words), not tone-of-voice analysis.
 - Colours follow the design note: Midnight `#0D1B2A`, Navy `#1B263B`, Emerald `#10B981`, background `#F8FAFC`, text `#111827`.
 
 ## Publish on GitHub (free, GitHub Pages)
@@ -75,9 +48,8 @@ Every action has a weight inside its pillar and a progress value 0–1. Pillar s
 
 Notes
 - The base path is taken from the repository name automatically, so you can rename the repo without editing code.
-- GitHub Pages serves static files only, so the optional `/api/ai` route is removed during the Pages build and the app uses its built-in local coaching. To use Azure OpenAI, deploy to Vercel or Azure instead (see below).
+- GitHub Pages serves static files only, so the optional `/api/ai` route is removed during the Pages build. Deploy to a server-capable host such as Vercel or Azure to use that endpoint.
 - To preview the Pages build locally: `STATIC_EXPORT=true NEXT_PUBLIC_BASE_PATH=/careerforge npm run build` then serve the `out` folder.
-- Prefer no build tools? `careerforge.html` (delivered alongside this project) is a single-file version. Rename it to `index.html`, put it in a repository, and enable Pages from the `main` branch.
 
 ## Other hosting
 - **Fast (MVP):** push to GitHub and import into Vercel.
@@ -85,8 +57,8 @@ Notes
 
 ## Project layout
 ```
-src/app          pages (public + /app) and /api/ai
-src/components   shell, navigation, search, shared UI
-src/lib          data, scoring, coaching rules, auth, store, AI client
-prisma/          production database schema
+src/app/         App Router pages, metadata routes, and API route
+src/components/  shared shell, navigation, and form components
+prisma/          production database schema (not connected to the demo)
+.github/workflows/  GitHub Pages deployment workflow
 ```
