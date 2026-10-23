@@ -7,8 +7,11 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, Response, status
 from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr, Field
 from supabase import Client, create_client
+
+load_dotenv()
 
 ACCESS_COOKIE = "careerforge_access"
 REFRESH_COOKIE = "careerforge_refresh"

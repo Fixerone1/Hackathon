@@ -6,6 +6,20 @@ create table if not exists public.learner_progress (
 
 alter table public.learner_progress enable row level security;
 
+create or replace function public.set_learner_progress_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create trigger learner_progress_updated_at
+  before update on public.learner_progress
+  for each row execute function public.set_learner_progress_updated_at();
+
 create policy "Learners can read their own progress"
   on public.learner_progress
   for select
