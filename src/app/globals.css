@@ -22,7 +22,7 @@ body {
   @apply bg-canvas text-ink antialiased;
   background: var(--page-background);
   color: var(--ink-primary);
-  font-family: 'IBM Plex Sans Variable', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 ::selection {
@@ -35,19 +35,27 @@ body {
     @apply rounded-card border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-action focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-dark focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-terracotta-action text-white hover:bg-terracotta-dark;
+    @apply btn text-white;
+    background-color: var(--accent-action);
+  }
+  .btn-primary:hover {
+    background-color: #96351f;
   }
   .btn-secondary {
     @apply btn border border-slate-300 bg-white text-ink hover:bg-slate-50;
   }
   .btn-accent {
-    @apply btn bg-terracotta-action text-white hover:bg-terracotta-dark;
+    @apply btn text-white;
+    background-color: var(--accent-action);
+  }
+  .btn-accent:hover {
+    background-color: #96351f;
   }
   .input {
-    @apply min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-slate-400 focus:border-terracotta-action focus:outline-none focus:ring-2 focus:ring-terracotta-action/40;
+    @apply min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-slate-400 focus:border-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald/40;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;
