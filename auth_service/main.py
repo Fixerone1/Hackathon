@@ -281,6 +281,8 @@ def signup(payload: SignupPayload, request: Request, response: Response) -> Auth
             "password": payload.password,
             "options": {"data": {
                 "name": payload.name.strip(),
+                "privacy_consent": True,
+                "privacy_notice_version": "prototype-1",
                 "privacy_consent_at": datetime.now(timezone.utc).isoformat(),
             }},
         })
@@ -442,6 +444,7 @@ def export_user_data(request: Request, response: Response) -> JSONResponse:
             ("learner_profiles", "*", "profile"),
             ("learner_progress", "*", "progress"),
             ("email_preferences", "*", "email_preferences"),
+            ("privacy_consents", "*", "privacy_consents"),
         ):
             result = client.table(table).select(columns).eq("user_id", user.id).maybe_single().execute()
             exported[key] = result.data

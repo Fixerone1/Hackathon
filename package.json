@@ -8,6 +8,7 @@
     "dev:web": "next dev --hostname 0.0.0.0",
     "dev:auth": "python3 -m uvicorn auth_service.main:app --host 127.0.0.1 --port 8000 --reload",
     "build": "next build",
+    "test:python": "python3 -m unittest discover -s tests -v",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },

@@ -19,6 +19,8 @@ npm run dev
 
 Requires Node 18.17+, Python 3.10+, and a Supabase project.
 
+The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10 = 2, Grade 11 = 3, Matric = 4, N6 certificate = 5, National Diploma = 6, Bachelor's degree = 7, Honours = 8, Master's = 9, Doctorate = 10. A qualification is not inferred from a free-text field; unsupported values have no mapped NQF level.
+
 ### Supabase setup
 
 1. Create a Supabase project.
@@ -29,9 +31,11 @@ Requires Node 18.17+, Python 3.10+, and a Supabase project.
    - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
 4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL.
 5. Optionally set `ADMIN_EMAILS=you@example.com` in `.env` to allowlist an admin account. Admin status is checked on the Python server.
-6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in.
+5. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
 
-The `.env.example` values are placeholders. Authentication and data storage return a configuration error until valid Supabase values and the migrations are installed.
+To show the separate admin shell, set `ADMIN_EMAILS` to a comma-separated list of allowed account emails in the Python service environment. Admin status is checked server-side.
+
+**Production:** deploy Next.js and the Python service to server-capable hosts. Set `AUTH_SERVICE_URL` to the Python service’s HTTPS URL and set `AUTH_COOKIE_SECURE=true`. Configure `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `ADMIN_EMAILS` on the Python service; set `AUTH_SERVICE_URL` and `NEXT_PUBLIC_SITE_URL` on Next.js. Add the production site URL to Supabase Authentication settings. Keep `.env` values out of source control.
 
 **Production:** deploy Next.js and the Python service to server-capable hosts. Set `AUTH_SERVICE_URL` to the Python service’s HTTPS URL and set `AUTH_COOKIE_SECURE=true`. Add the production site URL to Supabase Authentication settings. Keep `.env` values out of source control.
 
@@ -46,15 +50,15 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 - `/admin` is separate from learner navigation and requires an email in `ADMIN_EMAILS`.
 - `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
 
-Authentication is delegated to Supabase; passwords are not stored by this application. Supabase Auth manages identities and sessions. The current migrations store learner profile, checklist, and email preferences with per-user row-level security. Consent is recorded at signup and per email category. Email sending is not implemented.
+Authentication is delegated to Supabase; passwords are not stored by this application. Supabase Auth manages identities and sessions. The migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
 
 `prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. The Python gateway has process-local request throttles for the demo; production deployments should also enforce rate limits at the hosting edge or through a shared limiter.
 
 ## Phase 1 scope and tests
 
-The uploaded source did not include the previously described assessment, CV builder, interview coach, Skills Academy, salary planner, savings-goal, or idea-validator modules. Their routes are present but clearly marked unavailable; they have not been represented as working features. Opportunity connectors, eligibility scoring, pathways, application tracking, partner posting, email delivery, and admin review tools are future phases. No real listings or match claims are seeded.
+The uploaded source did not include the previously described assessment, CV builder, interview coach, Skills Academy, salary planner, savings-goal, or idea-validator modules. Their routes are present but clearly marked unavailable; they have not been represented as working features. The Mobility Score is not calculated until its underlying tools exist. Opportunity connectors, eligibility scoring, pathways, application tracking, partner posting, email delivery, and admin review tools are future phases. No real listings or match claims are seeded. No third-party job sources have been contacted or scraped.
 
-The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/fixtures/learner_profile.json). Run the current Python tests with `python -m unittest discover -s tests -v`; frontend types/build use `npm run typecheck` and `npm run build`.
+The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/fixtures/learner_profile.json). Run Python tests with `npm run test:python`; frontend types/build use `npm run typecheck` and `npm run build`.
 
 The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
