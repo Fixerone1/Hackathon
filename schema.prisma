@@ -1,0 +1,160 @@
+// Production data model (PostgreSQL). Not used by the demo build, which stores data in the browser.
+// Pair with Row-Level Security policies so each user can only read and write their own rows, e.g.:
+//   ALTER TABLE "Cv" ENABLE ROW LEVEL SECURITY;
+//   CREATE POLICY cv_owner ON "Cv" USING ("userId" = current_setting('app.user_id')::text);
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String   // Argon2id
+  mfaEnabled   Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  cv            Cv?
+  assessment    Assessment?
+  interviews    Interview[]
+  applications  Application[]
+  lessons       LessonProgress[]
+  budget        Budget?
+  goals         Goal[]
+  validations   Validation[]
+  checklist     ChecklistItem[]
+  scores        ScoreSnapshot[]
+  auditLogs     AuditLog[]
+  sessions      Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshHash  String
+  expiresAt    DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Cv {
+  id        String @id @default(cuid())
+  userId    String @unique
+  content   Json   // headline, summary, education, experience, skills, volunteer
+  updatedAt DateTime @updatedAt
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  answers   Json
+  interests String[]
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Interview {
+  id         String   @id @default(cuid())
+  userId     String
+  question   String
+  answer     String
+  score      Int
+  confidence Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Opportunity {
+  id           String   @id @default(cuid())
+  title        String
+  org          String
+  type         String
+  location     String
+  field        String
+  deadline     DateTime
+  description  String
+  requirements String[]
+  applications Application[]
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  userId        String
+  opportunityId String
+  status        String   // saved | applied | interview | offer | declined
+  updatedAt     DateTime @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  @@unique([userId, opportunityId])
+}
+
+model LessonProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  doneAt    DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, lessonId])
+}
+
+model Budget {
+  id      String @id @default(cuid())
+  userId  String @unique
+  income  Int
+  items   Json
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Goal {
+  id      String @id @default(cuid())
+  userId  String
+  name    String
+  target  Int
+  saved   Int    @default(0)
+  monthly Int    @default(0)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Validation {
+  id        String   @id @default(cuid())
+  userId    String
+  idea      String
+  score     Int
+  feedback  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChecklistItem {
+  id      String @id @default(cuid())
+  userId  String
+  itemKey String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, itemKey])
+}
+
+model ScoreSnapshot {
+  id         String   @id @default(cuid())
+  userId     String
+  employment Int
+  money      Int
+  growth     Int
+  overall    Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // login, profile_update, cv_download, ai_request
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
