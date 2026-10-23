@@ -8,6 +8,8 @@ create table if not exists public.learner_profiles (
   subjects jsonb not null default '[]'::jsonb,
   skills jsonb not null default '[]'::jsonb,
   experience_months smallint not null default 0,
+  experience_by_area jsonb not null default '[]'::jsonb,
+  skill_ratings jsonb not null default '[]'::jsonb,
   province text not null default '',
   city text not null default '',
   target_role text not null default '',

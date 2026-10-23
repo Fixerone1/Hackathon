@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 
 type SubjectResult = { name: string; mark: number | null };
+type SkillRating = { name: string; level: number; source: 'self_reported'; evidence_note: string };
+type ExperienceEntry = { area: string; months: number };
 type ProfileDraft = {
   highest_qualification: string;
   qualification_status: string;
@@ -10,7 +12,7 @@ type ProfileDraft = {
   qualification_year: string;
   subjects_text: string;
   skills_text: string;
-  experience_months: string;
+  experience_by_area_text: string;
   province: string;
   city: string;
   target_role: string;
@@ -27,7 +29,13 @@ type ProfileDraft = {
 };
 
 type ProfileApiResponse = {
-  profile: Record<string, unknown> & { subjects?: SubjectResult[]; skills?: string[]; languages?: string[] };
+  profile: Record<string, unknown> & {
+    subjects?: SubjectResult[];
+    skills?: string[];
+    skill_ratings?: SkillRating[];
+    experience_by_area?: ExperienceEntry[];
+    languages?: string[];
+  };
   nqf_level: number | null;
   strength: number;
   next_step: string;
@@ -35,7 +43,7 @@ type ProfileApiResponse = {
 
 const emptyProfile: ProfileDraft = {
   highest_qualification: '', qualification_status: '', field_of_study: '', qualification_year: '',
-  subjects_text: '', skills_text: '', experience_months: '0', province: '', city: '', target_role: '',
+  subjects_text: '', skills_text: '', experience_by_area_text: '', province: '', city: '', target_role: '',
   target_income_monthly: '', hours_available_per_week: '', employment_status: '', age_band: '',
   languages_text: '', drivers_license: '', willing_to_relocate: '', remote_ok: '', own_transport: '',
   computer_or_data_access: '',
@@ -56,9 +64,11 @@ function toDraft(profile: ProfileApiResponse['profile']): ProfileDraft {
     ...profile,
     qualification_year: profile.qualification_year ? String(profile.qualification_year) : '',
     subjects_text: (profile.subjects || []).map((subject) => subject.mark === null ? subject.name : `${subject.name}: ${subject.mark}`).join('\n'),
-    skills_text: (profile.skills || []).join(', '),
+    skills_text: profile.skill_ratings?.length
+      ? profile.skill_ratings.map((skill) => `${skill.name}: ${skill.level}${skill.evidence_note ? ` | ${skill.evidence_note}` : ''}`).join('\n')
+      : (profile.skills || []).join('\n'),
+    experience_by_area_text: (profile.experience_by_area || []).map((entry) => `${entry.area}: ${entry.months}`).join('\n'),
     languages_text: (profile.languages || []).join(', '),
-    experience_months: String(profile.experience_months ?? 0),
     target_income_monthly: profile.target_income_monthly ? String(profile.target_income_monthly) : '',
     hours_available_per_week: profile.hours_available_per_week ? String(profile.hours_available_per_week) : '',
     drivers_license: profile.drivers_license === null ? '' : String(profile.drivers_license),
@@ -74,6 +84,20 @@ function parseSubjects(value: string): SubjectResult[] {
     const match = entry.match(/^(.*?)(?:\s*:\s*(\d{1,3}))?$/);
     return { name: match?.[1]?.trim() || entry, mark: match?.[2] ? Number(match[2]) : null };
   }).filter((subject) => subject.name.length > 0 && (subject.mark === null || subject.mark <= 100));
+}
+
+function parseSkillRatings(value: string): SkillRating[] {
+  return value.split('\n').map((entry) => entry.trim()).filter(Boolean).flatMap((entry) => {
+    const match = entry.match(/^(.+?):\s*([1-5])(?:\s*\|\s*(.{0,240}))?$/);
+    return match ? [{ name: match[1].trim(), level: Number(match[2]), source: 'self_reported' as const, evidence_note: match[3]?.trim() || '' }] : [];
+  });
+}
+
+function parseExperience(value: string): ExperienceEntry[] {
+  return value.split('\n').map((entry) => entry.trim()).filter(Boolean).flatMap((entry) => {
+    const match = entry.match(/^(.+?):\s*(\d{1,3})$/);
+    return match ? [{ area: match[1].trim(), months: Number(match[2]) }] : [];
+  }).filter((entry) => entry.months <= 600);
 }
 
 function optionalBoolean(value: string): boolean | null {
@@ -122,8 +146,10 @@ export default function ProfilePage() {
       field_of_study: profile.field_of_study,
       qualification_year: profile.qualification_year ? Number(profile.qualification_year) : null,
       subjects: parseSubjects(profile.subjects_text),
-      skills: profile.skills_text.split(',').map((item) => item.trim()).filter(Boolean),
-      experience_months: Number(profile.experience_months || 0),
+      skills: parseSkillRatings(profile.skills_text).map((skill) => skill.name),
+      skill_ratings: parseSkillRatings(profile.skills_text),
+      experience_by_area: parseExperience(profile.experience_by_area_text),
+      experience_months: parseExperience(profile.experience_by_area_text).reduce((total, entry) => total + entry.months, 0),
       province: profile.province,
       city: profile.city,
       target_role: profile.target_role,
@@ -265,12 +291,14 @@ export default function ProfilePage() {
                 <input id="city" className={inputClass} maxLength={100} value={profile.city} onChange={(event) => update('city', event.target.value)} />
               </div>
               <div className="sm:col-span-2">
-                <label htmlFor="skills" className="label">Skills <span className="font-normal text-slate-500">(optional)</span></label>
-                <input id="skills" className={inputClass} placeholder="For example, customer service, Excel" value={profile.skills_text} onChange={(event) => update('skills_text', event.target.value)} />
+                <label htmlFor="skills" className="label">Skills and self-rating <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="skills" rows={3} className={inputClass} placeholder={'Customer service: 3 | Helped at a community event\nSpreadsheet basics: 2'} value={profile.skills_text} onChange={(event) => update('skills_text', event.target.value)} />
+                <p className="mt-1 text-xs text-slate-500">Rate each skill from 1 (learning) to 5 (confident). You may add a short example. These are self-reported.</p>
               </div>
-              <div>
-                <label htmlFor="experience" className="label">Relevant experience (months) <span className="font-normal text-slate-500">(optional)</span></label>
-                <input id="experience" type="number" min="0" max="600" className={inputClass} value={profile.experience_months} onChange={(event) => update('experience_months', event.target.value)} />
+              <div className="sm:col-span-2">
+                <label htmlFor="experience" className="label">Experience by area <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="experience" rows={3} className={inputClass} placeholder={'Customer service: 4\nRetail: 6'} value={profile.experience_by_area_text} onChange={(event) => update('experience_by_area_text', event.target.value)} />
+                <p className="mt-1 text-xs text-slate-500">One area per line, followed by approximate months.</p>
               </div>
               <div>
                 <label htmlFor="languages" className="label">Languages <span className="font-normal text-slate-500">(optional)</span></label>

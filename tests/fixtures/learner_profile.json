@@ -8,7 +8,12 @@
     { "name": "English", "mark": 67 }
   ],
   "skills": ["Customer service", "Spreadsheet basics"],
+  "skill_ratings": [
+    { "name": "Customer service", "level": 3, "source": "self_reported", "evidence_note": "Helped at a community event" },
+    { "name": "Spreadsheet basics", "level": 2, "source": "self_reported", "evidence_note": "" }
+  ],
   "experience_months": 4,
+  "experience_by_area": [{ "area": "Customer service", "months": 4 }],
   "province": "Gauteng",
   "city": "Johannesburg",
   "target_role": "Office assistant",

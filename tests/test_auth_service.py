@@ -27,6 +27,8 @@ class ProfileLogicTests(unittest.TestCase):
         self.assertEqual(result.strength, 100)
         self.assertEqual(result.profile.subjects[0].name, "Mathematics Literacy")
         self.assertEqual(result.profile.subjects[0].mark, 78)
+        self.assertEqual(result.profile.skill_ratings[0].source, "self_reported")
+        self.assertEqual(result.profile.experience_by_area[0].months, 4)
 
     def test_empty_profile_does_not_infer_eligibility(self):
         result = profile_response(None)
