@@ -20,6 +20,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
     const form = new FormData(event.currentTarget);
     const body = {
       ...(isSignup ? { name: String(form.get('name') || '') } : {}),
+      ...(isSignup ? { privacy_consent: form.get('privacy_consent') === 'on' } : {}),
       email: String(form.get('email') || ''),
       password: String(form.get('password') || ''),
     };
@@ -40,7 +41,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
         setNotice('Check your email for a confirmation link, then return here to sign in.');
         return;
       }
-      router.replace('/app');
+      router.replace(isSignup ? '/app/profile' : '/app');
       router.refresh();
     } catch {
       setError('Authentication service is unavailable. Please try again shortly.');
@@ -74,6 +75,12 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
           className="input"
         />
       </div>
+      {isSignup && (
+        <label className="flex items-start gap-3 text-sm leading-6 text-slate-600">
+          <input name="privacy_consent" type="checkbox" required className="mt-1 h-4 w-4 accent-emerald" />
+          <span>I agree to the <Link href="/privacy" className="link">privacy notice</Link> and understand my profile information will be stored to provide this service.</span>
+        </label>
+      )}
       <button type="submit" disabled={submitting} className="btn-primary w-full">
         {submitting ? 'Please wait...' : isSignup ? 'Create account' : 'Sign in'}
       </button>

@@ -98,6 +98,10 @@ html.reduce-motion *::after {
   scroll-behavior: auto !important;
 }
 
+html.larger-text body {
+  font-size: 112.5%;
+}
+
 /* Print: CV preview only */
 @media print {
   body * {

@@ -13,22 +13,23 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 cp .env.example .env
-# Set SUPABASE_URL and SUPABASE_ANON_KEY in .env
-npm run dev        # Next.js + FastAPI at http://localhost:3000
-# production check
-npm run build && npm start
 ```
 
-Requires Node 18.17+ and Python 3.10+. Create a Supabase project before using signup, login, or saved progress.
+Requires Node 18.17+, Python 3.10+, and a Supabase project.
 
 ### Supabase setup
 
-1. Create a Supabase project and copy its Project URL and anon/public key into `.env` as `SUPABASE_URL` and `SUPABASE_ANON_KEY`. Never use a service-role or secret key in this app.
-2. In the Supabase SQL Editor, run [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql). It creates the learner checklist table and row-level security policies.
-3. In Supabase Authentication settings, set the site URL to `http://localhost:3000` for local development and configure email confirmation as required by your organization.
-4. Run `npm run dev`. Create an account, confirm the email if enabled, and sign in. Checklist progress is saved per authenticated user.
+1. **Create a project** in Supabase.
+2. **Add your project keys** to `.env`: copy the Project URL to `SUPABASE_URL` and the anon/public key to `SUPABASE_ANON_KEY`. Never use the service-role key. Do not commit `.env`.
+3. **Create the progress table.** In Supabase, open **SQL Editor**, paste the contents of [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql), and run it.
+4. **Set the local site URL.** In Supabase Authentication URL settings, use `http://localhost:3000`.
+5. **Start the app:**
+   ```bash
+   npm run dev
+   ```
+6. Open `http://localhost:3000/signup`, create an account, and confirm the email if prompted. Then sign in; your checklist is saved to your Supabase account.
 
-For production, set `AUTH_COOKIE_SECURE=true`. Configure `AUTH_SERVICE_URL` to the HTTPS address of the deployed FastAPI service. Deploy the Next.js site to a server-capable host with the same environment variable and keep both services behind HTTPS.
+**Production:** deploy Next.js and the Python service to server-capable hosts. Set `AUTH_SERVICE_URL` to the Python service’s HTTPS URL and set `AUTH_COOKIE_SECURE=true`. Add the production site URL to Supabase Authentication settings. Keep `.env` values out of source control.
 
 ### Optional: real AI feedback
 The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `.env.example`. Without those values it responds with a local-fallback marker. The current demo UI does not call this endpoint.

@@ -1,0 +1,25 @@
+{
+  "highest_qualification": "Matric",
+  "qualification_status": "completed",
+  "field_of_study": "General education",
+  "qualification_year": 2025,
+  "subjects": [
+    { "name": "Mathematics Literacy", "mark": 78 },
+    { "name": "English", "mark": 67 }
+  ],
+  "skills": ["Customer service", "Spreadsheet basics"],
+  "experience_months": 4,
+  "province": "Gauteng",
+  "city": "Johannesburg",
+  "target_role": "Office assistant",
+  "target_income_monthly": null,
+  "hours_available_per_week": 40,
+  "employment_status": "unemployed",
+  "age_band": "18_24",
+  "languages": ["English", "isiZulu"],
+  "drivers_license": false,
+  "willing_to_relocate": false,
+  "remote_ok": true,
+  "own_transport": false,
+  "computer_or_data_access": true
+}

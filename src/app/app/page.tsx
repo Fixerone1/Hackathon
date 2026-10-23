@@ -88,8 +88,37 @@ export default function DashboardPage() {
           <h1 className="mt-1 text-3xl font-semibold text-midnight">Welcome, {user.name}</h1>
           <p className="mt-2 text-sm text-slate-600">Choose a practical next step and keep your progress moving.</p>
         </div>
-        <button type="button" onClick={signOut} className="btn-secondary min-h-10">Sign out</button>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/app/profile" className="btn-secondary min-h-10">Edit profile</Link>
+          <button type="button" onClick={signOut} className="btn-secondary min-h-10">Sign out</button>
+        </div>
       </header>
+
+      <section className="border-b border-slate-200 py-6" aria-labelledby="matches-heading">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <div>
+            <p className="eyebrow">Opportunity connector</p>
+            <h2 id="matches-heading" className="mt-1 text-xl font-semibold text-midnight">Your matches today</h2>
+          </div>
+          <Link href="/app/employment/opportunities" className="link text-sm">Open opportunities</Link>
+        </div>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+          No verified source feeds are connected yet, so there are no listings to show. CareerForge will not label a role as a match until its original advert and requirements can be checked.
+        </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          {[
+            ['Ready now', 'Meets stated requirements'],
+            ['Almost there', 'One closable gap'],
+            ['Build towards', 'A longer-term pathway'],
+          ].map(([title, description]) => (
+            <div key={title} className="border-l-2 border-slate-300 pl-3">
+              <h3 className="text-sm font-semibold text-midnight">{title}</h3>
+              <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
+              <p className="mt-2 text-xs font-medium text-slate-500">No verified listings</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="grid gap-10 py-8 md:grid-cols-[minmax(0,1fr)_17rem] md:py-10">
         <section aria-labelledby="actions-heading">
@@ -124,10 +153,15 @@ export default function DashboardPage() {
         </section>
 
         <aside className="space-y-7 border-t border-slate-200 pt-5 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+          <section aria-labelledby="mobility-score-heading">
+            <p className="eyebrow">Economic Mobility Score</p>
+            <h2 id="mobility-score-heading" className="mt-2 text-2xl font-semibold text-midnight">Not calculated</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
+          </section>
           <section aria-labelledby="progress-heading">
-            <p className="eyebrow">Overall progress</p>
-            <h2 id="progress-heading" className="mt-2 text-4xl font-semibold text-midnight">{progress}%</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Based on completed starter actions. This is not a validated outcome score.</p>
+            <p className="eyebrow">Starter plan progress</p>
+            <h2 id="progress-heading" className="mt-2 text-3xl font-semibold text-midnight">{progress}%</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Completion of the three checklist actions shown here.</p>
           </section>
           <section id="money-skills" className="border-t border-slate-200 pt-5">
             <h2 className="font-semibold text-midnight">Money confidence</h2>

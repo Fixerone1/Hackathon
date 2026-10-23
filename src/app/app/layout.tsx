@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { PublicShell } from '@/components/PublicShell';
-import { MONEY_TABS, SectionTabs } from '@/components/SectionTabs';
+import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <PublicShell variant="workspace">
-      <SectionTabs items={MONEY_TABS} />
-      {children}
+      <WorkspaceNav />
+      <div className="pb-16 md:pb-0">{children}</div>
     </PublicShell>
   );
 }
