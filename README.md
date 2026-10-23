@@ -42,6 +42,8 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 
 Authentication is delegated to Supabase; passwords are not stored by this application. Supabase Auth manages identities and sessions. The current Supabase migration stores checklist state only; add a migration and user-scoped RLS policies for every new personal-data table.
 
+`prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. The Python gateway has process-local request throttles for the demo; production deployments should also enforce rate limits at the hosting edge or through a shared limiter.
+
 The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
 ## Notes

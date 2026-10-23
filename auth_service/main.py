@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,7 @@ login_limiter = FailureLimiter(max_attempts=8, window_seconds=15 * 60)
 signup_limiter = FailureLimiter(max_attempts=5, window_seconds=60 * 60)
 
 
+@lru_cache(maxsize=1)
 def get_supabase() -> Client:
     url = os.getenv("SUPABASE_URL")
     key = os.getenv("SUPABASE_ANON_KEY")
@@ -197,19 +199,18 @@ def get_current_user(request: Request, response: Response) -> AuthResponse:
 
 
 @app.post("/auth-api/logout", status_code=status.HTTP_204_NO_CONTENT)
-def logout(request: Request, response: Response) -> Response:
+def logout(request: Request, response: Response) -> None:
     access_token = request.cookies.get(ACCESS_COOKIE)
     refresh_token = request.cookies.get(REFRESH_COOKIE)
     if access_token and refresh_token:
         try:
             client = get_supabase()
             client.auth.set_session(access_token, refresh_token)
-            client.auth.sign_out()
+            client.auth.sign_out({"scope": "local"})
         except Exception:
             pass
     response.delete_cookie(key=ACCESS_COOKIE, path="/", httponly=True, samesite="lax")
     response.delete_cookie(key=REFRESH_COOKIE, path="/", httponly=True, samesite="lax")
-    return response
 
 
 @app.get("/auth-api/checklist", response_model=ChecklistPayload)
