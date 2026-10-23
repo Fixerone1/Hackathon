@@ -30,7 +30,7 @@ export default function HomePage() {
             <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
           </div>
           <div className="relative mx-auto w-full max-w-[540px]" aria-label="Illustrative learner dashboard preview">
-            <div className="absolute -inset-3 -z-10 rounded-xl bg-[#edf3f1]" />
+            <div className="absolute -inset-3 -z-10 rounded-xl bg-sage" />
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_55px_rgba(23,43,58,0.12)]">
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                 <div>
@@ -78,7 +78,7 @@ export default function HomePage() {
         <div className="mt-8 grid gap-8 border-y border-slate-200 py-7 md:grid-cols-3 md:gap-10">
           {pillars.map(({ icon: Icon, title, text }) => (
             <article key={title} className="flex gap-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#e7f1ee] text-emerald-dark">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-sage text-emerald-dark">
                 <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
               </span>
               <div>

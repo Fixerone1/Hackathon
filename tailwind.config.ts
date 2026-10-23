@@ -5,16 +5,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        midnight: '#0D1B2A',
-        navy: '#1B263B',
-        emerald: { DEFAULT: '#10B981', dark: '#047857', light: '#D1FAE5' },
-        canvas: '#F8FAFC',
-        ink: '#111827',
+        white: '#FDFBF7',
+        sand: '#FDFBF7',
+        ocean: '#0F2E35',
+        'ocean-deep': '#09252B',
+        terracotta: { DEFAULT: '#E05A36', action: '#B43D22', dark: '#96351F' },
+        sage: '#E2ECE9',
+        midnight: '#0F2E35',
+        navy: '#09252B',
+        emerald: { DEFAULT: '#E05A36', dark: '#A33B24', light: '#E2ECE9' },
+        canvas: '#FDFBF7',
+        ink: '#0F2E35',
       },
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
-      borderRadius: { card: '16px' },
+      borderRadius: { card: '8px' },
       boxShadow: { card: '0 4px 12px rgba(0,0,0,0.08)' },
     },
   },

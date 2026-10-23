@@ -58,6 +58,7 @@ class SupabaseRouteTests(unittest.TestCase):
             ),
             postgrest=Namespace(auth=Mock()),
             table=Mock(return_value=self.query),
+            rpc=Mock(return_value=self.query),
         )
         self.client_patch = patch("auth_service.main.get_supabase", return_value=self.client)
         self.client_patch.start()
@@ -114,6 +115,19 @@ class SupabaseRouteTests(unittest.TestCase):
         response = self.browser.get("/auth-api/notification-preferences", cookies={ACCESS_COOKIE: "sample-access"})
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.json()["preferences"]["weekly_digest"])
+
+    def test_export_returns_only_the_authenticated_users_data(self):
+        response = self.browser.get("/auth-api/export", cookies={ACCESS_COOKIE: "sample-access"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["account"]["id"], self.user.id)
+        self.assertIn("learner_profiles", [call.args[0] for call in self.client.table.call_args_list])
+        self.assertIn("attachment;", response.headers["content-disposition"])
+
+    def test_delete_account_calls_user_scoped_rpc(self):
+        response = self.browser.delete("/auth-api/account", cookies={ACCESS_COOKIE: "sample-access"})
+        self.assertEqual(response.status_code, 204)
+        self.client.postgrest.auth.assert_called_with("sample-access")
+        self.client.rpc.assert_called_once_with("delete_my_account")
 
 
 if __name__ == "__main__":

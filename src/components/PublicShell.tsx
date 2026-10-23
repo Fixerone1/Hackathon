@@ -21,8 +21,17 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="flex items-center gap-1 text-sm font-medium sm:gap-2">
-              <Link href="/#organizations" className="hidden rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight sm:inline-flex">
+              <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight lg:inline-flex">
+                How it works
+              </Link>
+              <Link href="/opportunities" className="hidden rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight lg:inline-flex">
+                Opportunities
+              </Link>
+              <Link href="/partners" className="hidden rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight lg:inline-flex">
                 For organizations
+              </Link>
+              <Link href="/about" className="hidden rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight lg:inline-flex">
+                About
               </Link>
               <Link href="/login" className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 hover:text-midnight">
                 Sign in
@@ -38,9 +47,18 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       </header>
       <main id="main-content">{children}</main>
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-2 px-4 py-6 text-sm text-slate-500">
-          <span>CareerForge AI</span>
-          <span>Work readiness, money confidence, and practical next steps.</span>
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold text-midnight">CareerForge AI</p>
+            <p className="mt-1">Work readiness, money confidence, and practical next steps.</p>
+          </div>
+          <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-4 gap-y-2 text-xs">
+            <Link href="/how-it-works" className="hover:text-midnight">How it works</Link>
+            <Link href="/opportunities" className="hover:text-midnight">Opportunities</Link>
+            <Link href="/partners" className="hover:text-midnight">For partners</Link>
+            <Link href="/about" className="hover:text-midnight">About</Link>
+            <Link href="/privacy" className="hover:text-midnight">Privacy</Link>
+          </nav>
         </div>
       </footer>
     </>

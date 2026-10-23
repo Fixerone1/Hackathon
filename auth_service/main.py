@@ -52,6 +52,18 @@ class SubjectResult(BaseModel):
     mark: int | None = Field(default=None, ge=0, le=100)
 
 
+class ExperienceEntry(BaseModel):
+    area: str = Field(min_length=1, max_length=100)
+    months: int = Field(ge=0, le=600)
+
+
+class SkillRating(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    level: int = Field(ge=1, le=5)
+    source: Literal["self_reported"] = "self_reported"
+    evidence_note: str = Field(default="", max_length=240)
+
+
 class ProfilePayload(BaseModel):
     highest_qualification: str = Field(default="", max_length=80)
     qualification_status: Literal["", "in_progress", "completed"] = ""
@@ -60,6 +72,8 @@ class ProfilePayload(BaseModel):
     subjects: list[SubjectResult] = Field(default_factory=list, max_length=20)
     skills: list[str] = Field(default_factory=list, max_length=40)
     experience_months: int = Field(default=0, ge=0, le=600)
+    experience_by_area: list[ExperienceEntry] = Field(default_factory=list, max_length=20)
+    skill_ratings: list[SkillRating] = Field(default_factory=list, max_length=40)
     province: Literal[
         "", "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal",
         "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape",
@@ -221,7 +235,7 @@ def profile_response(data: dict[str, Any] | None) -> ProfileResponse:
         bool(profile.highest_qualification),
         bool(profile.field_of_study),
         bool(profile.subjects),
-        bool(profile.skills),
+        bool(profile.skills or profile.skill_ratings),
         profile.experience_months > 0,
         bool(profile.province),
         bool(profile.target_role),

@@ -4,12 +4,14 @@
 
 :root {
   color-scheme: light;
-  --page-background: #f5f7f8;
-  --surface: #ffffff;
-  --ink-primary: #172b3a;
-  --ink-muted: #526472;
-  --line: #dbe2e7;
-  --accent: #087f69;
+  --page-background: #fdfbf7;
+  --surface: #fdfbf7;
+  --ink-primary: #0f2e35;
+  --ink-muted: #50696b;
+  --line: #d2dfdb;
+  --accent: #e05a36;
+  --accent-action: #b43d22;
+  --support: #e2ece9;
 }
 
 html {
@@ -24,8 +26,8 @@ body {
 }
 
 ::selection {
-  background: #cbe9df;
-  color: #122c29;
+  background: #e2ece9;
+  color: #0f2e35;
 }
 
 @layer components {
@@ -33,19 +35,19 @@ body {
     @apply rounded-card border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-action focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-midnight text-white hover:bg-navy;
+    @apply btn bg-terracotta-action text-white hover:bg-terracotta-dark;
   }
   .btn-secondary {
     @apply btn border border-slate-300 bg-white text-ink hover:bg-slate-50;
   }
   .btn-accent {
-    @apply btn bg-emerald text-midnight hover:bg-emerald-dark hover:text-white;
+    @apply btn bg-terracotta-action text-white hover:bg-terracotta-dark;
   }
   .input {
-    @apply min-h-[44px] w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-slate-400 focus:border-emerald focus:outline-none focus:ring-2 focus:ring-emerald/40;
+    @apply min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-slate-400 focus:border-terracotta-action focus:outline-none focus:ring-2 focus:ring-terracotta-action/40;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;
@@ -65,7 +67,7 @@ body {
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
-  outline: 2px solid #10b981;
+  outline: 2px solid #e05a36;
   outline-offset: 2px;
 }
 

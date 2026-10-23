@@ -11,23 +11,27 @@ The **70 / 15 / 15** framework drives everything: Employment readiness (70%), Mo
 npm install
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 cp .env.example .env
+# Fill in the Supabase settings below before starting the app.
+npm run dev
 ```
 
 Requires Node 18.17+, Python 3.10+, and a Supabase project.
 
 ### Supabase setup
 
-1. **Create a project** in Supabase.
-2. **Add your project keys** to `.env`: copy the Project URL to `SUPABASE_URL` and the anon/public key to `SUPABASE_ANON_KEY`. Never use the service-role key. Do not commit `.env`.
-3. **Create the progress table.** In Supabase, open **SQL Editor**, paste the contents of [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql), and run it.
-4. **Set the local site URL.** In Supabase Authentication URL settings, use `http://localhost:3000`.
-5. **Start the app:**
-   ```bash
-   npm run dev
-   ```
-6. Open `http://localhost:3000/signup`, create an account, and confirm the email if prompted. Then sign in; your checklist is saved to your Supabase account.
+1. Create a Supabase project.
+2. Copy its Project URL and anon/public key into local `.env` as `SUPABASE_URL` and `SUPABASE_ANON_KEY`. Never use the service-role key. Do not commit `.env`.
+3. In the Supabase SQL Editor, run these files in filename order:
+   - [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql)
+   - [`supabase/migrations/20261023001000_learner_profiles.sql`](supabase/migrations/20261023001000_learner_profiles.sql)
+   - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
+4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL.
+5. Optionally set `ADMIN_EMAILS=you@example.com` in `.env` to allowlist an admin account. Admin status is checked on the Python server.
+6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in.
+
+The `.env.example` values are placeholders. Authentication and data storage return a configuration error until valid Supabase values and the migrations are installed.
 
 **Production:** deploy Next.js and the Python service to server-capable hosts. Set `AUTH_SERVICE_URL` to the Python service’s HTTPS URL and set `AUTH_COOKIE_SECURE=true`. Add the production site URL to Supabase Authentication settings. Keep `.env` values out of source control.
 
@@ -36,19 +40,26 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 
 ## Routes in this preview
 
-- `/` is the public introduction page.
+- Public pages: `/`, `/how-it-works`, `/opportunities`, `/partners`, `/about`, `/privacy`, `/login`, `/signup`.
 - `/signup` and `/login` use Supabase Auth through the Python service.
-- `/app` is a protected learner dashboard. Checklist progress is persisted in Supabase and protected by row-level security.
+- `/app` is a protected dashboard with six primary sections. The current repo has a progressive profile, checklist, notification preferences, and empty verified-opportunity states.
+- `/admin` is separate from learner navigation and requires an email in `ADMIN_EMAILS`.
 - `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
 
-Authentication is delegated to Supabase; passwords are not stored by this application. Supabase Auth manages identities and sessions. The current Supabase migration stores checklist state only; add a migration and user-scoped RLS policies for every new personal-data table.
+Authentication is delegated to Supabase; passwords are not stored by this application. Supabase Auth manages identities and sessions. The current migrations store learner profile, checklist, and email preferences with per-user row-level security. Consent is recorded at signup and per email category. Email sending is not implemented.
 
 `prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. The Python gateway has process-local request throttles for the demo; production deployments should also enforce rate limits at the hosting edge or through a shared limiter.
+
+## Phase 1 scope and tests
+
+The uploaded source did not include the previously described assessment, CV builder, interview coach, Skills Academy, salary planner, savings-goal, or idea-validator modules. Their routes are present but clearly marked unavailable; they have not been represented as working features. Opportunity connectors, eligibility scoring, pathways, application tracking, partner posting, email delivery, and admin review tools are future phases. No real listings or match claims are seeded.
+
+The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/fixtures/learner_profile.json). Run the current Python tests with `python -m unittest discover -s tests -v`; frontend types/build use `npm run typecheck` and `npm run build`.
 
 The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
 ## Notes
-- Colours follow the design note: Midnight `#0D1B2A`, Navy `#1B263B`, Emerald `#10B981`, background `#F8FAFC`, text `#111827`.
+- Palette: Sand White `#FDFBF7`, Deep Ocean Teal `#0F2E35`, Terracotta `#E05A36`, Sage `#E2ECE9`. Primary button text uses a darker Terracotta shade for contrast.
 
 ## Publish on GitHub (free, GitHub Pages)
 
