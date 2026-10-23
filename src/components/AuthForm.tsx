@@ -2,14 +2,51 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
-  const [submitted, setSubmitted] = useState(false);
+  const router = useRouter();
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const isSignup = mode === 'signup';
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setNotice('');
+    setSubmitting(true);
+
+    const form = new FormData(event.currentTarget);
+    const body = {
+      ...(isSignup ? { name: String(form.get('name') || '') } : {}),
+      email: String(form.get('email') || ''),
+      password: String(form.get('password') || ''),
+    };
+
+    try {
+      const response = await fetch(`/auth-api/${mode}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(body),
+      });
+      const result = await response.json() as { detail?: string; confirmation_required?: boolean };
+      if (!response.ok) {
+        setError(result.detail || 'We could not sign you in. Please try again.');
+        return;
+      }
+      if (result.confirmation_required) {
+        setNotice('Check your email for a confirmation link, then return here to sign in.');
+        return;
+      }
+      router.replace('/app');
+      router.refresh();
+    } catch {
+      setError('Authentication service is unavailable. Please try again shortly.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -17,12 +54,12 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       {isSignup && (
         <div>
           <label htmlFor="full-name" className="label">Full name</label>
-          <input id="full-name" name="name" autoComplete="name" required className="input" />
+          <input id="full-name" name="name" autoComplete="name" minLength={2} maxLength={100} required className="input" />
         </div>
       )}
       <div>
         <label htmlFor="email" className="label">Email address</label>
-        <input id="email" name="email" type="email" autoComplete="email" required className="input" />
+        <input id="email" name="email" type="email" autoComplete="email" autoCapitalize="none" required className="input" />
       </div>
       <div>
         <label htmlFor="password" className="label">Password</label>
@@ -31,21 +68,22 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
           name="password"
           type="password"
           autoComplete={isSignup ? 'new-password' : 'current-password'}
-          minLength={8}
+          minLength={isSignup ? 12 : 1}
+          maxLength={128}
           required
           className="input"
         />
       </div>
-      <button type="submit" className="btn-primary w-full">
-        {isSignup ? 'Create demo account' : 'Sign in'}
+      <button type="submit" disabled={submitting} className="btn-primary w-full">
+        {submitting ? 'Please wait...' : isSignup ? 'Create account' : 'Sign in'}
       </button>
-      {submitted && (
-        <p role="status" className="rounded-lg border border-emerald/30 bg-emerald-light p-3 text-sm text-midnight">
-          Account access is not connected in this preview. You can try the dashboard without signing in.
-        </p>
-      )}
+      {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+      {notice && <p role="status" className="rounded-lg border border-emerald/30 bg-emerald-light p-3 text-sm text-midnight">{notice}</p>}
       <p className="text-center text-sm text-slate-600">
-        <Link href="/app" className="link">Open the demo dashboard</Link>
+        {isSignup ? 'Already have an account?' : 'New to CareerForge?'}{' '}
+        <Link href={isSignup ? '/login' : '/signup'} className="link">
+          {isSignup ? 'Sign in' : 'Create an account'}
+        </Link>
       </p>
     </form>
   );

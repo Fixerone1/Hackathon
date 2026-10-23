@@ -4,6 +4,12 @@
 
 :root {
   color-scheme: light;
+  --page-background: #f5f7f8;
+  --surface: #ffffff;
+  --ink-primary: #172b3a;
+  --ink-muted: #526472;
+  --line: #dbe2e7;
+  --accent: #087f69;
 }
 
 html {
@@ -12,6 +18,14 @@ html {
 
 body {
   @apply bg-canvas text-ink antialiased;
+  background: var(--page-background);
+  color: var(--ink-primary);
+  font-family: 'IBM Plex Sans Variable', sans-serif;
+}
+
+::selection {
+  background: #cbe9df;
+  color: #122c29;
 }
 
 @layer components {
@@ -41,6 +55,11 @@ body {
   }
   .link {
     @apply font-medium text-emerald-dark underline-offset-2 hover:underline;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase text-emerald-dark;
+    letter-spacing: 0.08em;
   }
 }
 

@@ -1,54 +1,102 @@
 import Link from 'next/link';
+import { ArrowRight, Check, CircleDollarSign, Compass, Target } from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
 
 const pillars = [
-  { number: '01', title: 'Get work-ready', text: 'Build practical skills and take clearer next steps toward work.' },
-  { number: '02', title: 'Grow money confidence', text: 'Practice budgeting, planning, and making informed decisions.' },
-  { number: '03', title: 'Explore your ideas', text: 'Turn an early business idea into a set of useful experiments.' },
+  { icon: Target, title: 'Employment readiness', text: 'Build practical skills and turn career goals into clear next steps.' },
+  { icon: CircleDollarSign, title: 'Money confidence', text: 'Practice everyday financial decisions with simple, guided tools.' },
+  { icon: Compass, title: 'Growth potential', text: 'Explore ideas and identify useful experiments to move them forward.' },
 ];
 
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="border-b border-slate-200 bg-canvas">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-24">
-          <div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-emerald-dark">Your next step starts here</p>
-            <h1 className="max-w-2xl text-4xl font-bold leading-tight text-midnight sm:text-5xl">
-              Build your path to economic independence.
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-12 md:grid-cols-[1fr_0.9fr] md:py-16 lg:gap-16">
+          <div className="max-w-xl">
+            <p className="eyebrow mb-4">A workforce-readiness platform</p>
+            <h1 className="text-4xl font-semibold leading-[1.12] text-midnight sm:text-[3.25rem]">
+              Prepare emerging talent for what comes next.
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-              CareerForge brings employment readiness, money confidence, and entrepreneurship tools into one practical workspace.
+            <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
+              CareerForge gives young people a structured starting point for work readiness, financial capability, and exploring enterprise.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/app" className="btn-primary">Explore the demo</Link>
-              <Link href="/signup" className="btn-secondary">Create an account</Link>
+              <Link href="/signup" className="btn-primary">
+                Explore the learner experience <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+              <Link href="/#organizations" className="btn-secondary">For organizations</Link>
             </div>
+            <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
           </div>
-          <aside className="border-l-4 border-emerald bg-white p-6 shadow-card" aria-label="CareerForge approach">
-            <p className="text-sm font-semibold text-slate-500">A practical starting point</p>
-            <p className="mt-3 text-2xl font-bold text-midnight">One plan. Three pillars.</p>
-            <p className="mt-3 leading-7 text-slate-600">Make progress visible, understand what to work on next, and keep your goals moving.</p>
-            <Link href="/app" className="link mt-5 inline-flex">View your workspace <span aria-hidden="true">-&gt;</span></Link>
-          </aside>
+          <div className="relative mx-auto w-full max-w-[540px]" aria-label="Illustrative learner dashboard preview">
+            <div className="absolute -inset-3 -z-10 rounded-xl bg-[#edf3f1]" />
+            <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_55px_rgba(23,43,58,0.12)]">
+              <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                <div>
+                  <p className="text-xs font-medium text-slate-500">LEARNER WORKSPACE</p>
+                  <p className="mt-1 font-semibold text-midnight">My progress</p>
+                </div>
+                <span className="rounded-full bg-emerald-light px-2.5 py-1 text-xs font-semibold text-emerald-dark">Sample view</span>
+              </div>
+              <div className="grid grid-cols-[1fr_auto] items-center gap-6 px-5 py-5 sm:px-6">
+                <div>
+                  <p className="text-sm font-semibold text-midnight">Your next steps</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">A clear starting point across three focus areas.</p>
+                </div>
+                <div className="grid h-[68px] w-[68px] place-items-center rounded-full border-[6px] border-emerald-light text-lg font-semibold text-midnight">
+                  2/3
+                </div>
+              </div>
+              <div className="px-5 pb-5 sm:px-6">
+                <div className="space-y-3 border-t border-slate-100 pt-4">
+                  {[
+                    'Add your skills and experience',
+                    'Set a monthly savings goal',
+                    'Choose one idea to explore',
+                  ].map((task, index) => (
+                    <div key={task} className="flex items-center gap-3 text-sm">
+                      <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${index < 2 ? 'bg-emerald text-white' : 'border border-slate-300 text-transparent'}`}>
+                        {index < 2 && <Check size={12} strokeWidth={3} aria-hidden="true" />}
+                      </span>
+                      <span className={index < 2 ? 'text-slate-500' : 'font-medium text-midnight'}>{task}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="mt-3 text-right text-xs text-slate-500">Illustrative interface. Sample progress only.</p>
+          </div>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-4 py-12 md:py-16" aria-labelledby="pillars-heading">
-        <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-emerald-dark">CareerForge workspace</p>
-            <h2 id="pillars-heading" className="mt-1 text-2xl font-bold text-midnight">Progress across what matters</h2>
-          </div>
-          <Link href="/app" className="link">Open dashboard</Link>
+      <section id="platform" className="mx-auto max-w-6xl px-4 py-12 md:py-16" aria-labelledby="pillars-heading">
+        <div className="max-w-2xl">
+          <p className="eyebrow">One learner journey</p>
+          <h2 id="pillars-heading" className="mt-2 text-2xl font-semibold text-midnight sm:text-3xl">Support the whole transition to work</h2>
+          <p className="mt-3 leading-7 text-slate-600">Bring practical guidance together in one simple experience, so learners can focus on the next achievable step.</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {pillars.map((pillar) => (
-            <article key={pillar.number} className="border-t-2 border-slate-200 pt-4">
-              <p className="text-sm font-bold text-emerald-dark">{pillar.number}</p>
-              <h3 className="mt-2 text-lg font-semibold text-midnight">{pillar.title}</h3>
-              <p className="mt-2 leading-6 text-slate-600">{pillar.text}</p>
+        <div className="mt-8 grid gap-8 border-y border-slate-200 py-7 md:grid-cols-3 md:gap-10">
+          {pillars.map(({ icon: Icon, title, text }) => (
+            <article key={title} className="flex gap-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#e7f1ee] text-emerald-dark">
+                <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <div>
+                <h3 className="font-semibold text-midnight">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
+              </div>
             </article>
           ))}
+        </div>
+      </section>
+      <section id="organizations" className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-10 md:grid-cols-[1fr_auto] md:items-center md:py-12">
+          <div className="max-w-2xl">
+            <p className="eyebrow">For employers, funders, and training partners</p>
+            <h2 className="mt-2 text-2xl font-semibold text-midnight">Start with a shared view of learner readiness.</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Explore the learner experience and assess whether CareerForge fits your youth development goals. Partner reporting and organization accounts are not part of this demo.</p>
+          </div>
+          <Link href="/signup" className="btn-secondary w-fit">View the learner experience <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
       </section>
     </PublicShell>
