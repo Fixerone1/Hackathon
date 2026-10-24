@@ -11,7 +11,7 @@ const pillars = [
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-amber-300 bg-sunshine-light">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
           <div className="max-w-xl">
             <p className="eyebrow mb-4">A workforce-readiness platform</p>
@@ -30,7 +30,7 @@ export default function HomePage() {
             <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
           </div>
           <div className="relative mx-auto w-full max-w-[540px] lg:justify-self-end" aria-label="Illustrative learner dashboard preview">
-            <div className="absolute -inset-2 -z-10 rounded-xl bg-sage sm:-inset-3" />
+            <div className="absolute -inset-2 -z-10 rounded-xl bg-sunshine sm:-inset-3" />
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_55px_rgba(23,43,58,0.12)]">
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                 <div>
@@ -44,7 +44,7 @@ export default function HomePage() {
                   <p className="text-sm font-semibold text-midnight">Your next steps</p>
                   <p className="mt-1 text-xs leading-5 text-slate-500">A clear starting point across three focus areas.</p>
                 </div>
-                <div className="grid h-[68px] w-[68px] place-items-center rounded-full border-[6px] border-emerald-light text-lg font-semibold text-midnight">
+                <div className="grid h-[68px] w-[68px] place-items-center rounded-full border-[6px] border-sunshine text-lg font-semibold text-midnight">
                   2/3
                 </div>
               </div>
@@ -56,7 +56,7 @@ export default function HomePage() {
                     'Choose one idea to explore',
                   ].map((task, index) => (
                     <div key={task} className="flex items-center gap-3 text-sm">
-                      <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${index < 2 ? 'bg-emerald text-white' : 'border border-slate-300 text-transparent'}`}>
+                      <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${index < 2 ? 'bg-midnight text-white' : 'border border-slate-300 text-transparent'}`}>
                         {index < 2 && <Check size={12} strokeWidth={3} aria-hidden="true" />}
                       </span>
                       <span className={index < 2 ? 'text-slate-500' : 'font-medium text-midnight'}>{task}</span>

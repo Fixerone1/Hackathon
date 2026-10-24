@@ -4,14 +4,14 @@
 
 :root {
   color-scheme: light;
-  --page-background: #f7f8f6;
+  --page-background: #f7f4e8;
   --surface: #ffffff;
   --ink-primary: #0f2e35;
   --ink-muted: #50696b;
-  --line: #dbe4e1;
-  --accent: #e05a36;
-  --accent-action: #b43d22;
-  --support: #e2ece9;
+  --line: #e5deca;
+  --accent: #f4c542;
+  --accent-action: #f4c542;
+  --support: #fff3c4;
 }
 
 html {
@@ -28,7 +28,7 @@ body {
 }
 
 ::selection {
-  background: #e2ece9;
+  background: #ffe58a;
   color: #0f2e35;
 }
 
@@ -37,27 +37,27 @@ body {
     @apply rounded-xl border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-dark focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn text-white;
+    @apply btn text-midnight;
     background-color: var(--accent-action);
   }
   .btn-primary:hover {
-    background-color: #96351f;
+    background-color: #e4b52d;
   }
   .btn-secondary {
     @apply btn border border-slate-300 bg-white text-ink hover:bg-slate-50;
   }
   .btn-accent {
-    @apply btn text-white;
+    @apply btn text-midnight;
     background-color: var(--accent-action);
   }
   .btn-accent:hover {
-    background-color: #96351f;
+    background-color: #e4b52d;
   }
   .input {
-    @apply min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald/40;
+    @apply min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine/40;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;
@@ -66,11 +66,11 @@ body {
     @apply inline-flex items-center rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700;
   }
   .link {
-    @apply font-medium text-emerald-dark underline-offset-2 hover:underline;
+    @apply font-medium text-midnight underline-offset-2 hover:underline;
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase text-emerald-dark;
+      @apply text-xs font-semibold uppercase text-midnight;
     letter-spacing: 0.08em;
   }
 
@@ -89,7 +89,7 @@ body {
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
-  outline: 2px solid #e05a36;
+  outline: 2px solid #bb8b00;
   outline-offset: 2px;
 }
 

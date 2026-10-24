@@ -184,7 +184,7 @@ export default function SettingsPage() {
     }
   }
 
-  const toggleClass = 'h-5 w-5 accent-emerald';
+  const toggleClass = 'h-5 w-5 accent-sunshine-dark';
   if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Loading settings...</p>;
 
   return (
@@ -240,7 +240,7 @@ export default function SettingsPage() {
             ['largerText', 'Larger text'],
           ] as const).map(([key, label]) => (
             <label key={key} className="flex min-h-12 items-center gap-3 py-2 text-sm text-slate-700">
-              <input type="checkbox" className="h-5 w-5 accent-emerald" checked={accessibility[key]} onChange={(event) => setAccessibility((current) => ({ ...current, [key]: event.target.checked }))} />
+              <input type="checkbox" className="h-5 w-5 accent-sunshine-dark" checked={accessibility[key]} onChange={(event) => setAccessibility((current) => ({ ...current, [key]: event.target.checked }))} />
               {label}
             </label>
           ))}

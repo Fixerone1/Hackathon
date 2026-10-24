@@ -23,6 +23,9 @@ type OpportunityDraft = {
   remote_ok: boolean;
   minimum_nqf_level: string;
   required_skills_text: string;
+  shift_types: string[];
+  salary_min_monthly: string;
+  salary_max_monthly: string;
   closing_date: string;
   status: 'draft' | 'published';
 };
@@ -39,6 +42,9 @@ const emptyDraft: OpportunityDraft = {
   remote_ok: false,
   minimum_nqf_level: '',
   required_skills_text: '',
+  shift_types: [],
+  salary_min_monthly: '',
+  salary_max_monthly: '',
   closing_date: '',
   status: 'draft',
 };
@@ -61,6 +67,9 @@ function toDraft(opportunity: Opportunity): OpportunityDraft {
     remote_ok: opportunity.remote_ok,
     minimum_nqf_level: opportunity.minimum_nqf_level === null ? '' : String(opportunity.minimum_nqf_level),
     required_skills_text: opportunity.required_skills.join(', '),
+    shift_types: opportunity.shift_types || [],
+    salary_min_monthly: opportunity.salary_min_monthly === null ? '' : String(opportunity.salary_min_monthly),
+    salary_max_monthly: opportunity.salary_max_monthly === null ? '' : String(opportunity.salary_max_monthly),
     closing_date: opportunity.closing_date || '',
     status: opportunity.status === 'published' ? 'published' : 'draft',
   };
@@ -145,6 +154,17 @@ export function OpportunityAdmin() {
       setSaving(false);
       return;
     }
+    const salaryMin = draft.salary_min_monthly ? Number(draft.salary_min_monthly) : null;
+    const salaryMax = draft.salary_max_monthly ? Number(draft.salary_max_monthly) : null;
+    if (
+      (salaryMin !== null && (!Number.isInteger(salaryMin) || salaryMin < 0))
+      || (salaryMax !== null && (!Number.isInteger(salaryMax) || salaryMax < 0))
+      || (salaryMin !== null && salaryMax !== null && salaryMax < salaryMin)
+    ) {
+      setError('Enter a valid monthly salary range, with the maximum equal to or higher than the minimum.');
+      setSaving(false);
+      return;
+    }
 
     const payload = {
       title: draft.title.trim(),
@@ -158,6 +178,9 @@ export function OpportunityAdmin() {
       remote_ok: draft.remote_ok,
       minimum_nqf_level: minNqf,
       required_skills: draft.required_skills_text.split(',').map((item) => item.trim()).filter(Boolean),
+      shift_types: draft.shift_types,
+      salary_min_monthly: salaryMin,
+      salary_max_monthly: salaryMax,
       closing_date: closingDate,
       verified_at: today,
       status: draft.status as OpportunityStatus,
@@ -283,12 +306,46 @@ export function OpportunityAdmin() {
             <input id="opportunity-skills" className={inputClass} placeholder="Communication, Excel" value={draft.required_skills_text} onChange={(event) => update('required_skills_text', event.target.value)} />
             <p className="mt-1 text-xs text-slate-500">Comma-separated. Only include requirements from the advert.</p>
           </div>
+          <fieldset className="sm:col-span-2">
+            <legend className="label">Shifts stated in the advert <span className="font-normal text-slate-500">(optional)</span></legend>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                ['day', 'Daytime'],
+                ['evening', 'Evenings'],
+                ['night', 'Night shifts'],
+                ['weekend', 'Weekends'],
+                ['flexible', 'Flexible'],
+              ].map(([value, label]) => (
+                <label key={value} className="flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-sunshine-dark"
+                    checked={draft.shift_types.includes(value)}
+                    onChange={(event) => update('shift_types', event.target.checked
+                      ? [...draft.shift_types, value]
+                      : draft.shift_types.filter((item) => item !== value))}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+            <p className="mt-1 text-xs text-slate-500">Only select shifts explicitly stated in the original advert.</p>
+          </fieldset>
+          <div>
+            <label htmlFor="opportunity-salary-min" className="label">Minimum monthly salary (R) <span className="font-normal text-slate-500">(optional)</span></label>
+            <input id="opportunity-salary-min" type="number" min="0" step="1" className={inputClass} value={draft.salary_min_monthly} onChange={(event) => update('salary_min_monthly', event.target.value)} />
+          </div>
+          <div>
+            <label htmlFor="opportunity-salary-max" className="label">Maximum monthly salary (R) <span className="font-normal text-slate-500">(optional)</span></label>
+            <input id="opportunity-salary-max" type="number" min="0" step="1" className={inputClass} value={draft.salary_max_monthly} onChange={(event) => update('salary_max_monthly', event.target.value)} />
+            <p className="mt-1 text-xs text-slate-500">Only enter a range if the advert states it.</p>
+          </div>
           <div>
             <label htmlFor="opportunity-closing" className="label">Closing date <span className="font-normal text-slate-500">(optional)</span></label>
             <input id="opportunity-closing" type="date" min={today} className={inputClass} value={draft.closing_date} onChange={(event) => update('closing_date', event.target.value)} />
           </div>
           <label className="flex min-h-12 items-center gap-3 text-sm text-slate-700">
-            <input type="checkbox" className="h-5 w-5 accent-emerald" checked={draft.remote_ok} onChange={(event) => update('remote_ok', event.target.checked)} />
+            <input type="checkbox" className="h-5 w-5 accent-sunshine-dark" checked={draft.remote_ok} onChange={(event) => update('remote_ok', event.target.checked)} />
             Advert states remote participation is available
           </label>
           <div>
@@ -329,6 +386,13 @@ export function OpportunityAdmin() {
                       </span>
                     </div>
                     <p className="mt-1 text-sm text-slate-600">{opportunity.organization} · {categoryLabel(opportunity.category)} · Source: {opportunity.source_name}</p>
+                    {(opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
+                      <p className="mt-1 text-xs text-slate-500">
+                        {opportunity.shift_types.length > 0 && `Shifts: ${opportunity.shift_types.join(', ')}`}
+                        {opportunity.shift_types.length > 0 && (opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && ' · '}
+                        {(opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && `Monthly pay: R ${opportunity.salary_min_monthly ?? '—'} to ${opportunity.salary_max_monthly ?? '—'}`}
+                      </p>
+                    )}
                     <p className="mt-1 break-all text-xs text-slate-500">{opportunity.source_url}</p>
                     <p className="mt-1 text-xs text-slate-500">Verified {opportunity.verified_at}{opportunity.closing_date ? ` · Closes ${opportunity.closing_date}` : ''}</p>
                   </div>

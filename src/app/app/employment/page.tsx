@@ -53,7 +53,7 @@ export default function EmploymentPage() {
               <Link
                 href={href}
                 className={`group flex h-full flex-col rounded-xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-dark focus-visible:ring-offset-2 ${
-                  featured ? 'border-emerald/50 bg-white' : 'border-slate-200 bg-white'
+                  featured ? 'border-sunshine-dark/50 bg-white' : 'border-slate-200 bg-white'
                 }`}
               >
                 <div className="flex items-center justify-between">

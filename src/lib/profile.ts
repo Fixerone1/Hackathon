@@ -7,6 +7,10 @@ export type ProfileRecord = {
   experience_months?: number;
   province?: string;
   target_role?: string;
+  availability_start_date?: string | null;
+  shift_preferences?: unknown[];
+  certifications?: unknown[];
+  languages?: unknown[];
 };
 
 export const qualificationNqfLevels: Record<string, number> = {
@@ -32,6 +36,10 @@ export function profileStrength(profile: ProfileRecord): number {
     (profile.experience_months || 0) > 0,
     Boolean(profile.province),
     Boolean(profile.target_role),
+    Boolean(profile.availability_start_date),
+    Boolean(profile.shift_preferences?.length),
+    Boolean(profile.certifications?.length),
+    Boolean(profile.languages?.length),
   ];
   return Math.round(completed.filter(Boolean).length * 100 / completed.length);
 }

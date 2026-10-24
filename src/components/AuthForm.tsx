@@ -82,7 +82,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       </div>
       {isSignup && (
         <label className="flex items-start gap-3 text-sm leading-6 text-slate-600">
-          <input name="privacy_consent" type="checkbox" required className="mt-1 h-4 w-4 accent-emerald" />
+          <input name="privacy_consent" type="checkbox" required className="mt-1 h-4 w-4 accent-sunshine-dark" />
           <span>I agree to the <Link href="/privacy" className="link">privacy notice</Link> and understand my profile information will be stored to provide this service.</span>
         </label>
       )}

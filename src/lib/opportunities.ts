@@ -23,6 +23,9 @@ export type Opportunity = {
   remote_ok: boolean;
   minimum_nqf_level: number | null;
   required_skills: string[];
+  shift_types: string[];
+  salary_min_monthly: number | null;
+  salary_max_monthly: number | null;
   closing_date: string | null;
   verified_at: string;
   status: OpportunityStatus;
@@ -32,13 +35,31 @@ export type Opportunity = {
 export type OpportunityProfile = {
   target_role?: string | null;
   highest_qualification?: string | null;
+  qualification_status?: string | null;
+  qualification_year?: number | null;
   field_of_study?: string | null;
   subjects?: unknown;
   skills?: unknown;
   skill_ratings?: unknown;
   experience_months?: number | null;
+  experience_by_area?: unknown;
   province?: string | null;
+  city?: string | null;
   nqf_level?: number | null;
+  languages?: unknown;
+  certifications?: unknown;
+  work_authorization?: string | null;
+  availability_start_date?: string | null;
+  shift_preferences?: unknown;
+  hours_available_per_week?: number | null;
+  target_income_monthly?: number | null;
+  target_income_monthly_max?: number | null;
+  employment_status?: string | null;
+  drivers_license?: boolean | null;
+  own_transport?: boolean | null;
+  willing_to_relocate?: boolean | null;
+  remote_ok?: boolean | null;
+  computer_or_data_access?: boolean | null;
 };
 
 export type OpportunityMatch = {
@@ -62,7 +83,10 @@ function profileSkills(profile: OpportunityProfile): string[] {
       return [item.name];
     })
     : [];
-  return [...new Set([...skills, ...ratings].map((skill) => skill.trim()).filter(Boolean))];
+  const certifications = Array.isArray(profile.certifications)
+    ? profile.certifications.filter((item): item is string => typeof item === 'string')
+    : [];
+  return [...new Set([...skills, ...ratings, ...certifications].map((skill) => skill.trim()).filter(Boolean))];
 }
 
 function includesPhrase(haystack: string, phrase: string): boolean {
@@ -80,6 +104,9 @@ export function matchOpportunity(opportunity: Opportunity, profile: OpportunityP
   const skills = profileSkills(profile);
   const province = profile.province?.trim();
   const nqfLevel = typeof profile.nqf_level === 'number' ? profile.nqf_level : null;
+  const learnerShifts = Array.isArray(profile.shift_preferences)
+    ? profile.shift_preferences.filter((item): item is string => typeof item === 'string')
+    : [];
 
   if (targetRole) {
     const roleMatches = includesPhrase(searchableText, targetRole);
@@ -108,6 +135,28 @@ export function matchOpportunity(opportunity: Opportunity, profile: OpportunityP
     signals.push({ weight: 15, fit: meetsStatedLevel ? 1 : 0 });
     if (meetsStatedLevel) reasons.push('Your profile meets the stated minimum NQF level');
     else cautions.push(`The listing states a minimum NQF level of ${opportunity.minimum_nqf_level}; your profile records level ${nqfLevel}`);
+  }
+
+  if (learnerShifts.length > 0 && opportunity.shift_types.length > 0) {
+    const shiftMatches = learnerShifts.includes('flexible')
+      || opportunity.shift_types.includes('flexible')
+      || learnerShifts.some((shift) => opportunity.shift_types.includes(shift));
+    signals.push({ weight: 15, fit: shiftMatches ? 1 : 0 });
+    if (shiftMatches) reasons.push('The listed shifts match your availability');
+    else cautions.push(`The listing mentions ${opportunity.shift_types.join(', ')} shifts; your preferred shifts are ${learnerShifts.join(', ')}`);
+  }
+
+  const hasLearnerSalary = typeof profile.target_income_monthly === 'number' || typeof profile.target_income_monthly_max === 'number';
+  const hasListingSalary = opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null;
+  if (hasLearnerSalary && hasListingSalary) {
+    const learnerMin = profile.target_income_monthly ?? 0;
+    const learnerMax = profile.target_income_monthly_max ?? Number.POSITIVE_INFINITY;
+    const listingMin = opportunity.salary_min_monthly ?? 0;
+    const listingMax = opportunity.salary_max_monthly ?? Number.POSITIVE_INFINITY;
+    const salaryOverlaps = learnerMax >= listingMin && listingMax >= learnerMin;
+    signals.push({ weight: 15, fit: salaryOverlaps ? 1 : 0 });
+    if (salaryOverlaps) reasons.push('The stated salary overlaps your target range');
+    else cautions.push('The stated salary is outside your target range; check whether the details are negotiable');
   }
 
   const totalWeight = signals.reduce((total, signal) => total + signal.weight, 0);

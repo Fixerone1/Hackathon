@@ -25,7 +25,7 @@ export function SectionTabs({ items }: { items: SectionTabItem[] }) {
           <Link
             key={item.label}
             href={item.href}
-            className="shrink-0 border-b-2 border-transparent px-3 py-3 text-sm font-medium text-slate-600 hover:border-emerald hover:text-midnight"
+            className="shrink-0 border-b-2 border-transparent px-3 py-3 text-sm font-medium text-slate-600 hover:border-sunshine-dark hover:text-midnight"
           >
             {item.label}
           </Link>

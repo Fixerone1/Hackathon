@@ -120,7 +120,7 @@ export default function DashboardPage() {
             <span className="text-sm font-semibold text-emerald-dark">{completed.length} of {starterActions.length} complete</span>
           </div>
           <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Starter plan progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-            <div className="h-full bg-emerald transition-[width]" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${progress}%` }} />
           </div>
           <ul className="divide-y divide-slate-200 border-y border-slate-200">
             {starterActions.map((action, index) => (
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                     type="checkbox"
                     checked={completed.includes(action.id)}
                     onChange={() => toggleAction(action.id)}
-                    className="mt-0.5 h-5 w-5 accent-emerald"
+                    className="mt-0.5 h-5 w-5 accent-sunshine-dark"
                   />
                   <span className="flex-1">
                     <span className="block font-medium text-midnight">{action.label}</span>

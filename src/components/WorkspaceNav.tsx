@@ -23,7 +23,7 @@ export function WorkspaceNav() {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-                className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${active ? 'border-emerald text-midnight' : 'border-transparent text-slate-600 hover:text-midnight'}`}>
+                className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark text-midnight' : 'border-transparent text-slate-600 hover:text-midnight'}`}>
                 <Icon size={16} strokeWidth={1.8} aria-hidden="true" />{label}
               </Link>
             );
@@ -36,7 +36,7 @@ export function WorkspaceNav() {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} aria-current={active ? 'page' : undefined} aria-label={label}
-                className={`flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors sm:text-[11px] ${active ? 'bg-sage/60 text-emerald-dark' : 'text-slate-600 hover:bg-slate-50 hover:text-midnight'}`}>
+                className={`flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors sm:text-[11px] ${active ? 'bg-sunshine-light text-midnight' : 'text-slate-600 hover:bg-slate-50 hover:text-midnight'}`}>
                 <Icon size={18} strokeWidth={active ? 2.2 : 1.7} aria-hidden="true" />
                 <span className="max-w-full truncate">{shortLabel}</span>
               </Link>

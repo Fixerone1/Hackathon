@@ -27,6 +27,8 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
    - [`supabase/migrations/20261023001000_learner_profiles.sql`](supabase/migrations/20261023001000_learner_profiles.sql)
    - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
    - [`supabase/migrations/20261024000000_verified_opportunities.sql`](supabase/migrations/20261024000000_verified_opportunities.sql)
+   - [`supabase/migrations/20261024001000_application_profile_details.sql`](supabase/migrations/20261024001000_application_profile_details.sql)
+   - [`supabase/migrations/20261024002000_opportunity_match_details.sql`](supabase/migrations/20261024002000_opportunity_match_details.sql)
 4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
 5. To grant admin access, set `app_metadata.role` to `admin` for the account in Supabase. Do not use user-editable metadata for authorization.
 6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
@@ -48,7 +50,7 @@ Authentication is delegated to Supabase; passwords are not stored by this applic
 
 ### Verified opportunity feed
 
-The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, and NQF level, and explain the fit signals. Learners can save a listing or mark that they applied; CareerForge never applies on a learner's behalf. The optional AI application plan turns a verified listing and selected profile details into an editable checklist and draft note; learners must check and submit applications on the employer's own site. Fit signals are guidance, not an eligibility decision.
+The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, NQF level, certifications, shift preferences, and salary range, and explain the fit signals. Admins should only enter salary or shift information explicitly stated in the original advert. The optional learner profile also supports work authorization, availability, certificates, and existing experience, language, and transport information. These details are included only in a learner-reviewed application pack and AI coaching; they affect matching only when a listing includes the relevant verified requirement. Learners can copy a pack of saved details to paste into another form. A normal web app cannot access or fill forms on external employer sites. Learners review and submit applications themselves; CareerForge never applies on a learner's behalf. ID/passport numbers, bank details, demographics, and reference contact details are not collected. A reminder prompts learners to provide documents or references directly to an employer only if requested. Fit signals are guidance, not an eligibility decision.
 
 Listings are admin-curated rather than scraped. Check the live original advert and its terms before publishing; use a short summary you have permission to share. Possible primary sources include [SAYouth](https://sayouth.mobi/), the [DPSA Public Service Vacancy Circular](https://www.dpsa.gov.za/newsroom/psvc/), and [NSFAS](https://www.nsfas.org.za/), as well as the opportunity provider's own advert. Each listing is hidden from the feed if its closing date passes or it has not been re-verified for 30 days. Admins can confirm that a listing is still open from `/admin`.
 
@@ -65,7 +67,7 @@ The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/f
 The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
 ## Notes
-- Palette: Sand White `#FDFBF7`, Deep Ocean Teal `#0F2E35`, Terracotta `#E05A36`, Sage `#E2ECE9`. Primary button text uses a darker Terracotta shade for contrast.
+- Palette: warm Sand `#F7F4E8`, Sunshine Yellow `#F4C542`, white content panels, and Deep Ocean Teal `#0F2E35` text. Yellow primary actions use dark text for contrast.
 
 ## Publish on GitHub (free, GitHub Pages)
 

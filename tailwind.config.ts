@@ -5,16 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        white: '#FDFBF7',
-        sand: '#FDFBF7',
+        white: '#FFFFFF',
+        sand: '#F7F4E8',
+        sunshine: { DEFAULT: '#F4C542', light: '#FFF3C4', dark: '#D6A514' },
         ocean: '#0F2E35',
         'ocean-deep': '#09252B',
         terracotta: { DEFAULT: '#E05A36', action: '#B43D22', dark: '#96351F' },
-        sage: '#E2ECE9',
+        sage: '#FFF3C4',
         midnight: '#0F2E35',
         navy: '#09252B',
         emerald: { DEFAULT: '#E05A36', dark: '#A33B24', light: '#E2ECE9' },
-        canvas: '#FDFBF7',
+        canvas: '#F7F4E8',
         ink: '#0F2E35',
       },
       fontFamily: {

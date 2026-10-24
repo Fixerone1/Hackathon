@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getSupabase } from '@/lib/supabase';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
 
@@ -19,15 +20,19 @@ type ProfileDraft = {
   city: string;
   target_role: string;
   target_income_monthly: string;
+  target_income_monthly_max: string;
   hours_available_per_week: string;
   employment_status: string;
-  age_band: string;
   languages_text: string;
   drivers_license: string;
   willing_to_relocate: string;
   remote_ok: string;
   own_transport: string;
   computer_or_data_access: string;
+  work_authorization: string;
+  availability_start_date: string;
+  shift_preferences: string[];
+  certifications_text: string;
 };
 
 type ProfileApiResponse = {
@@ -37,6 +42,8 @@ type ProfileApiResponse = {
     skill_ratings?: SkillRating[];
     experience_by_area?: ExperienceEntry[];
     languages?: string[];
+    shift_preferences?: string[];
+    certifications?: string[];
   };
   nqf_level: number | null;
   strength: number;
@@ -46,9 +53,10 @@ type ProfileApiResponse = {
 const emptyProfile: ProfileDraft = {
   highest_qualification: '', qualification_status: '', field_of_study: '', qualification_year: '',
   subjects_text: '', skills_text: '', experience_by_area_text: '', province: '', city: '', target_role: '',
-  target_income_monthly: '', hours_available_per_week: '', employment_status: '', age_band: '',
+  target_income_monthly: '', target_income_monthly_max: '', hours_available_per_week: '', employment_status: '',
   languages_text: '', drivers_license: '', willing_to_relocate: '', remote_ok: '', own_transport: '',
-  computer_or_data_access: '',
+  computer_or_data_access: '', work_authorization: '', availability_start_date: '',
+  shift_preferences: [], certifications_text: '',
 };
 
 const qualificationOptions = [
@@ -64,6 +72,8 @@ function toDraft(profile: ProfileApiResponse['profile']): ProfileDraft {
   return {
     ...emptyProfile,
     ...profile,
+    shift_preferences: profile.shift_preferences || [],
+    certifications_text: (profile.certifications || []).join('\n'),
     qualification_year: profile.qualification_year ? String(profile.qualification_year) : '',
     subjects_text: (profile.subjects || []).map((subject) => subject.mark === null ? subject.name : `${subject.name}: ${subject.mark}`).join('\n'),
     skills_text: profile.skill_ratings?.length
@@ -72,6 +82,7 @@ function toDraft(profile: ProfileApiResponse['profile']): ProfileDraft {
     experience_by_area_text: (profile.experience_by_area || []).map((entry) => `${entry.area}: ${entry.months}`).join('\n'),
     languages_text: (profile.languages || []).join(', '),
     target_income_monthly: profile.target_income_monthly ? String(profile.target_income_monthly) : '',
+    target_income_monthly_max: profile.target_income_monthly_max ? String(profile.target_income_monthly_max) : '',
     hours_available_per_week: profile.hours_available_per_week ? String(profile.hours_available_per_week) : '',
     drivers_license: profile.drivers_license === null ? '' : String(profile.drivers_license),
     willing_to_relocate: profile.willing_to_relocate === null ? '' : String(profile.willing_to_relocate),
@@ -159,15 +170,19 @@ export default function ProfilePage() {
       city: profile.city,
       target_role: profile.target_role,
       target_income_monthly: profile.target_income_monthly ? Number(profile.target_income_monthly) : null,
+      target_income_monthly_max: profile.target_income_monthly_max ? Number(profile.target_income_monthly_max) : null,
       hours_available_per_week: profile.hours_available_per_week ? Number(profile.hours_available_per_week) : null,
       employment_status: profile.employment_status,
-      age_band: profile.age_band,
       languages: profile.languages_text.split(',').map((item) => item.trim()).filter(Boolean),
       drivers_license: optionalBoolean(profile.drivers_license),
       willing_to_relocate: optionalBoolean(profile.willing_to_relocate),
       remote_ok: optionalBoolean(profile.remote_ok),
       own_transport: optionalBoolean(profile.own_transport),
       computer_or_data_access: optionalBoolean(profile.computer_or_data_access),
+      work_authorization: profile.work_authorization,
+      availability_start_date: profile.availability_start_date || null,
+      shift_preferences: profile.shift_preferences,
+      certifications: profile.certifications_text.split('\n').map((item) => item.trim()).filter(Boolean),
     };
 
     try {
@@ -210,7 +225,7 @@ export default function ProfilePage() {
         <div className="w-full sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
-            <div className="h-full bg-emerald transition-[width]" style={{ width: `${strength}%` }} />
+            <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />
           </div>
         </div>
       </header>
@@ -221,7 +236,7 @@ export default function ProfilePage() {
             {['Qualification', 'Goal', 'Location'].map((label, index) => (
               <li key={label}>
                 <button type="button" onClick={() => setStep(index)} aria-current={step === index ? 'step' : undefined}
-                  className={`w-full border-b-2 px-1 pb-3 text-left text-xs font-semibold sm:px-2 sm:text-sm ${step === index ? 'border-emerald text-midnight' : 'border-transparent text-slate-500'}`}>
+                  className={`w-full border-b-2 px-1 pb-3 text-left text-xs font-semibold sm:px-2 sm:text-sm ${step === index ? 'border-sunshine-dark text-midnight' : 'border-transparent text-slate-500'}`}>
                   <span className="mr-1 text-emerald-dark sm:mr-2">0{index + 1}</span>{label}
                 </button>
               </li>
@@ -272,19 +287,58 @@ export default function ProfilePage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="age-band" className="label">Age range <span className="font-normal text-slate-500">(optional)</span></label>
-                <select id="age-band" className={selectClass} value={profile.age_band} onChange={(event) => update('age_band', event.target.value)}>
-                  <option value="">Prefer not to say</option><option value="under_18">Under 18</option><option value="18_24">18–24</option><option value="25_34">25–34</option><option value="35_plus">35+</option>
-                </select>
-              </div>
-              <div>
                 <label htmlFor="hours" className="label">Hours available per week <span className="font-normal text-slate-500">(optional)</span></label>
                 <input id="hours" type="number" min="0" max="168" className={inputClass} value={profile.hours_available_per_week} onChange={(event) => update('hours_available_per_week', event.target.value)} />
               </div>
               <div>
-                <label htmlFor="target-income" className="label">Target monthly income (R) <span className="font-normal text-slate-500">(optional)</span></label>
+                <label htmlFor="target-income" className="label">Minimum target monthly income (R) <span className="font-normal text-slate-500">(optional)</span></label>
                 <input id="target-income" type="number" min="0" className={inputClass} value={profile.target_income_monthly} onChange={(event) => update('target_income_monthly', event.target.value)} />
               </div>
+              <div>
+                <label htmlFor="target-income-max" className="label">Maximum target monthly income (R) <span className="font-normal text-slate-500">(optional)</span></label>
+                <input id="target-income-max" type="number" min="0" className={inputClass} value={profile.target_income_monthly_max} onChange={(event) => update('target_income_monthly_max', event.target.value)} />
+                <p className="mt-1 text-xs leading-5 text-slate-500">Leave either amount blank if you do not want to share a range.</p>
+              </div>
+              <div>
+                <label htmlFor="work-authorization" className="label">Right to work in South Africa <span className="font-normal text-slate-500">(optional)</span></label>
+                <select id="work-authorization" className={selectClass} value={profile.work_authorization} onChange={(event) => update('work_authorization', event.target.value)}>
+                  <option value="">Choose (optional)</option>
+                  <option value="citizen">South African citizen</option>
+                  <option value="permanent_resident">Permanent resident</option>
+                  <option value="work_visa">I have a work visa</option>
+                  <option value="unsure">I’m not sure</option>
+                  <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+                <p className="mt-1 text-xs leading-5 text-slate-500">This is only for your application pack. Check the listing’s exact requirements.</p>
+              </div>
+              <div>
+                <label htmlFor="availability-date" className="label">When could you start? <span className="font-normal text-slate-500">(optional)</span></label>
+                <input id="availability-date" type="date" className={inputClass} value={profile.availability_start_date} onChange={(event) => update('availability_start_date', event.target.value)} />
+              </div>
+              <fieldset className="sm:col-span-2">
+                <legend className="label">Preferred shifts <span className="font-normal text-slate-500">(optional)</span></legend>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {[
+                    ['day', 'Daytime'],
+                    ['evening', 'Evenings'],
+                    ['night', 'Night shifts'],
+                    ['weekend', 'Weekends'],
+                    ['flexible', 'Flexible'],
+                  ].map(([value, label]) => (
+                    <label key={value} className="flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-sunshine-dark"
+                        checked={profile.shift_preferences.includes(value)}
+                        onChange={(event) => update('shift_preferences', event.target.checked
+                          ? [...profile.shift_preferences, value]
+                          : profile.shift_preferences.filter((item) => item !== value))}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             </>}
 
             {step === 2 && <>
@@ -308,9 +362,14 @@ export default function ProfilePage() {
                 <textarea id="experience" rows={3} className={inputClass} placeholder={'Customer service: 4\nRetail: 6'} value={profile.experience_by_area_text} onChange={(event) => update('experience_by_area_text', event.target.value)} />
                 <p className="mt-1 text-xs text-slate-500">One area per line, followed by approximate months.</p>
               </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="certifications" className="label">Certificates and training <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="certifications" rows={3} className={inputClass} maxLength={1000} placeholder={'First aid certificate\nBasic computer skills course'} value={profile.certifications_text} onChange={(event) => update('certifications_text', event.target.value)} />
+                <p className="mt-1 text-xs text-slate-500">Add one certificate or course per line. Do not enter document numbers.</p>
+              </div>
               <div>
-                <label htmlFor="languages" className="label">Languages <span className="font-normal text-slate-500">(optional)</span></label>
-                <input id="languages" className={inputClass} placeholder="For example, English, isiZulu" value={profile.languages_text} onChange={(event) => update('languages_text', event.target.value)} />
+                <label htmlFor="languages" className="label">Languages and proficiency <span className="font-normal text-slate-500">(optional)</span></label>
+                <input id="languages" className={inputClass} placeholder="For example, English (fluent), isiZulu (conversational)" value={profile.languages_text} onChange={(event) => update('languages_text', event.target.value)} />
               </div>
               {([
                 ['drivers_license', 'Do you have a driver’s licence?'],
@@ -343,8 +402,9 @@ export default function ProfilePage() {
         <aside className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
           <h2 className="font-semibold text-midnight">What your profile improves</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">As verified opportunities are connected, these details can help check stated requirements more accurately.</p>
-          <p className="mt-5 border-l-2 border-emerald pl-3 text-sm leading-6 text-slate-700">{nextStep}</p>
-          <p className="mt-5 text-xs leading-5 text-slate-500">This demo has no verified opportunity listings yet. It will not show or invent matches.</p>
+          <p className="mt-5 border-l-2 border-sunshine-dark pl-3 text-sm leading-6 text-slate-700">{nextStep}</p>
+          <Link href="/app/employment/opportunities" className="link mt-5 inline-flex text-sm">See verified opportunities</Link>
+          <p className="mt-4 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">Never store an ID/passport number here. Keep required documents ready to upload directly to an employer. Add references only when a specific application asks; do not store another person’s contact details here.</p>
         </aside>
       </div>
     </div>
