@@ -2,7 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Banknote, BriefcaseBusiness, ChartNoAxesCombined, LayoutDashboard, Settings, UserRound } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  Banknote,
+  BookOpen,
+  BriefcaseBusiness,
+  ChartNoAxesCombined,
+  ClipboardCheck,
+  FileText,
+  LayoutDashboard,
+  MessageCircle,
+  MoreHorizontal,
+  Route,
+  Settings,
+  UserRound,
+} from 'lucide-react';
 
 const items = [
   { href: '/app', label: 'Dashboard', shortLabel: 'Home', Icon: LayoutDashboard },
@@ -13,8 +27,27 @@ const items = [
   { href: '/app/settings', label: 'Settings', shortLabel: 'Settings', Icon: Settings },
 ];
 
+const tools = [
+  { href: '/app/employment/assessment', label: 'Assessment', Icon: ClipboardCheck },
+  { href: '/app/employment/cv', label: 'CV Builder', Icon: FileText },
+  { href: '/app/employment/interview', label: 'Interview Coach', Icon: MessageCircle },
+  { href: '/app/employment/academy', label: 'Skills Academy', Icon: BookOpen },
+  { href: '/app/employment/opportunities', label: 'Opportunities', Icon: BriefcaseBusiness },
+  { href: '/app/employment/pathways', label: 'Pathways', Icon: Route },
+  { href: '/app/employment/applications', label: 'My Applications', Icon: ClipboardCheck },
+];
+
 export function WorkspaceNav() {
   const pathname = usePathname();
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const inTools = tools.some(({ href }) => pathname.startsWith(href))
+    || pathname === '/app/profile'
+    || pathname === '/app/settings';
+
+  useEffect(() => {
+    setToolsOpen(false);
+  }, [pathname]);
+
   return (
     <>
       <nav aria-label="Workspace sections" className="hidden border-b border-[#e5e5e5] bg-white md:block">
@@ -31,8 +64,39 @@ export function WorkspaceNav() {
         </div>
       </nav>
       <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e5e5e5] bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(34,34,34,0.08)] backdrop-blur md:hidden">
+        <div id="workspace-tools-menu" hidden={!toolsOpen}
+          className="absolute inset-x-0 bottom-full max-h-[min(70vh,36rem)] overflow-y-auto border-t border-[#e5e5e5] bg-white px-4 pb-4 pt-3 shadow-[0_-8px_24px_rgba(34,34,34,0.12)]">
+            <div className="mx-auto max-w-xl">
+              <h2 className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Employment tools</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {tools.map(({ href, label, Icon }) => {
+                  const active = pathname.startsWith(href);
+                  return (
+                    <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+                      className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
+                      <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                      <span>{label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+              <h2 className="px-1 pb-2 pt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Account</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {items.slice(4).map(({ href, label, Icon }) => {
+                  const active = pathname === href;
+                  return (
+                    <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+                      className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
+                      <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                      <span>{label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+        </div>
         <div className="mx-auto flex max-w-xl">
-          {items.map(({ href, label, shortLabel, Icon }) => {
+          {items.slice(0, 4).map(({ href, label, shortLabel, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} aria-current={active ? 'page' : undefined} aria-label={label}
@@ -42,6 +106,13 @@ export function WorkspaceNav() {
               </Link>
             );
           })}
+          <button type="button" aria-label="Tools and account" aria-expanded={toolsOpen}
+            aria-controls="workspace-tools-menu"
+            onClick={() => setToolsOpen((open) => !open)}
+            className={`flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 text-center text-[10px] font-medium leading-none transition-colors sm:text-[11px] ${toolsOpen || inTools ? 'bg-sunshine-light text-midnight' : 'text-slate-600 hover:bg-surface hover:text-midnight'}`}>
+            <MoreHorizontal size={18} strokeWidth={toolsOpen || inTools ? 2.2 : 1.7} aria-hidden="true" />
+            <span className="whitespace-nowrap">Tools</span>
+          </button>
         </div>
       </nav>
     </>
