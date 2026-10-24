@@ -60,7 +60,7 @@ The AI route applies an in-memory rate limit and basic request-size and prompt-i
 
 ## Publish on GitHub (free, GitHub Pages)
 
-GitHub Pages serves the static frontend. Authentication and learner data use Supabase directly; no Python server is required for these flows.
+GitHub Pages serves the static frontend. Authentication and learner data use Supabase directly; no Python server is required for these flows. Browser sessions are not HttpOnly, so rely on RLS and HTTPS.
 
 1. Create a new **public** repository on GitHub (for example `careerforge`).
 2. Upload everything in this folder to it (or push with git):
@@ -76,7 +76,7 @@ GitHub Pages serves the static frontend. Authentication and learner data use Sup
 Notes
 - The base path is taken from the repository name automatically, so you can rename the repo without editing code.
 - GitHub Pages serves static files only; the workflow removes the optional server AI route. Authentication and learner data use Supabase directly.
-- To preview the Pages build locally: `STATIC_EXPORT=true NEXT_PUBLIC_BASE_PATH=/careerforge npm run build` then serve the `out` folder.
+- To preview the Pages build locally: `GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Hackathon NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run build` then serve the `out` folder.
 
 ## Other hosting
 - **Frontend:** GitHub Pages, Vercel, or another static-capable host.
