@@ -28,6 +28,21 @@ function errorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
+function opportunityLoadErrorMessage(error: unknown): string {
+  if (
+    typeof error === 'object'
+    && error !== null
+    && 'code' in error
+    && error.code === 'PGRST205'
+    && 'message' in error
+    && typeof error.message === 'string'
+    && error.message.includes('public.opportunities')
+  ) {
+    return "Supabase cannot find public.opportunities. Apply the Supabase migrations in order, including 20261024000000_verified_opportunities.sql, then reload the API schema cache. Details: " + error.message;
+  }
+  return errorMessage(error, 'Opportunities could not be loaded.');
+}
+
 export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [profile, setProfile] = useState<OpportunityProfile>({});
@@ -73,7 +88,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       } catch (caught) {
         if (active) {
           console.error('Failed to load opportunity feed:', caught);
-          setError(errorMessage(caught, 'Opportunities could not be loaded.'));
+          setError(opportunityLoadErrorMessage(caught));
         }
       } finally {
         if (active) setLoading(false);
@@ -149,7 +164,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
       {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
 
-      {matches.length === 0 ? (
+      {matches.length === 0 && !error ? (
         <div className="border-y border-slate-200 py-7">
           <h2 className="font-semibold text-midnight">{mode === 'applications' ? 'Nothing saved yet' : 'No current verified listings yet'}</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
@@ -159,7 +174,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           </p>
           {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
         </div>
-      ) : (
+      ) : matches.length > 0 ? (
         <ul className="divide-y divide-slate-200 border-y border-slate-200">
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
             <li key={opportunity.id} className="py-6">
@@ -225,7 +240,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
             </li>
           ))}
         </ul>
-      )}
+      ) : null}
     </section>
   );
 }
