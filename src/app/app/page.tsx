@@ -85,11 +85,11 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-6">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white px-5 py-6 shadow-card sm:px-7">
         <div>
           <p className="eyebrow">Learner workspace</p>
-          <h1 className="mt-1 text-3xl font-semibold text-midnight">Welcome, {user.name}</h1>
-          <p className="mt-2 text-sm text-slate-600">Choose a practical next step and keep your progress moving.</p>
+          <h1 className="page-title mt-1">Welcome, {user.name}</h1>
+          <p className="page-description mt-2">Choose a practical next step and keep your progress moving.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/app/profile" className="btn-secondary min-h-10">Edit profile</Link>
@@ -97,11 +97,11 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <section className="border-b border-slate-200 py-6" aria-labelledby="matches-heading">
+      <section className="mb-8" aria-labelledby="matches-heading">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
             <p className="eyebrow">Opportunity connector</p>
-            <h2 id="matches-heading" className="mt-1 text-xl font-semibold text-midnight">Your matches today</h2>
+            <h2 id="matches-heading" className="mt-1 text-2xl font-semibold text-midnight">Your matches today</h2>
           </div>
           <Link href="/app/employment/opportunities" className="link text-sm">Open opportunities</Link>
         </div>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </section>
 
       <div className="grid gap-10 py-8 md:grid-cols-[minmax(0,1fr)_17rem] md:py-10">
-        <section aria-labelledby="actions-heading">
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <h2 id="actions-heading" className="text-xl font-semibold text-midnight">Your starter plan</h2>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
           </ul>
         </section>
 
-        <aside className="space-y-7 border-t border-slate-200 pt-5 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+        <aside className="space-y-7 rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
           <section aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
             <h2 id="mobility-score-heading" className="mt-2 text-2xl font-semibold text-midnight">Not calculated</h2>

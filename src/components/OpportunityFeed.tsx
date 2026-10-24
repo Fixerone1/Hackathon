@@ -286,21 +286,23 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
         </div>
       ) : matches.length > 0 ? (
-        <ul className="divide-y divide-slate-200 border-y border-slate-200">
+        <ul className="grid gap-4">
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
-            <li key={opportunity.id} className="py-6">
-              <article>
+            <li key={opportunity.id}>
+              <article className="card p-5 sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-dark">{categoryLabel(opportunity.category)}</p>
-                    <h2 className="mt-1 text-lg font-semibold text-midnight">{opportunity.title}</h2>
+                    <span className="inline-flex rounded-full bg-sage px-3 py-1 text-xs font-semibold text-emerald-dark">{categoryLabel(opportunity.category)}</span>
+                    <h2 className="mt-3 text-xl font-semibold leading-snug text-midnight">{opportunity.title}</h2>
                     <p className="mt-1 text-sm text-slate-600">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="min-w-36 rounded-lg bg-slate-50 px-3 py-2 sm:text-right">
                     {score === null
-                      ? <p className="text-xs text-slate-500">Add profile details for fit guidance</p>
+                      ? <p className="text-xs leading-5 text-slate-600">Fit guidance</p>
                       : <p className="text-sm font-semibold text-emerald-dark">{score}% fit signals</p>}
-                    <p className="mt-1 text-xs text-slate-500">Closes: {formatDate(opportunity.closing_date)}</p>
+                    {score === null && <Link href="/app/profile" className="text-xs font-medium text-emerald-dark underline underline-offset-2">Complete your profile</Link>}
+                    <p className="metadata-label mt-2">Closing date</p>
+                    <p className="text-sm font-medium text-midnight">{formatDate(opportunity.closing_date)}</p>
                   </div>
                 </div>
 
@@ -311,20 +313,25 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 ) && (
                   <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or been withdrawn. Check its source before taking action.</p>
                 )}
-                <p className="mt-3 max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
+                <p className="mt-5 max-w-4xl whitespace-pre-line text-base leading-7 text-slate-700">{opportunity.summary}</p>
 
-                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-500">
-                  {opportunity.minimum_nqf_level !== null && <span>Stated minimum: NQF {opportunity.minimum_nqf_level}</span>}
-                  {opportunity.required_skills.length > 0 && <span>Requirements: {opportunity.required_skills.join(', ')}</span>}
-                  {opportunity.provinces.length > 0 && <span>Provinces: {opportunity.provinces.join(', ')}</span>}
-                  {opportunity.remote_ok && <span>Remote option listed</span>}
-                </div>
+                {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok) && (
+                  <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/80 p-4">
+                    <p className="metadata-label mb-2">At a glance · check the original advert for full details</p>
+                    <div className="flex flex-wrap gap-2 text-sm text-slate-700">
+                      {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
+                      {opportunity.required_skills.length > 0 && <span className="chip">Skills: {opportunity.required_skills.join(', ')}</span>}
+                      {opportunity.provinces.length > 0 && <span className="chip">Location: {opportunity.provinces.join(', ')}</span>}
+                      {opportunity.remote_ok && <span className="chip">Remote option</span>}
+                    </div>
+                  </div>
+                )}
 
-                {reasons.length > 0 && <p className="mt-3 text-xs leading-5 text-emerald-dark">Fit signals: {reasons.join(' · ')}</p>}
-                {cautions.length > 0 && <p className="mt-2 text-xs leading-5 text-amber-800">Check before applying: {cautions.join(' · ')}</p>}
+                {reasons.length > 0 && <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
+                {cautions.length > 0 && <p className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
 
-                <details className="mt-4 rounded-lg border border-slate-200 p-4">
-                  <summary className="cursor-pointer text-sm font-semibold text-midnight">Prepare your application</summary>
+                <details className="mt-5 rounded-lg border border-slate-200 bg-white p-4 open:bg-slate-50/50 sm:p-5">
+                  <summary className="min-h-8 cursor-pointer py-1 text-base font-semibold text-midnight marker:text-emerald-dark">Prepare your application</summary>
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     Review and copy relevant details from your profile, then paste them into the employer&apos;s form as needed.
                     Your profile is not sent to the employer by CareerForge.
@@ -336,7 +343,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     </button>
                     <Link href="/app/profile" className="link text-sm">Review or update your profile</Link>
                   </div>
-                  <div className="mt-5 border-t border-slate-200 pt-4">
+                  <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
                     <h3 className="font-semibold text-midnight">AI application plan</h3>
                     <p className="mt-1 text-xs leading-5 text-slate-600">
                       When you choose to create a plan, this listing and the profile details shown above are sent to the configured AI provider for suggestions. CareerForge does not send them to the employer or save the generated plan. Check the original listing and edit all AI-written content before using it.
@@ -361,7 +368,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-5">
                   <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10">
                     Apply on employer site
                   </a>

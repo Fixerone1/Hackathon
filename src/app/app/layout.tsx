@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <WorkspaceGuard>
       <PublicShell variant="workspace">
         <WorkspaceNav />
-        <div className="pb-16 md:pb-0">{children}</div>
+        <div className="pb-20 md:pb-0">{children}</div>
       </PublicShell>
     </WorkspaceGuard>
   );

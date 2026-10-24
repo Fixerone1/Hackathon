@@ -4,11 +4,11 @@
 
 :root {
   color-scheme: light;
-  --page-background: #fdfbf7;
-  --surface: #fdfbf7;
+  --page-background: #f7f8f6;
+  --surface: #ffffff;
   --ink-primary: #0f2e35;
   --ink-muted: #50696b;
-  --line: #d2dfdb;
+  --line: #dbe4e1;
   --accent: #e05a36;
   --accent-action: #b43d22;
   --support: #e2ece9;
@@ -23,6 +23,8 @@ body {
   background: var(--page-background);
   color: var(--ink-primary);
   font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 ::selection {
@@ -32,7 +34,7 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-card border border-slate-200 bg-white p-5 shadow-card;
+    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-dark focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
@@ -55,7 +57,7 @@ body {
     background-color: #96351f;
   }
   .input {
-    @apply min-h-[44px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-slate-400 focus:border-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald/40;
+    @apply min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald/40;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;
@@ -71,12 +73,46 @@ body {
     @apply text-xs font-semibold uppercase text-emerald-dark;
     letter-spacing: 0.08em;
   }
+
+  .page-title {
+    @apply text-3xl font-semibold leading-tight tracking-tight text-midnight sm:text-4xl;
+  }
+
+  .page-description {
+    @apply mt-3 max-w-2xl text-base leading-7 text-slate-600;
+  }
+
+  .metadata-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
 }
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
   outline: 2px solid #e05a36;
   outline-offset: 2px;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* High contrast mode (toggled in Settings) */

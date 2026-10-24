@@ -20,8 +20,8 @@ const config: Config = {
       fontFamily: {
         sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
-      borderRadius: { card: '8px' },
-      boxShadow: { card: '0 4px 12px rgba(0,0,0,0.08)' },
+      borderRadius: { card: '12px' },
+      boxShadow: { card: '0 2px 8px rgba(15,46,53,0.05), 0 1px 2px rgba(15,46,53,0.04)' },
     },
   },
   plugins: [],
