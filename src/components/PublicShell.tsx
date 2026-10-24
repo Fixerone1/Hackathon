@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { BriefcaseBusiness, Search } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
@@ -42,6 +43,7 @@ function LinkedInMark() {
 
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
   const pathname = usePathname() || '/';
+  const [signedIn, setSignedIn] = useState(false);
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Your employment journey' : 'Your next step starts here');
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
@@ -76,23 +78,25 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="flex min-w-0 items-center justify-end gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
-              <Link href="/how-it-works" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/how-it-works' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                How it works
-              </Link>
-              <Link href="/opportunities" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light sm:inline-flex ${pathname === '/opportunities' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                Opportunities
-              </Link>
-              <Link href="/partners" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/partners' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                For organizations
-              </Link>
-              <Link href="/about" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/about' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                About
-              </Link>
+              {signedIn && <>
+                <Link href="/how-it-works" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/how-it-works' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
+                  How it works
+                </Link>
+                <Link href="/opportunities" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light sm:inline-flex ${pathname === '/opportunities' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
+                  Opportunities
+                </Link>
+                <Link href="/partners" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/partners' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
+                  For organizations
+                </Link>
+                <Link href="/about" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/about' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
+                  About
+                </Link>
+              </>}
               <Link href="/#site-search" aria-label="Search CareerForge"
                 className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
                 <Search size={18} strokeWidth={2.2} aria-hidden="true" />
               </Link>
-              <details className="relative lg:hidden">
+              {signedIn && <details className="relative lg:hidden">
                 <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-full px-3 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
                   <span>Menu</span>
                 </summary>
@@ -103,8 +107,8 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   <Link href="/about" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">About</Link>
                   <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Privacy</Link>
                 </div>
-              </details>
-              <AccountMenu />
+              </details>}
+              <AccountMenu compact onUserChange={setSignedIn} />
             </nav>
           ) : (
             <div className="flex items-center gap-2">

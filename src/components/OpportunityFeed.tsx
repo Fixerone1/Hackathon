@@ -357,18 +357,23 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         <ul className="grid gap-4">
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
             <li key={opportunity.id}>
-              <article className="card p-5 sm:p-6">
+              <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:px-6">
+                  <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Your next opportunity could start here</span>
+                  {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
+                </div>
+                <div className="p-5 sm:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <span className="inline-flex rounded-full bg-sunshine-light px-3 py-1 text-xs font-semibold text-midnight">{categoryLabel(opportunity.category)}</span>
-                    <h2 className="mt-3 text-xl font-semibold leading-snug text-midnight">{opportunity.title}</h2>
-                    <p className="mt-1 text-sm text-slate-600">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
+                    <span className="inline-flex rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{categoryLabel(opportunity.category)}</span>
+                    <h2 className="mt-3 text-xl font-bold leading-snug text-midnight sm:text-2xl">{opportunity.title}</h2>
+                    <p className="mt-1 font-semibold text-midnight">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>
-                  <div className="w-full rounded-lg bg-slate-50 px-3 py-3 sm:w-44 sm:shrink-0 sm:py-2 sm:text-right">
+                  <div className="w-full rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3 sm:w-44 sm:shrink-0 sm:text-right">
                     {score === null
                       ? <p className="text-xs leading-5 text-slate-600">Fit guidance</p>
-                      : <p className="text-sm font-semibold text-emerald-dark">{score}% fit signals</p>}
-                    {score === null && <Link href="/app/profile" className="text-xs font-medium text-emerald-dark underline underline-offset-2">Complete your profile</Link>}
+                      : <p className="text-sm font-bold text-midnight"><span className="rounded-full bg-sunshine px-2 py-1">{score}%</span> fit signals</p>}
+                    {score === null && <Link href="/app/profile" className="text-xs font-semibold text-midnight underline underline-offset-2">Complete your profile</Link>}
                     <p className="metadata-label mt-2">Closing date</p>
                     <p className="text-sm font-medium text-midnight">{formatDate(opportunity.closing_date)}</p>
                   </div>
@@ -382,6 +387,9 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or been withdrawn. Check its source before taking action.</p>
                 )}
                 <p className="mt-5 max-w-4xl whitespace-pre-line text-base leading-7 text-slate-700">{opportunity.summary}</p>
+                <p className="mt-4 border-l-4 border-sunshine bg-slate-50 px-4 py-3 text-sm font-medium leading-6 text-midnight">
+                  Take a look, see how it fits your goals, and use your profile to get application-ready.
+                </p>
 
                 {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
                   <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/80 p-4">
@@ -441,7 +449,12 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
                 <div className="mt-5 flex flex-col gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                   <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full sm:w-auto">
-                    Apply on employer site
+                    View &amp; apply <span aria-hidden="true">→</span>
+                  </a>
+                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(opportunity.source_url)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="btn-secondary w-full sm:w-auto">
+                    Share on LinkedIn
                   </a>
                   {action === 'applied' ? (
                     <>
@@ -463,6 +476,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 </div>
 
                 <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Application opens in a new tab and is completed on the employer&apos;s site; CareerForge does not submit it. Fit signals use only listed requirements and profile details; they are not an eligibility decision.</p>
+                </div>
               </article>
             </li>
           ))}

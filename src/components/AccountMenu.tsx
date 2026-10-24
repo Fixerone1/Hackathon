@@ -8,7 +8,7 @@ import { LogOut, Settings, UserRound } from 'lucide-react';
 
 type AccountUser = { name: string; email: string };
 
-export function AccountMenu({ compact = false }: { compact?: boolean }) {
+export function AccountMenu({ compact = false, onUserChange }: { compact?: boolean; onUserChange?: (signedIn: boolean) => void }) {
   const router = useRouter();
   const [user, setUser] = useState<AccountUser | null>(null);
   const [open, setOpen] = useState(false);
@@ -23,9 +23,11 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
         if (!active) return;
         if (authError) {
           setError(authError.message);
+          onUserChange?.(false);
           return;
         }
         const account = data.user;
+        onUserChange?.(Boolean(account));
         setUser(account ? {
           name: account.user_metadata?.name || account.email?.split('@')[0] || 'Learner',
           email: account.email || '',
@@ -36,6 +38,7 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
       const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
         if (!active) return;
         const account = session?.user;
+        onUserChange?.(Boolean(account));
         setUser(account ? {
           name: account.user_metadata?.name || account.email?.split('@')[0] || 'Learner',
           email: account.email || '',
@@ -49,7 +52,7 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
       setError(caught instanceof Error ? caught.message : 'Account status could not be loaded.');
     }
     return () => { active = false; };
-  }, []);
+  }, [onUserChange]);
 
   async function signOut() {
     setSigningOut(true);
@@ -70,9 +73,14 @@ export function AccountMenu({ compact = false }: { compact?: boolean }) {
 
   if (!user) {
     return compact ? (
-      <Link href="/login" aria-label="Sign in" className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight hover:bg-[#f0d600]">
-        <UserRound size={19} aria-hidden="true" />
-      </Link>
+      <div className="flex items-center gap-1.5">
+        <Link href="/login" aria-label="Sign in" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#e5e5e5] hover:bg-sunshine-light">
+          <UserRound size={19} aria-hidden="true" />
+        </Link>
+        <Link href="/signup" className="btn-primary min-h-10 px-3 py-2 text-xs sm:px-4 sm:text-sm">
+          <span className="sm:hidden">Join</span><span className="hidden sm:inline">Get started</span>
+        </Link>
+      </div>
     ) : (
       <div className="flex items-center gap-1">
         <Link href="/login" className="rounded-full px-3 py-2 text-midnight hover:bg-sunshine-light">Sign in</Link>

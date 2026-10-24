@@ -21,6 +21,8 @@ type AccessibilityPreferences = {
   largerText: boolean;
 };
 
+type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
+
 type ConsentDates = {
   instant_matches_consented_at: string | null;
   weekly_digest_consented_at: string | null;
@@ -45,6 +47,8 @@ export default function SettingsPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [accessibility, setAccessibility] = useState<AccessibilityPreferences>({ highContrast: false, reduceMotion: false, largerText: false });
+  const [homeFocus, setHomeFocus] = useState<HomeFocus>('all');
+  const [localPreferencesLoaded, setLocalPreferencesLoaded] = useState(false);
   const [privacyBusy, setPrivacyBusy] = useState(false);
   const [consentDates, setConsentDates] = useState<ConsentDates>({
     instant_matches_consented_at: null,
@@ -79,24 +83,37 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('careerforge-accessibility');
-    if (saved) {
-      try {
-        setAccessibility((current) => ({ ...current, ...JSON.parse(saved) as AccessibilityPreferences }));
-      } catch {
-        localStorage.removeItem('careerforge-accessibility');
+    try {
+      const savedAccessibility = localStorage.getItem('careerforge-accessibility');
+      if (savedAccessibility) {
+        const parsed = JSON.parse(savedAccessibility) as Partial<AccessibilityPreferences>;
+        setAccessibility({
+          highContrast: parsed.highContrast === true,
+          reduceMotion: parsed.reduceMotion === true,
+          largerText: parsed.largerText === true,
+        });
       }
+      const savedFocus = localStorage.getItem('careerforge-home-focus');
+      if (savedFocus === 'study' || savedFocus === 'work' || savedFocus === 'business' || savedFocus === 'money') {
+        setHomeFocus(savedFocus);
+      }
+    } catch {
+      localStorage.removeItem('careerforge-accessibility');
+      localStorage.removeItem('careerforge-home-focus');
+    } finally {
+      setLocalPreferencesLoaded(true);
     }
   }, []);
 
   useEffect(() => {
+    if (!localPreferencesLoaded) return;
     const root = document.documentElement;
     root.classList.toggle('hc', accessibility.highContrast);
     root.classList.toggle('reduce-motion', accessibility.reduceMotion);
     root.classList.toggle('larger-text', accessibility.largerText);
     localStorage.setItem('careerforge-accessibility', JSON.stringify(accessibility));
-  }, [accessibility]);
+    localStorage.setItem('careerforge-home-focus', homeFocus);
+  }, [accessibility, homeFocus, localPreferencesLoaded]);
 
   function update<K extends keyof Preferences>(key: K, value: Preferences[K]) {
     setPreferences((current) => ({ ...current, [key]: value }));
@@ -230,8 +247,18 @@ export default function SettingsPage() {
         {message && <p role="status" className="mt-4 text-sm text-emerald-dark">{message}</p>}
         <button type="button" className="btn-primary mt-5" onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save preferences'}</button>
       </section>
-      <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="privacy-heading">
-        <h2 className="font-semibold text-midnight">Accessibility</h2>
+      <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="accessibility-heading">
+        <h2 id="accessibility-heading" className="font-semibold text-midnight">Make CareerForge work for you</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Choose a focus and we’ll bring the most relevant tools to the top of your homepage. You can change it any time.</p>
+        <label htmlFor="home-focus" className="label mt-4">My main focus right now</label>
+        <select id="home-focus" className="input max-w-sm" value={homeFocus} onChange={(event) => setHomeFocus(event.target.value as HomeFocus)}>
+          <option value="all">Show me everything</option>
+          <option value="study">Study and learning</option>
+          <option value="work">Finding or growing in work</option>
+          <option value="business">Starting a business</option>
+          <option value="money">Building money confidence</option>
+        </select>
+        <h3 className="mt-6 font-semibold text-midnight">Accessibility</h3>
         <div className="mt-3 divide-y divide-slate-200 border-y border-slate-200">
           {([
             ['highContrast', 'High contrast'],

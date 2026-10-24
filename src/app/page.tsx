@@ -4,32 +4,17 @@ import {
   ArrowDown,
   ArrowRight,
   Banknote,
-  BookOpen,
   BriefcaseBusiness,
   Check,
-  ClipboardCheck,
   CircleDollarSign,
   Compass,
-  FileText,
   GraduationCap,
   Lightbulb,
-  MessageCircle,
-  Route,
   Sparkles,
 } from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
 import { SiteSearch } from '@/components/SiteSearch';
-
-const tools = [
-  { icon: ClipboardCheck, title: 'Skills assessment', text: 'See your strengths and choose what to grow next.', href: '/app/employment/assessment', tag: 'KNOW YOUR STRENGTHS' },
-  { icon: FileText, title: 'CV Builder', text: 'Get your experience and skills ready to share.', href: '/app/employment/cv', tag: 'TELL YOUR STORY' },
-  { icon: MessageCircle, title: 'Interview Coach', text: 'Get ready to show up with confidence.', href: '/app/employment/interview', tag: 'PREPARE FOR WORK' },
-  { icon: BookOpen, title: 'Skills Academy', text: 'Explore practical activities to build your skills.', href: '/app/employment/academy', tag: 'KEEP LEARNING' },
-  { icon: BriefcaseBusiness, title: 'Opportunities', text: 'Browse verified listings and keep track of your next move.', href: '/app/employment/opportunities', tag: 'FIND YOUR OPENING' },
-  { icon: Route, title: 'Study & career pathways', text: 'Explore routes that can take you towards your goals.', href: '/app/employment/pathways', tag: 'PLAN WHAT’S NEXT' },
-  { icon: Banknote, title: 'Money Skills', text: 'Build confidence with budgets, savings, and everyday choices.', href: '/app/money', tag: 'OWN YOUR MONEY' },
-  { icon: Lightbulb, title: 'Growth Studio', text: 'Shape a business idea into a small first experiment.', href: '/app/growth', tag: 'START AN IDEA' },
-];
+import { HomeToolDirectory } from '@/components/HomeToolDirectory';
 
 const journeySteps = [
   {
@@ -177,26 +162,7 @@ export default function HomePage() {
             <h2 id="tools-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Find the tool for your next move.</h2>
             <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace; current availability is shown on each tool page.</p>
           </div>
-          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {tools.map(({ icon: Icon, title, text, href, tag }, index) => {
-              const featured = index === 1 || index === 6;
-              return (
-                <Link key={title} href={href} className={`group flex min-h-48 flex-col rounded-3xl border p-4 transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(34,34,34,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:p-5 ${featured ? 'border-sunshine bg-sunshine' : 'border-[#e5e5e5] bg-white'}`}>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold tracking-[0.12em] text-midnight">{tag}</span>
-                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${featured ? 'bg-white' : 'bg-sunshine'}`}>
-                      <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-base font-bold text-midnight">{title}</h3>
-                  <p className="mt-1 flex-1 text-sm leading-5 text-midnight">{text}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-midnight group-hover:underline">
-                    Explore tool <ArrowRight size={14} aria-hidden="true" />
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
+          <HomeToolDirectory />
         </div>
       </section>
 
