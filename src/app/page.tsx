@@ -62,6 +62,8 @@ const pathways = [
     title: 'Turn “maybe one day” into a plan.',
     text: 'Explore pathways, recognise your strengths, and map a practical next step towards further study.',
     prompt: 'Your next chapter can start now.',
+    image: '/images/careerforge-students.jpg',
+    imageAlt: 'Students sharing ideas around a laptop in a library',
   },
   {
     icon: Lightbulb,
@@ -69,6 +71,8 @@ const pathways = [
     title: 'Got an idea? Give it a first step.',
     text: 'Shape a business idea, think through who it could help, and choose one small thing to test.',
     prompt: 'Big ideas grow from small moves.',
+    image: '/images/careerforge-founders.jpg',
+    imageAlt: 'A Black woman and colleague working together at a computer',
   },
   {
     icon: BriefcaseBusiness,
@@ -76,6 +80,8 @@ const pathways = [
     title: 'Make your money work for you.',
     text: 'Build everyday money confidence, set a savings goal, and feel more in control of your next pay day.',
     prompt: 'Your first pay is a fresh start.',
+    image: '/images/careerforge-people.jpg',
+    imageAlt: 'A diverse group of young people smiling together',
   },
 ];
 
@@ -110,17 +116,31 @@ export default function HomePage() {
 
           <div className="relative mx-auto w-full max-w-[570px] lg:justify-self-end">
             <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-[2rem] bg-sunshine sm:-inset-4" />
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-[#e5e5e5] bg-white shadow-[0_18px_48px_rgba(0,0,0,0.12)]">
-              <img
-                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
-                alt="A group of young people smiling together"
-                width={519}
-                height={345}
-                className="h-56 w-full object-cover sm:h-72"
-              />
-              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 to-transparent" aria-hidden="true" />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-midnight shadow-sm sm:left-5 sm:top-5">
-                <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-[#e5e5e5] bg-white p-2 shadow-[0_18px_48px_rgba(0,0,0,0.12)] sm:p-3">
+              <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+                  alt="A diverse group of young people smiling together"
+                  width={519}
+                  height={345}
+                  className="row-span-2 h-full min-h-[15rem] w-full object-cover sm:min-h-[23rem]"
+                />
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-students.jpg`}
+                  alt="Students sharing ideas around a laptop in a library"
+                  width={1000}
+                  height={667}
+                  className="h-full min-h-[7.25rem] w-full object-cover sm:min-h-[11rem]"
+                />
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-founders.jpg`}
+                  alt="A Black woman and colleague working together at a computer"
+                  width={1000}
+                  height={667}
+                  className="h-full min-h-[7.25rem] w-full object-cover sm:min-h-[11rem]"
+                />
+              </div>
+              <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-sunshine px-4 py-2 text-xs font-bold text-midnight shadow-sm sm:left-6 sm:top-6">
                 Your journey. Your way.
               </span>
               <div className="grid gap-3 bg-white p-4 sm:grid-cols-3 sm:gap-2 sm:p-5">
@@ -237,12 +257,14 @@ export default function HomePage() {
         </div>
 
         <div className="mt-7 grid gap-4 md:grid-cols-3 md:gap-5">
-          {pathways.map(({ icon: Icon, tag, title, text, prompt }, index) => (
-            <article key={tag} className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white shadow-[0_8px_26px_rgba(34,34,34,0.05)] ${index === 1 ? 'md:-translate-y-2' : ''}`}>
-              <div className={`h-2 ${index === 1 ? 'bg-midnight' : 'bg-sunshine'}`} aria-hidden="true" />
+          {pathways.map(({ icon: Icon, tag, title, text, prompt, image, imageAlt }, index) => (
+            <article key={tag} className={`flex h-full flex-col overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_26px_rgba(34,34,34,0.05)] ${index === 1 ? 'md:-translate-y-2' : ''}`}>
+              <div className="relative h-44 overflow-hidden sm:h-52">
+                <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${image}`} alt={imageAlt} loading="lazy" width={1000} height={667} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
+                <span className="absolute bottom-3 left-3 rounded-full bg-sunshine px-3 py-1.5 text-[10px] font-extrabold tracking-[0.12em] text-midnight">{tag}</span>
+              </div>
               <div className="flex flex-1 flex-col p-5 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-extrabold tracking-[0.14em] text-slate-500">{tag}</span>
                   <span className={`grid h-11 w-11 place-items-center rounded-full ${index === 1 ? 'bg-midnight text-sunshine' : 'bg-sunshine text-midnight'}`}>
                     <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
                   </span>
