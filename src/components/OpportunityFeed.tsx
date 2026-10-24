@@ -43,6 +43,34 @@ function opportunityLoadErrorMessage(error: unknown): string {
   return errorMessage(error, 'Opportunities could not be loaded.');
 }
 
+function profileList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (typeof item === 'string') return [item.trim()].filter(Boolean);
+    if (item && typeof item === 'object' && 'name' in item && typeof item.name === 'string') {
+      return [item.name.trim()].filter(Boolean);
+    }
+    return [];
+  });
+}
+
+function applicationProfileSummary(opportunity: Opportunity, profile: OpportunityProfile): string {
+  const details = [
+    ['Target role', profile.target_role],
+    ['Highest qualification', profile.highest_qualification],
+    ['Field of study', profile.field_of_study],
+    ['Subjects', profileList(profile.subjects).join(', ')],
+    ['Skills', [...new Set([...profileList(profile.skills), ...profileList(profile.skill_ratings)])].join(', ')],
+    ['Experience', typeof profile.experience_months === 'number' ? `${profile.experience_months} months` : ''],
+    ['Province', profile.province],
+  ].filter((item): item is [string, string] => typeof item[1] === 'string' && item[1].trim().length > 0);
+
+  return [
+    `Application notes for ${opportunity.title} at ${opportunity.organization}`,
+    ...details.map(([label, value]) => `${label}: ${value}`),
+  ].join('\n');
+}
+
 export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [profile, setProfile] = useState<OpportunityProfile>({});
@@ -50,6 +78,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [category, setCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState('');
+  const [copiedOpportunityId, setCopiedOpportunityId] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -65,7 +94,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         setOpportunities(opportunityResult.data || []);
 
         const [profileResult, actionResult] = await Promise.all([
-          supabase.from('learner_profiles').select('target_role,skills,skill_ratings,province,nqf_level').maybeSingle(),
+          supabase.from('learner_profiles').select('target_role,highest_qualification,field_of_study,subjects,skills,skill_ratings,experience_months,province,nqf_level').maybeSingle(),
           supabase.from('learner_opportunity_actions').select('opportunity_id,status'),
         ]);
         if (!active) return;
@@ -145,6 +174,16 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     }
   }
 
+  async function copyApplicationDetails(opportunity: Opportunity) {
+    setError('');
+    try {
+      await navigator.clipboard.writeText(applicationProfileSummary(opportunity, profile));
+      setCopiedOpportunityId(opportunity.id);
+    } catch (caught) {
+      setError(`Could not copy your profile details: ${errorMessage(caught, 'clipboard access was denied.')}`);
+    }
+  }
+
   if (loading) return <p className="py-8 text-sm text-slate-600" role="status">Finding verified opportunities...</p>;
 
   return (
@@ -212,9 +251,24 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 {reasons.length > 0 && <p className="mt-3 text-xs leading-5 text-emerald-dark">Fit signals: {reasons.join(' · ')}</p>}
                 {cautions.length > 0 && <p className="mt-2 text-xs leading-5 text-amber-800">Check before applying: {cautions.join(' · ')}</p>}
 
+                <details className="mt-4 rounded-lg border border-slate-200 p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-midnight">Prepare your application</summary>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    Review and copy relevant details from your profile, then paste them into the employer&apos;s form as needed.
+                    Your profile is not sent to the employer by CareerForge.
+                  </p>
+                  <pre className="mt-3 whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm text-slate-700">{applicationProfileSummary(opportunity, profile)}</pre>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <button type="button" className="btn-secondary min-h-10" onClick={() => void copyApplicationDetails(opportunity)}>
+                      {copiedOpportunityId === opportunity.id ? 'Copied profile details' : 'Copy profile details'}
+                    </button>
+                    <Link href="/app/profile" className="link text-sm">Review or update your profile</Link>
+                  </div>
+                </details>
+
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10">
-                    View original listing
+                    Apply on employer site
                   </a>
                   {action === 'applied' ? (
                     <>
@@ -235,7 +289,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   )}
                 </div>
 
-                <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Fit signals use only listed requirements and profile details; they are not an eligibility decision. Check the original advert.</p>
+                <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Application opens in a new tab and is completed on the employer&apos;s site; CareerForge does not submit it. Fit signals use only listed requirements and profile details; they are not an eligibility decision.</p>
               </article>
             </li>
           ))}

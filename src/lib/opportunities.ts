@@ -31,8 +31,12 @@ export type Opportunity = {
 
 export type OpportunityProfile = {
   target_role?: string | null;
+  highest_qualification?: string | null;
+  field_of_study?: string | null;
+  subjects?: unknown;
   skills?: unknown;
   skill_ratings?: unknown;
+  experience_months?: number | null;
   province?: string | null;
   nqf_level?: number | null;
 };
