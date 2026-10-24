@@ -34,7 +34,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
 For GitHub Pages, add repository Actions secrets named `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The anon key is public by design; RLS must protect every table. Never add a service-role key.
 
 ### Optional: real AI feedback
-The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `.env.example`. Without those values it responds with a local-fallback marker. The current demo UI does not call this endpoint.
+The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.env.example`. Learners can request an AI application plan from a verified opportunity's “Prepare your application” section. Only the selected listing and relevant profile fields are sent when they click the button; CareerForge does not save the generated plan or send it to the employer. Plans are suggestions, not eligibility decisions, and must be checked against the original advert. The employer's site remains responsible for application submission. Without Azure OpenAI configuration the endpoint returns an explicit service-unavailable error.
 
 ## Routes in this preview
 
@@ -42,13 +42,13 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 - `/signup` and `/login` use Supabase Auth through the Supabase JavaScript client.
 - `/app` is a protected dashboard with a progressive profile, checklist, notification preferences, and a personalized verified-opportunity feed.
 - `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase. Admins can verify and publish opportunities with their original source link, stated requirements, location, and closing date.
-- `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
+- `/api/ai` is an optional server route for AI application plans. Configure the Azure OpenAI values in `.env.example` on a server-capable host to enable it.
 
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
 
 ### Verified opportunity feed
 
-The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, and NQF level, and explain the fit signals. Learners can save a listing or mark that they applied; CareerForge never applies on a learner's behalf. Fit signals are guidance, not an eligibility decision.
+The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, and NQF level, and explain the fit signals. Learners can save a listing or mark that they applied; CareerForge never applies on a learner's behalf. The optional AI application plan turns a verified listing and selected profile details into an editable checklist and draft note; learners must check and submit applications on the employer's own site. Fit signals are guidance, not an eligibility decision.
 
 Listings are admin-curated rather than scraped. Check the live original advert and its terms before publishing; use a short summary you have permission to share. Possible primary sources include [SAYouth](https://sayouth.mobi/), the [DPSA Public Service Vacancy Circular](https://www.dpsa.gov.za/newsroom/psvc/), and [NSFAS](https://www.nsfas.org.za/), as well as the opportunity provider's own advert. Each listing is hidden from the feed if its closing date passes or it has not been re-verified for 30 days. Admins can confirm that a listing is still open from `/admin`.
 
@@ -84,7 +84,7 @@ GitHub Pages serves the static frontend. Authentication and learner data use Sup
 
 Notes
 - The base path is taken from the repository name automatically, so you can rename the repo without editing code.
-- GitHub Pages serves static files only; the workflow removes the optional server AI route. Authentication and learner data use Supabase directly.
+- GitHub Pages serves static files only; the workflow removes the optional server AI route, so AI application plans are not available there. Authentication and learner data use Supabase directly.
 - To preview the Pages build locally: `GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Hackathon NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run build` then `touch out/.nojekyll` and serve the `out` folder.
 
 ## Other hosting

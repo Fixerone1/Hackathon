@@ -7,13 +7,13 @@ export const runtime = 'nodejs';
    - Input limits: payload size and string length caps.
    - Prompt-injection screening before text is sent to the model.
    - Audit log line for every request (no personal content logged).
-   - Without Azure OpenAI env vars it returns { text: null } and the UI uses local coaching. */
+   - Missing configuration and provider failures are returned as explicit errors. */
 
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQ = 20;
 const hits = new Map<string, number[]>();
 
-const KINDS = ['cv-review', 'interview-feedback', 'career-advice', 'idea-validation', 'financial-coach'] as const;
+const KINDS = ['cv-review', 'interview-feedback', 'career-advice', 'idea-validation', 'financial-coach', 'application-plan'] as const;
 type Kind = (typeof KINDS)[number];
 
 const INJECTION_PATTERNS = [
@@ -31,6 +31,7 @@ const SYSTEM_PROMPTS: Record<Kind, string> = {
   'career-advice': 'You are a careers advisor for South African youth. Suggest realistic next steps (learnerships, internships, short courses). Do not invent specific vacancies.',
   'idea-validation': 'You are a small-business mentor for South African youth. Critique the business idea honestly, list the top 3 risks and 3 next experiments. Do not give legal or tax advice; point to CIPC, SARS, Seda or NYDA for official guidance.',
   'financial-coach': 'You are a money coach for first-time earners in South Africa. Give practical budgeting guidance. Do not recommend specific financial products or give regulated financial advice.',
+  'application-plan': 'You are a practical South African job-application coach. Use only the supplied verified listing and learner profile. Never invent requirements, eligibility, experience, qualifications, documents, contact details, or deadlines. Clearly label anything the learner must verify on the original listing. Return a concise plan with: (1) a short fit summary, (2) a checklist of application steps and materials explicitly named in the listing, (3) relevant profile evidence to highlight without exaggerating, and (4) a short editable application note grounded only in the profile. If the listing does not say what materials are needed, say to check the original listing. Do not claim to apply or contact anyone.',
 };
 
 function clientIp(req: Request): string {
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
   const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
   const version = process.env.AZURE_OPENAI_API_VERSION || '2024-06-01';
   if (!endpoint || !key || !deployment) {
-    return NextResponse.json({ text: null, source: 'local' });
+    return NextResponse.json({ error: 'AI feedback is not configured.' }, { status: 503 });
   }
 
   try {
@@ -114,10 +115,19 @@ export async function POST(req: Request) {
         ],
       }),
     });
-    if (!res.ok) return NextResponse.json({ text: null, source: 'local' });
+    if (!res.ok) {
+      console.error(`[audit] ai_provider_error kind=${kind} status=${res.status}`);
+      return NextResponse.json({ error: 'The AI provider is temporarily unavailable.' }, { status: 502 });
+    }
     const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    return NextResponse.json({ text: data.choices?.[0]?.message?.content ?? null, source: 'azure' });
+    const text = data.choices?.[0]?.message?.content;
+    if (!text) {
+      console.error(`[audit] ai_provider_empty_response kind=${kind}`);
+      return NextResponse.json({ error: 'The AI provider returned no feedback.' }, { status: 502 });
+    }
+    return NextResponse.json({ text, source: 'azure' });
   } catch {
-    return NextResponse.json({ text: null, source: 'local' });
+    console.error(`[audit] ai_provider_error kind=${kind}`);
+    return NextResponse.json({ error: 'The AI provider is temporarily unavailable.' }, { status: 502 });
   }
 }

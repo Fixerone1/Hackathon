@@ -79,6 +79,10 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState('');
   const [copiedOpportunityId, setCopiedOpportunityId] = useState('');
+  const [aiBusyId, setAiBusyId] = useState('');
+  const [aiPlans, setAiPlans] = useState<Record<string, string>>({});
+  const [aiErrors, setAiErrors] = useState<Record<string, string>>({});
+  const [copiedPlanId, setCopiedPlanId] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -184,6 +188,74 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     }
   }
 
+  async function createApplicationPlan(opportunity: Opportunity) {
+    setAiBusyId(opportunity.id);
+    setAiErrors((current) => ({ ...current, [opportunity.id]: '' }));
+    try {
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kind: 'application-plan',
+          payload: {
+            opportunity: {
+              title: opportunity.title,
+              organization: opportunity.organization,
+              category: categoryLabel(opportunity.category),
+              summary: opportunity.summary,
+              source_name: opportunity.source_name,
+              closing_date: opportunity.closing_date,
+              location: opportunity.location,
+              provinces: opportunity.provinces,
+              remote_ok: opportunity.remote_ok,
+              minimum_nqf_level: opportunity.minimum_nqf_level,
+              required_skills: opportunity.required_skills,
+            },
+            profile: {
+              target_role: profile.target_role,
+              highest_qualification: profile.highest_qualification,
+              field_of_study: profile.field_of_study,
+              subjects: profileList(profile.subjects),
+              skills: [...new Set([...profileList(profile.skills), ...profileList(profile.skill_ratings)])],
+              experience_months: profile.experience_months,
+              province: profile.province,
+              nqf_level: profile.nqf_level,
+            },
+          },
+        }),
+      });
+      const data = await response.json() as { text?: string; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || 'The application plan could not be created.');
+      }
+      if (typeof data.text !== 'string' || !data.text.trim()) {
+        throw new Error('The AI provider returned an empty application plan.');
+      }
+      const plan = data.text;
+      setAiPlans((current) => ({ ...current, [opportunity.id]: plan }));
+    } catch (caught) {
+      setAiErrors((current) => ({
+        ...current,
+        [opportunity.id]: errorMessage(caught, 'The application plan could not be created.'),
+      }));
+    } finally {
+      setAiBusyId('');
+    }
+  }
+
+  async function copyApplicationPlan(opportunityId: string) {
+    try {
+      await navigator.clipboard.writeText(aiPlans[opportunityId] || '');
+      setCopiedPlanId(opportunityId);
+      setAiErrors((current) => ({ ...current, [opportunityId]: '' }));
+    } catch (caught) {
+      setAiErrors((current) => ({
+        ...current,
+        [opportunityId]: `Could not copy the application plan: ${errorMessage(caught, 'clipboard access was denied.')}`,
+      }));
+    }
+  }
+
   if (loading) return <p className="py-8 text-sm text-slate-600" role="status">Finding verified opportunities...</p>;
 
   return (
@@ -263,6 +335,29 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                       {copiedOpportunityId === opportunity.id ? 'Copied profile details' : 'Copy profile details'}
                     </button>
                     <Link href="/app/profile" className="link text-sm">Review or update your profile</Link>
+                  </div>
+                  <div className="mt-5 border-t border-slate-200 pt-4">
+                    <h3 className="font-semibold text-midnight">AI application plan</h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">
+                      When you choose to create a plan, this listing and the profile details shown above are sent to the configured AI provider for suggestions. CareerForge does not send them to the employer or save the generated plan. Check the original listing and edit all AI-written content before using it.
+                    </p>
+                    <button
+                      type="button"
+                      className="btn-secondary mt-3 min-h-10"
+                      disabled={Boolean(aiBusyId)}
+                      onClick={() => void createApplicationPlan(opportunity)}
+                    >
+                      {aiBusyId === opportunity.id ? 'Creating your plan…' : aiPlans[opportunity.id] ? 'Refresh AI plan' : 'Create AI application plan'}
+                    </button>
+                    {aiErrors[opportunity.id] && <p className="mt-3 text-sm text-amber-800" role="alert">{aiErrors[opportunity.id]}</p>}
+                    {aiPlans[opportunity.id] && (
+                      <div className="mt-4">
+                        <pre className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">{aiPlans[opportunity.id]}</pre>
+                        <button type="button" className="btn-secondary mt-3 min-h-10" onClick={() => void copyApplicationPlan(opportunity.id)}>
+                          {copiedPlanId === opportunity.id ? 'Copied AI plan' : 'Copy AI plan'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </details>
 
