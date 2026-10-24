@@ -28,7 +28,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
    - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
 4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
 5. To grant admin access, set `app_metadata.role` to `admin` for the account in Supabase. Do not use user-editable metadata for authorization.
-5. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
+6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
 
 For GitHub Pages, add repository Actions secrets named `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The anon key is public by design; RLS must protect every table. Never add a service-role key.
 
@@ -40,7 +40,7 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 - Public pages: `/`, `/how-it-works`, `/opportunities`, `/partners`, `/about`, `/privacy`, `/login`, `/signup`.
 - `/signup` and `/login` use Supabase Auth through the Supabase JavaScript client.
 - `/app` is a protected dashboard with six primary sections. The current repo has a progressive profile, checklist, notification preferences, and empty verified-opportunity states.
-- `/admin` is separate from learner navigation and requires an email in `ADMIN_EMAILS`.
+- `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase.
 - `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
 
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
