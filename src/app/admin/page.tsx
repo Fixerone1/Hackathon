@@ -39,8 +39,10 @@ export default function AdminPage() {
         <Link href="/app" className="text-sm font-medium text-emerald-dark hover:underline">Learner workspace</Link>
       </header>
       <section className="max-w-2xl py-10">
-        <p className="eyebrow">Separate administration area</p>
-        <h1 className="mt-2 text-3xl font-semibold text-midnight">Admin console</h1>
+        <div className="border-l-4 border-sunshine pl-4 sm:pl-5">
+          <p className="eyebrow">Separate administration area</p>
+          <h1 className="page-title mt-2">Admin console</h1>
+        </div>
         {state === 'checking' && <p className="mt-4 text-sm text-slate-600" role="status">Checking access...</p>}
         {state === 'denied' && <p className="mt-4 text-sm text-red-700" role="alert">Admin access is not enabled for this account.</p>}
         {state === 'allowed' && <>

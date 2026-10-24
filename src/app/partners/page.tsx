@@ -1,18 +1,22 @@
 import Link from 'next/link';
 import { PublicShell } from '@/components/PublicShell';
+import { PageIntro } from '@/components/PageIntro';
 
 export default function PartnersPage() {
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-        <p className="eyebrow">For organizations</p>
-        <h1 className="mt-2 max-w-3xl text-3xl font-semibold text-midnight sm:text-4xl">Support a more practical transition into work.</h1>
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600">CareerForge is designed for employers, funders, education providers, and youth-development partners who want to help young people understand their next steps.</p>
-        <div className="mt-8 border-y border-slate-200 py-6">
-          <h2 className="font-semibold text-midnight">Partner features are not active in this preview</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Organization accounts, verified posting forms, and aggregate reporting have not been implemented. No partner outcomes or impact statistics are claimed.</p>
+      <section className="page-section">
+        <PageIntro
+          eyebrow="For organizations"
+          title="Support a more practical transition into work."
+          description="CareerForge is designed for employers, funders, education providers, and youth-development partners who want to help young people understand their next steps."
+          className="max-w-4xl"
+        />
+        <div className="rounded-2xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-[#f7f7f7] p-5 sm:p-7">
+          <h2 className="text-lg font-bold text-midnight">Partner features are not active in this preview</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#555555]">Organization accounts, verified posting forms, and aggregate reporting have not been implemented. No partner outcomes or impact statistics are claimed.</p>
+          <Link href="/how-it-works" className="link mt-5 inline-flex">Review the learner journey</Link>
         </div>
-        <Link href="/how-it-works" className="link mt-6 inline-flex">Review the learner journey</Link>
       </section>
     </PublicShell>
   );

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Check, CircleDollarSign, Compass, Target } from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
+import { PhotoPlaceholder } from '@/components/PhotoPlaceholder';
 
 const pillars = [
   { icon: Target, title: 'Employment readiness', text: 'Build practical skills and turn career goals into clear next steps.' },
@@ -15,10 +16,10 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
           <div className="max-w-xl">
             <p className="eyebrow mb-4">A workforce-readiness platform</p>
-            <h1 className="text-4xl font-semibold leading-[1.12] tracking-tight text-midnight sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="text-4xl font-bold leading-[1.08] tracking-tight text-midnight sm:text-5xl lg:text-[3.5rem]">
               Prepare emerging talent for what comes next.
             </h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
+            <p className="mt-5 max-w-lg text-base leading-7 text-[#555555]">
               CareerForge gives young people a structured starting point for work readiness, financial capability, and exploring enterprise.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -70,10 +71,10 @@ export default function HomePage() {
         </div>
       </section>
       <section id="platform" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8" aria-labelledby="pillars-heading">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl border-l-4 border-sunshine pl-4 sm:pl-5">
           <p className="eyebrow">One learner journey</p>
-          <h2 id="pillars-heading" className="mt-2 text-2xl font-semibold text-midnight sm:text-3xl">Support the whole transition to work</h2>
-          <p className="mt-3 leading-7 text-slate-600">Bring practical guidance together in one simple experience, so learners can focus on the next achievable step.</p>
+          <h2 id="pillars-heading" className="section-heading mt-2">Support the whole transition to work</h2>
+          <p className="section-description">Bring practical guidance together in one simple experience, so learners can focus on the next achievable step.</p>
         </div>
         <div className="mt-8 grid gap-7 border-y border-slate-200 py-7 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {pillars.map(({ icon: Icon, title, text }) => (
@@ -87,6 +88,23 @@ export default function HomePage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+      <section className="border-y border-[#e5e5e5] bg-surface" aria-labelledby="real-life-heading">
+        <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-2 md:gap-10 md:py-14 lg:px-8">
+          <div className="order-2 md:order-1">
+            <PhotoPlaceholder
+              label="A community that feels familiar"
+              description="Add a real photo of young people learning, working, or planning their next step together."
+              className="min-h-[15rem] sm:min-h-[19rem]"
+            />
+          </div>
+          <div className="order-1 md:order-2">
+            <p className="eyebrow">Made for real life</p>
+            <h2 id="real-life-heading" className="section-heading mt-2">Practical support, shaped around people like you.</h2>
+            <p className="section-description">Your journey is your own. Start with what you already know, find useful opportunities, and choose the next step that fits your life today.</p>
+            <Link href="/how-it-works" className="link mt-5 inline-flex items-center gap-2">See how it works <ArrowRight size={16} aria-hidden="true" /></Link>
+          </div>
         </div>
       </section>
       <section id="organizations" className="border-y border-slate-200 bg-white">

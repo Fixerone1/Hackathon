@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { PublicShell } from '@/components/PublicShell';
+import { PageIntro } from '@/components/PageIntro';
+import { PhotoPlaceholder } from '@/components/PhotoPlaceholder';
 
 const steps = [
   { number: '01', title: 'Tell us what you have', text: 'Build a profile from your qualification, subjects, skills, location, and goals. You can add detail over time.' },
@@ -10,18 +12,36 @@ const steps = [
 export default function HowItWorksPage() {
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-        <p className="eyebrow">How it works</p>
-        <h1 className="mt-2 max-w-3xl text-3xl font-semibold text-midnight sm:text-4xl">A clearer route from your current skills to your next opportunity.</h1>
-        <div className="mt-9 grid gap-8 border-y border-slate-200 py-7 md:grid-cols-3 md:gap-10">
-          {steps.map((step) => <article key={step.number}>
-            <p className="text-xs font-semibold text-emerald-dark">{step.number}</p>
-            <h2 className="mt-2 font-semibold text-midnight">{step.title}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{step.text}</p>
-          </article>)}
+      <section className="page-section">
+        <PageIntro
+          eyebrow="How it works"
+          title="A clearer route from your current skills to your next opportunity."
+          description="Move at your own pace. Each step helps you understand your options and decide what feels right for you."
+          className="max-w-4xl"
+        />
+        <ol className="grid gap-4 md:grid-cols-3">
+          {steps.map((step) => <li key={step.number}>
+            <article className="h-full rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-6">
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-sm font-bold text-midnight">{step.number}</span>
+              <h2 className="mt-5 text-lg font-bold leading-snug text-midnight">{step.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-[#555555]">{step.text}</p>
+            </article>
+          </li>)}
+        </ol>
+        <div className="mt-8 grid items-center gap-6 rounded-2xl border border-[#e5e5e5] bg-white p-4 sm:p-6 md:grid-cols-[0.85fr_1fr] md:gap-8">
+          <PhotoPlaceholder
+            label="Your next step, supported"
+            description="Add a candid photo of a learner preparing, getting guidance, or exploring work."
+            className="min-h-48"
+          />
+          <div className="px-1 py-2 sm:px-3">
+            <p className="eyebrow">You stay in control</p>
+            <h2 className="section-heading mt-2">Guidance that helps you decide, not decide for you.</h2>
+            <p className="section-description">Check the original advert, compare its requirements with your profile, and choose how to apply. CareerForge does not submit applications for you.</p>
+            <p className="mt-5 rounded-xl border-l-4 border-sunshine bg-[#f7f7f7] px-4 py-3 text-sm leading-6 text-[#444444]">Current preview: opportunities are curated by administrators. Availability and match guidance depend on verified listing details.</p>
+            <Link href="/signup" className="btn-primary mt-5">Create a learner profile</Link>
+          </div>
         </div>
-        <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600">Current preview limitation: approved listing sources and match calculations are not connected. No live matches are shown yet.</p>
-        <Link href="/signup" className="btn-primary mt-6">Create a learner profile</Link>
       </section>
     </PublicShell>
   );

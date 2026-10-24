@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, BriefcaseBusiness, ClipboardCheck, UserRound } from 'lucide-react';
 import { EmploymentNav } from '@/components/EmploymentNav';
+import { PageIntro } from '@/components/PageIntro';
 
 const nextSteps = [
   {
@@ -35,24 +36,27 @@ const nextSteps = [
 export default function EmploymentPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Employment Hub</p>
-      <h1 className="page-title mt-1">Build your work readiness</h1>
-      <p className="page-description">Take one step at a time: prepare your profile, explore verified opportunities, and keep track of applications.</p>
+      <PageIntro
+        eyebrow="Employment Hub"
+        title="Build your work readiness"
+        description="Take one step at a time: prepare your profile, explore verified opportunities, and keep track of applications."
+        className="mb-6"
+      />
       <EmploymentNav />
 
       <section aria-labelledby="next-steps-heading">
         <div className="mb-5">
           <p className="eyebrow">Your starting point</p>
-          <h2 id="next-steps-heading" className="mt-1 text-2xl font-semibold text-midnight">Your next steps</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Choose what you need today. You can come back and continue whenever you’re ready.</p>
+          <h2 id="next-steps-heading" className="section-heading mt-2">Your next steps</h2>
+          <p className="section-description">Choose what you need today. You can come back and continue whenever you’re ready.</p>
         </div>
 
-        <ol className="grid gap-4 md:grid-cols-3">
+        <ol className="grid gap-4 lg:grid-cols-3">
           {nextSteps.map(({ number, title, description, href, action, Icon, featured }) => (
             <li key={href}>
               <Link
                 href={href}
-                className={`group flex h-full flex-col rounded-2xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 ${
+                className={`group flex h-full flex-col rounded-2xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:p-6 ${
                   featured ? 'border-sunshine-dark/50 bg-surface' : 'border-[#e5e5e5] bg-surface'
                 }`}
               >

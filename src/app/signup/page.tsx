@@ -8,11 +8,11 @@ export default function SignupPage() {
   return (
     <PublicShell>
       <section className="mx-auto grid min-h-[65svh] max-w-6xl place-items-center px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md rounded-2xl border border-[#e5e5e5] border-t-4 border-t-sunshine bg-white p-5 shadow-card sm:p-7">
           <p className="eyebrow">Get started</p>
-          <h1 className="page-title mt-1">Create your account</h1>
+          <h1 className="page-title mt-2">Create your account</h1>
           <p className="page-description mb-6">Start building your Economic Mobility Score today.</p>
-          <div className="card p-5 sm:p-7">
+          <div className="border-t border-[#e5e5e5] pt-5">
             <AuthForm mode="signup" />
           </div>
         </div>

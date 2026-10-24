@@ -1,0 +1,22 @@
+import type { ReactNode } from 'react';
+
+type PageIntroProps = {
+  eyebrow: string;
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+  className?: string;
+};
+
+export function PageIntro({ eyebrow, title, description, actions, className = '' }: PageIntroProps) {
+  return (
+    <header className={`mb-8 flex flex-col items-start justify-between gap-5 sm:mb-10 md:flex-row md:items-end ${className}`}>
+      <div className="min-w-0 border-l-4 border-sunshine pl-4 sm:pl-5">
+        <p className="eyebrow">{eyebrow}</p>
+        <h1 className="page-title mt-2">{title}</h1>
+        {description && <p className="page-description">{description}</p>}
+      </div>
+      {actions && <div className="flex w-full flex-wrap gap-2 md:w-auto md:shrink-0">{actions}</div>}
+    </header>
+  );
+}

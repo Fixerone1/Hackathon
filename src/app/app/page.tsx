@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { getSupabase } from '@/lib/supabase';
+import { PageIntro } from '@/components/PageIntro';
 
 type CurrentUser = { id: string; name: string; email: string };
 
@@ -85,37 +86,36 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-[#e5e5e5] bg-surface px-5 py-6 shadow-card sm:px-7">
-        <div>
-          <p className="eyebrow">Learner workspace</p>
-          <h1 className="page-title mt-1">Welcome, {user.name}</h1>
-          <p className="page-description mt-2">Choose a practical next step and keep your progress moving.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/app/profile" className="btn-secondary min-h-10">Edit profile</Link>
-          <button type="button" onClick={signOut} className="btn-secondary min-h-10">Sign out</button>
-        </div>
-      </header>
+      <PageIntro
+        eyebrow="Your learner workspace"
+        title={`Welcome, ${user.name}`}
+        description="Choose a practical next step and keep your progress moving."
+        actions={<>
+          <Link href="/app/profile" className="btn-secondary min-h-10 w-full sm:w-auto">Edit profile</Link>
+          <button type="button" onClick={signOut} className="btn-secondary min-h-10 w-full sm:w-auto">Sign out</button>
+        </>}
+      />
 
-      <section className="mb-8" aria-labelledby="matches-heading">
+      <section className="mb-8 rounded-2xl border border-[#e5e5e5] bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
             <p className="eyebrow">Opportunity connector</p>
-            <h2 id="matches-heading" className="mt-1 text-2xl font-semibold text-midnight">Your matches today</h2>
+            <h2 id="matches-heading" className="section-heading mt-2">Your matches today</h2>
+            <p className="section-description">Explore verified listings and choose the ones that fit your next step.</p>
           </div>
           <Link href="/app/employment/opportunities" className="link text-sm">Open opportunities</Link>
         </div>
-        <div className="mt-5">
+        <div className="mt-6 border-t border-[#e5e5e5] pt-5">
           <OpportunityFeed />
         </div>
       </section>
 
-      <div className="grid gap-10 py-8 md:grid-cols-[minmax(0,1fr)_17rem] md:py-10">
+      <div className="grid items-start gap-5 py-5 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
         <section className="rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
-              <h2 id="actions-heading" className="text-xl font-semibold text-midnight">Your starter plan</h2>
-              <p className="mt-1 text-sm text-slate-600">Three small actions across your development goals.</p>
+              <h2 id="actions-heading" className="section-heading">Your starter plan</h2>
+              <p className="mt-2 text-sm leading-6 text-[#555555]">Three small actions across your development goals.</p>
             </div>
             <span className="text-sm font-semibold text-emerald-dark">{completed.length} of {starterActions.length} complete</span>
           </div>
@@ -142,16 +142,16 @@ export default function DashboardPage() {
           </ul>
         </section>
 
-        <aside className="space-y-7 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6">
+        <aside className="space-y-6 rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-6">
           <section aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
-            <h2 id="mobility-score-heading" className="mt-2 text-2xl font-semibold text-midnight">Not calculated</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
+            <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Not calculated</h2>
+            <p className="mt-2 text-sm leading-6 text-[#555555]">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
           </section>
           <section aria-labelledby="progress-heading">
             <p className="eyebrow">Starter plan progress</p>
-            <h2 id="progress-heading" className="mt-2 text-3xl font-semibold text-midnight">{progress}%</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Completion of the three checklist actions shown here.</p>
+            <h2 id="progress-heading" className="mt-2 text-3xl font-bold text-midnight">{progress}%</h2>
+            <p className="mt-2 text-sm leading-6 text-[#555555]">Completion of the three checklist actions shown here.</p>
           </section>
           <section id="money-skills" className="border-t border-slate-200 pt-5">
             <h2 className="font-semibold text-midnight">Money confidence</h2>

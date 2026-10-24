@@ -216,13 +216,13 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
-        <div>
+      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
+        <div className="min-w-0">
           <p className="eyebrow">Your information</p>
-          <h1 className="page-title mt-1">Build your learner profile</h1>
+          <h1 className="page-title mt-2">Build your learner profile</h1>
           <p className="page-description">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="w-full sm:w-48 sm:shrink-0">
+        <div className="w-full rounded-xl bg-[#f7f7f7] p-3 sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
             <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
+import { PageIntro } from '@/components/PageIntro';
 
 type Preferences = {
   instant_matches: boolean;
@@ -189,11 +190,9 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Account</p>
-      <h1 className="mt-1 text-3xl font-semibold text-midnight">Settings</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Choose what you agree to receive. All email categories are off until you opt in.</p>
-      <section className="mt-8 max-w-3xl" aria-labelledby="notification-heading">
-        <h2 id="notification-heading" className="text-xl font-semibold text-midnight">Email notifications</h2>
+      <PageIntro eyebrow="Account" title="Settings" description="Choose what you agree to receive. All email categories are off until you opt in." />
+      <section className="max-w-3xl rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-7" aria-labelledby="notification-heading">
+        <h2 id="notification-heading" className="section-heading">Email notifications</h2>
         <p className="mt-2 text-sm text-slate-600">Email delivery is not enabled yet. Your preferences are saved for when a provider is configured.</p>
         <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
           {([
