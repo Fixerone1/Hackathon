@@ -26,6 +26,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
    - [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql)
    - [`supabase/migrations/20261023001000_learner_profiles.sql`](supabase/migrations/20261023001000_learner_profiles.sql)
    - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
+   - [`supabase/migrations/20261024000000_verified_opportunities.sql`](supabase/migrations/20261024000000_verified_opportunities.sql)
 4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
 5. To grant admin access, set `app_metadata.role` to `admin` for the account in Supabase. Do not use user-editable metadata for authorization.
 6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
@@ -39,17 +40,25 @@ The `/api/ai` endpoint can use Azure OpenAI when configured with the values in `
 
 - Public pages: `/`, `/how-it-works`, `/opportunities`, `/partners`, `/about`, `/privacy`, `/login`, `/signup`.
 - `/signup` and `/login` use Supabase Auth through the Supabase JavaScript client.
-- `/app` is a protected dashboard with six primary sections. The current repo has a progressive profile, checklist, notification preferences, and empty verified-opportunity states.
-- `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase.
+- `/app` is a protected dashboard with a progressive profile, checklist, notification preferences, and a personalized verified-opportunity feed.
+- `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase. Admins can verify and publish opportunities with their original source link, stated requirements, location, and closing date.
 - `/api/ai` is an optional server route. Without Azure OpenAI environment variables it returns `{ "text": null, "source": "local" }`; the current dashboard does not call it.
 
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
+
+### Verified opportunity feed
+
+The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, and NQF level, and explain the fit signals. Learners can save a listing or mark that they applied; CareerForge never applies on a learner's behalf. Fit signals are guidance, not an eligibility decision.
+
+Listings are admin-curated rather than scraped. Check the live original advert and its terms before publishing; use a short summary you have permission to share. Possible primary sources include [SAYouth](https://sayouth.mobi/), the [DPSA Public Service Vacancy Circular](https://www.dpsa.gov.za/newsroom/psvc/), and [NSFAS](https://www.nsfas.org.za/), as well as the opportunity provider's own advert. Each listing is hidden from the feed if its closing date passes or it has not been re-verified for 30 days. Admins can confirm that a listing is still open from `/admin`.
+
+Apply the opportunity migration, grant `app_metadata.role = admin` to a trusted account, sign in, and add a verified listing at `/admin` before learners will see entries. Automated source ingestion is not enabled: the Adzuna API requires registration credentials, and South African coverage must be confirmed before relying on it. Email alerts are also not enabled; this release uses the on-site feed only.
 
 `prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. Keep every user table protected by RLS and configure a strict Content Security Policy before production use.
 
 ## Phase 1 scope and tests
 
-The uploaded source did not include the previously described assessment, CV builder, interview coach, Skills Academy, salary planner, savings-goal, or idea-validator modules. Their routes are present but clearly marked unavailable; they have not been represented as working features. The Mobility Score is not calculated until its underlying tools exist. Opportunity connectors, eligibility scoring, pathways, application tracking, partner posting, email delivery, and admin review tools are future phases. No real listings or match claims are seeded. No third-party job sources have been contacted or scraped.
+The uploaded source did not include the previously described assessment, CV builder, interview coach, Skills Academy, salary planner, savings-goal, or idea-validator modules. Their routes are present but clearly marked unavailable; they have not been represented as working features. The Mobility Score is not calculated until its underlying tools exist. The opportunity feed supports verified admin-curated listings and learner save/applied tracking, but it does not automatically ingest third-party sources, submit applications, or send email alerts. No real listings are seeded; admins must verify and publish genuine openings before the feed is populated. No third-party job sources have been scraped.
 
 The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/fixtures/learner_profile.json). Frontend checks use `npm run typecheck` and `npm run build`.
 

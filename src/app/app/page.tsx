@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { getSupabase } from '@/lib/supabase';
 
 type CurrentUser = { id: string; name: string; email: string };
@@ -104,21 +105,8 @@ export default function DashboardPage() {
           </div>
           <Link href="/app/employment/opportunities" className="link text-sm">Open opportunities</Link>
         </div>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-          No verified source feeds are connected yet, so there are no listings to show. CareerForge will not label a role as a match until its original advert and requirements can be checked.
-        </p>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          {[
-            ['Ready now', 'Meets stated requirements'],
-            ['Almost there', 'One closable gap'],
-            ['Build towards', 'A longer-term pathway'],
-          ].map(([title, description]) => (
-            <div key={title} className="border-l-2 border-slate-300 pl-3">
-              <h3 className="text-sm font-semibold text-midnight">{title}</h3>
-              <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
-              <p className="mt-2 text-xs font-medium text-slate-500">No verified listings</p>
-            </div>
-          ))}
+        <div className="mt-5">
+          <OpportunityFeed />
         </div>
       </section>
 

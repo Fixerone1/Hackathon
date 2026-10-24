@@ -1,5 +1,14 @@
-import { EmploymentModule } from '@/components/EmploymentModule';
+import { EmploymentNav } from '@/components/EmploymentNav';
+import { OpportunityFeed } from '@/components/OpportunityFeed';
 
 export default function OpportunitiesPage() {
-  return <EmploymentModule title="Opportunity matches" description="Review real listings, compare requirements, and apply on the original source site." statusTitle="No verified listings connected" statusText="No source connectors have been approved or configured yet. To avoid fabricated opportunities, this feed is empty. When listings are available, each will show its original source, posting link, date found, closing date, fit reasons, and any requirements you still need." />;
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+      <p className="eyebrow">Employment Hub</p>
+      <h1 className="mt-1 text-3xl font-semibold text-midnight">Opportunity matches</h1>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Review verified opportunities, see how stated requirements compare with your profile, and apply on the original source site.</p>
+      <EmploymentNav />
+      <OpportunityFeed />
+    </div>
+  );
 }

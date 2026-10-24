@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { OpportunityAdmin } from '@/components/OpportunityAdmin';
 import { getSupabase } from '@/lib/supabase';
 
 export default function AdminPage() {
@@ -44,10 +45,7 @@ export default function AdminPage() {
         {state === 'denied' && <p className="mt-4 text-sm text-red-700" role="alert">Admin access is not enabled for this account.</p>}
         {state === 'allowed' && <>
           <p className="mt-3 text-sm text-slate-600">Signed in as {email}</p>
-          <div className="mt-7 border-y border-slate-200 py-5">
-            <h2 className="font-semibold text-midnight">Review queue</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Opportunity-source management and scam review are not connected yet. No listings are being ingested or promoted by this preview.</p>
-          </div>
+          <OpportunityAdmin />
           <p className="mt-5 text-xs leading-5 text-slate-500">Admin access is granted through the server-managed Supabase app_metadata role.</p>
         </>}
       </section>

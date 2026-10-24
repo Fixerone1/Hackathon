@@ -1,0 +1,205 @@
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { getSupabase } from '@/lib/supabase';
+import {
+  categoryLabel,
+  matchOpportunity,
+  opportunityCategories,
+  type LearnerOpportunityAction,
+  type Opportunity,
+  type OpportunityProfile,
+} from '@/lib/opportunities';
+
+type OpportunityFeedProps = { mode?: 'matches' | 'applications' };
+type ActionRow = { opportunity_id: string; status: LearnerOpportunityAction };
+
+function formatDate(value: string | null): string {
+  if (!value) return 'No closing date listed';
+  return new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
+}
+
+export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [profile, setProfile] = useState<OpportunityProfile>({});
+  const [actions, setActions] = useState<Record<string, LearnerOpportunityAction>>({});
+  const [category, setCategory] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    async function loadFeed() {
+      try {
+        const supabase = getSupabase();
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) throw new Error('Sign in again to view your opportunity feed.');
+        const [opportunityResult, profileResult, actionResult] = await Promise.all([
+          supabase.from('opportunities').select('*'),
+          supabase.from('learner_profiles').select('target_role,skills,skill_ratings,province,nqf_level').maybeSingle(),
+          supabase.from('learner_opportunity_actions').select('opportunity_id,status'),
+        ]);
+        const queryError = opportunityResult.error || profileResult.error || actionResult.error;
+        if (queryError) throw queryError;
+        if (!active) return;
+        setOpportunities((opportunityResult.data || []) as Opportunity[]);
+        setProfile((profileResult.data || {}) as OpportunityProfile);
+        setActions(Object.fromEntries(((actionResult.data || []) as ActionRow[]).map((action) => [action.opportunity_id, action.status])));
+      } catch (caught) {
+        if (active) setError(caught instanceof Error ? caught.message : 'Opportunities could not be loaded.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    void loadFeed();
+    return () => { active = false; };
+  }, []);
+
+  const matches = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const verificationCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    return opportunities
+      .filter((opportunity) => mode === 'applications' || opportunity.status === 'published')
+      .filter((opportunity) => mode === 'applications' || !opportunity.closing_date || opportunity.closing_date >= today)
+      .filter((opportunity) => mode === 'applications' || opportunity.verified_at >= verificationCutoff)
+      .filter((opportunity) => mode !== 'applications' || Boolean(actions[opportunity.id]))
+      .filter((opportunity) => category === 'all' || opportunity.category === category)
+      .map((opportunity) => ({
+        ...matchOpportunity(opportunity, profile),
+        action: actions[opportunity.id],
+      }))
+      .sort((left, right) => (right.score ?? -1) - (left.score ?? -1));
+  }, [actions, category, mode, opportunities, profile]);
+
+  async function setAction(opportunityId: string, status: LearnerOpportunityAction | null) {
+    setBusyId(opportunityId);
+    setError('');
+    try {
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to update your opportunity list.');
+      const result = status
+        ? await supabase.from('learner_opportunity_actions').upsert({
+          user_id: authData.user.id,
+          opportunity_id: opportunityId,
+          status,
+        }, { onConflict: 'user_id,opportunity_id' })
+        : await supabase.from('learner_opportunity_actions')
+          .delete()
+          .eq('user_id', authData.user.id)
+          .eq('opportunity_id', opportunityId);
+      if (result.error) throw result.error;
+      setActions((current) => {
+        const updated = { ...current };
+        if (status) updated[opportunityId] = status;
+        else delete updated[opportunityId];
+        return updated;
+      });
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Your opportunity list could not be updated.');
+    } finally {
+      setBusyId('');
+    }
+  }
+
+  if (loading) return <p className="py-8 text-sm text-slate-600" role="status">Finding verified opportunities...</p>;
+
+  return (
+    <section aria-label={mode === 'applications' ? 'Saved opportunities and applications' : 'Personalized opportunities'}>
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-sm text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Current listings from verified sources, ranked against the details in your profile.'}</p>
+        </div>
+        <div className="w-full max-w-xs">
+          <label htmlFor="opportunity-category" className="label">Opportunity type</label>
+          <select id="opportunity-category" className="input" value={category} onChange={(event) => setCategory(event.target.value)}>
+            <option value="all">All types</option>
+            {opportunityCategories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
+
+      {matches.length === 0 ? (
+        <div className="border-y border-slate-200 py-7">
+          <h2 className="font-semibold text-midnight">{mode === 'applications' ? 'Nothing saved yet' : 'No current verified listings yet'}</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            {mode === 'applications'
+              ? 'When you save an opportunity or mark that you applied, it will appear here.'
+              : 'Listings appear here after an admin verifies the original source, checks the details, and publishes them. We do not invent or scrape adverts.'}
+          </p>
+          {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
+        </div>
+      ) : (
+        <ul className="divide-y divide-slate-200 border-y border-slate-200">
+          {matches.map(({ opportunity, score, reasons, cautions, action }) => (
+            <li key={opportunity.id} className="py-6">
+              <article>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-dark">{categoryLabel(opportunity.category)}</p>
+                    <h2 className="mt-1 text-lg font-semibold text-midnight">{opportunity.title}</h2>
+                    <p className="mt-1 text-sm text-slate-600">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
+                  </div>
+                  <div className="text-right">
+                    {score === null
+                      ? <p className="text-xs text-slate-500">Add profile details for fit guidance</p>
+                      : <p className="text-sm font-semibold text-emerald-dark">{score}% fit signals</p>}
+                    <p className="mt-1 text-xs text-slate-500">Closes: {formatDate(opportunity.closing_date)}</p>
+                  </div>
+                </div>
+
+                {mode === 'applications' && (
+                  opportunity.status === 'withdrawn'
+                  || (opportunity.closing_date && opportunity.closing_date < new Date().toISOString().slice(0, 10))
+                  || opportunity.verified_at < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+                ) && (
+                  <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or been withdrawn. Check its source before taking action.</p>
+                )}
+                <p className="mt-3 max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
+
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-500">
+                  {opportunity.minimum_nqf_level !== null && <span>Stated minimum: NQF {opportunity.minimum_nqf_level}</span>}
+                  {opportunity.required_skills.length > 0 && <span>Requirements: {opportunity.required_skills.join(', ')}</span>}
+                  {opportunity.provinces.length > 0 && <span>Provinces: {opportunity.provinces.join(', ')}</span>}
+                  {opportunity.remote_ok && <span>Remote option listed</span>}
+                </div>
+
+                {reasons.length > 0 && <p className="mt-3 text-xs leading-5 text-emerald-dark">Fit signals: {reasons.join(' · ')}</p>}
+                {cautions.length > 0 && <p className="mt-2 text-xs leading-5 text-amber-800">Check before applying: {cautions.join(' · ')}</p>}
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10">
+                    View original listing
+                  </a>
+                  {action === 'applied' ? (
+                    <>
+                      <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>
+                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
+                    </>
+                  ) : action === 'saved' ? (
+                    <>
+                      <span className="text-sm font-medium text-slate-600">Saved</span>
+                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, null)}>Remove</button>
+                    </>
+                  ) : (
+                    <>
+                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Save</button>
+                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                    </>
+                  )}
+                </div>
+
+                <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Fit signals use only listed requirements and profile details; they are not an eligibility decision. Check the original advert.</p>
+              </article>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}

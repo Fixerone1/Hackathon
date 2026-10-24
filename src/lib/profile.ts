@@ -44,5 +44,5 @@ export function profileNextStep(profile: ProfileRecord): string {
   if (!profile.province) return 'Add your province to identify relevant local opportunities.';
   if (!profile.target_role) return 'Add a target role to make your profile more useful.';
   if (!profile.skills?.length && !profile.skill_ratings?.length) return 'Add your skills to improve future opportunity matching.';
-  return 'Your profile is ready for verified opportunity sources when they are connected.';
+  return 'Your profile is ready for comparison with verified opportunities.';
 }

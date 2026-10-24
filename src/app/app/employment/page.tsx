@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { EmploymentNav } from '@/components/EmploymentNav';
 import { PhaseOneStatus } from '@/components/PhaseOneStatus';
 
@@ -9,11 +10,10 @@ export default function EmploymentPage() {
       <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Keep your profile current, understand opportunity requirements, and prepare your next application.</p>
       <EmploymentNav />
       <PhaseOneStatus title="Your work-readiness starting point">
-        Your learner profile is the first available tool. Add your qualification, subjects, location, and goals to prepare for more useful pathways as verified data sources are connected.
+        Keep your qualification, skills, location, and goals up to date. They help the opportunity feed explain how each published listing compares with your profile.
       </PhaseOneStatus>
-      <PhaseOneStatus title="Opportunity matches">
-        No verified opportunity sources are connected yet. CareerForge will not display invented listings or claim a match without a source advert and confirmed requirements.
-      </PhaseOneStatus>
+      <p className="mt-6 text-sm leading-6 text-slate-600">Browse current verified opportunities, save promising listings, and track the ones you apply for.</p>
+      <Link href="/app/employment/opportunities" className="btn-primary mt-4">Browse opportunities</Link>
     </div>
   );
 }
