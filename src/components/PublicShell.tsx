@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, BriefcaseBusiness } from 'lucide-react';
+import { ArrowUpRight, BriefcaseBusiness, Search } from 'lucide-react';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 const bannerLabels: Record<string, string> = {
@@ -44,7 +44,24 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Your employment journey' : 'Your next step starts here');
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
-  const bannerImage = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`;
+  const bannerImages: Record<string, string> = {
+    '/about': 'careerforge-people.jpg',
+    '/how-it-works': 'careerforge-students.jpg',
+    '/opportunities': 'careerforge-founders.jpg',
+    '/partners': 'careerforge-founders.jpg',
+    '/app': 'careerforge-people.jpg',
+    '/app/employment': 'careerforge-people.jpg',
+    '/app/employment/assessment': 'careerforge-students.jpg',
+    '/app/employment/cv': 'careerforge-founders.jpg',
+    '/app/employment/interview': 'careerforge-founders.jpg',
+    '/app/employment/academy': 'careerforge-students.jpg',
+    '/app/employment/opportunities': 'careerforge-people.jpg',
+    '/app/employment/pathways': 'careerforge-students.jpg',
+    '/app/employment/applications': 'careerforge-founders.jpg',
+    '/app/money': 'careerforge-people.jpg',
+    '/app/growth': 'careerforge-founders.jpg',
+  };
+  const bannerImage = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/${bannerImages[pathname] || 'careerforge-people.jpg'}`;
 
   return (
     <>
@@ -76,6 +93,10 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <Link href="/about" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/about' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 About
               </Link>
+              <Link href="/#site-search" aria-label="Search CareerForge"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
+                <Search size={18} strokeWidth={2.2} aria-hidden="true" />
+              </Link>
               <details className="relative lg:hidden">
                 <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-full px-3 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
                   <span>Menu</span>
@@ -97,7 +118,13 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               </Link>
             </nav>
           ) : (
-            <span className="text-sm font-medium text-midnight">Learner workspace</span>
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm font-medium text-midnight sm:inline">Learner workspace</span>
+              <Link href="/#site-search" aria-label="Search CareerForge"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
+                <Search size={18} strokeWidth={2.2} aria-hidden="true" />
+              </Link>
+            </div>
           )}
         </div>
       </header>
@@ -105,7 +132,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {!(variant === 'public' && pathname === '/') && (
         <section
           aria-label={`${bannerLabel} banner`}
-          className="relative isolate h-36 overflow-hidden border-b border-[#e5e5e5] bg-white sm:h-48 lg:h-56"
+          className="relative isolate h-40 overflow-hidden border-y border-[#e5e5e5] bg-white sm:h-56 lg:h-64"
         >
           <img
             src={bannerImage}
@@ -115,11 +142,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             height={245}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-white/30" />
+          <div aria-hidden="true" className="absolute inset-0 bg-white/45" />
           <div className="pointer-events-none absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="max-w-2xl">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-midnight">CareerForge <span aria-hidden="true" className="text-midnight">/</span> Your journey</p>
+              <div className="inline-block max-w-2xl rounded-3xl border border-white/80 bg-white/90 px-5 py-4 shadow-[0_12px_36px_rgba(0,0,0,0.12)] backdrop-blur-sm sm:px-8 sm:py-6">
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-midnight">CareerForge <span aria-hidden="true" className="text-sunshine-dark">/</span> Your journey</p>
                 <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl lg:text-4xl">
                   {bannerLabel}
                 </h2>

@@ -29,19 +29,25 @@ export function SiteSearch() {
   }, [query]);
 
   return (
-    <section aria-labelledby="site-search-heading" className="relative z-10 mx-auto -mt-7 w-[calc(100%-2rem)] max-w-4xl rounded-2xl border border-[#e5e5e5] bg-white p-4 shadow-[0_12px_36px_rgba(34,34,34,0.12)] sm:-mt-8 sm:p-5">
-      <label id="site-search-heading" htmlFor="site-search" className="mb-2 block text-sm font-bold text-midnight">
-        What are you looking for?
-      </label>
-      <div className="flex min-h-12 items-center gap-3 rounded-xl border border-[#d9d9d9] bg-white px-3 focus-within:border-sunshine-dark focus-within:ring-2 focus-within:ring-sunshine/50">
-        <Search size={19} className="shrink-0 text-midnight" aria-hidden="true" />
+    <section id="site-search" aria-labelledby="site-search-heading" className="mx-auto w-full max-w-6xl rounded-[1.75rem] border-2 border-sunshine bg-sunshine p-5 shadow-[0_16px_42px_rgba(34,34,34,0.12)] sm:p-7 lg:p-9">
+      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-midnight">Your next step starts here</p>
+          <h2 id="site-search-heading" className="mt-1 text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl">
+            What are you looking for?
+          </h2>
+        </div>
+        <p className="max-w-sm text-sm leading-5 text-midnight">Study, work, money skills or a new idea? Search the CareerForge toolkit.</p>
+      </div>
+      <div className="flex min-h-16 items-center gap-3 rounded-2xl border-2 border-midnight bg-white px-4 shadow-sm focus-within:ring-4 focus-within:ring-white/70 sm:px-5">
+        <Search size={23} className="shrink-0 text-midnight" aria-hidden="true" />
         <input
           id="site-search"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search study, jobs, CVs, money skills..."
-          className="min-w-0 flex-1 border-0 bg-transparent py-2 text-base text-midnight placeholder:text-slate-500 focus:outline-none"
+          placeholder="Try “CV”, “study”, “jobs”, “money” or “business”"
+          className="min-w-0 flex-1 border-0 bg-transparent py-3 text-base text-midnight placeholder:text-slate-600 focus:outline-none sm:text-lg"
           aria-controls="site-search-results"
           aria-describedby="site-search-help"
         />
@@ -52,14 +58,14 @@ export function SiteSearch() {
           </button>
         )}
       </div>
-      <p id="site-search-help" className="mt-2 text-xs text-midnight">Search tools, opportunities, money guidance, study pathways, and more.</p>
+      <p id="site-search-help" className="mt-2 text-xs font-medium text-midnight">Search tools, opportunities, money guidance, study pathways, and more.</p>
       {query.trim() && (
         <div id="site-search-results" className="mt-3" role="region" aria-label="Search results">
           {results.length > 0 ? (
             <ul className="grid gap-2 sm:grid-cols-2">
               {results.map((result) => (
                 <li key={result.href}>
-                  <Link href={result.href} className="flex h-full items-center justify-between gap-3 rounded-xl border border-[#e5e5e5] px-3 py-3 text-left transition hover:border-sunshine-dark hover:bg-sunshine-light">
+                  <Link href={result.href} className="flex h-full items-center justify-between gap-3 rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3 text-left transition hover:border-midnight hover:bg-sunshine-light">
                     <span>
                       <span className="block text-sm font-semibold text-midnight">{result.title}</span>
                       <span className="mt-0.5 block text-xs leading-5 text-midnight">{result.description}</span>
@@ -70,7 +76,7 @@ export function SiteSearch() {
               ))}
             </ul>
           ) : (
-            <p className="rounded-xl border border-[#e5e5e5] bg-white px-3 py-3 text-sm text-midnight" role="status">
+            <p className="rounded-2xl border border-midnight bg-white px-4 py-3 text-sm text-midnight" role="status">
               No matches yet. Try “study”, “CV”, “jobs”, “money”, or “business”.
             </p>
           )}

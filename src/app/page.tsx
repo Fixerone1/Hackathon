@@ -166,7 +166,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="bg-white pb-6">
+      <div className="bg-white px-4 pb-8 pt-7 sm:px-6 sm:pb-10 sm:pt-8 lg:px-8">
         <SiteSearch />
       </div>
 

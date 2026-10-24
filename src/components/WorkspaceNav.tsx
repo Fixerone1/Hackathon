@@ -65,12 +65,12 @@ export function WorkspaceNav() {
   return (
     <>
       <nav aria-label="Workspace sections" className="hidden border-b border-[#e5e5e5] bg-white md:block">
-        <div className="mx-auto flex max-w-6xl overflow-x-auto px-4">
+        <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2">
           {items.map(({ href, label, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-                className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark text-midnight' : 'border-transparent text-midnight hover:border-sunshine hover:bg-sunshine-light'}`}>
+                className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${active ? 'bg-sunshine text-midnight' : 'text-midnight hover:bg-sunshine-light'}`}>
                 <Icon size={16} strokeWidth={1.8} aria-hidden="true" />{label}
               </Link>
             );
