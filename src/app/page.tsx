@@ -11,7 +11,7 @@ const pillars = [
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="border-b border-amber-300 bg-sunshine-light">
+      <section className="border-b border-[#e7e5dc] bg-surface">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
           <div className="max-w-xl">
             <p className="eyebrow mb-4">A workforce-readiness platform</p>
@@ -30,8 +30,8 @@ export default function HomePage() {
             <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
           </div>
           <div className="relative mx-auto w-full max-w-[540px] lg:justify-self-end" aria-label="Illustrative learner dashboard preview">
-            <div className="absolute -inset-2 -z-10 rounded-xl bg-sunshine sm:-inset-3" />
-            <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_55px_rgba(23,43,58,0.12)]">
+            <div className="absolute -inset-2 -z-10 rounded-2xl bg-sunshine sm:-inset-3" />
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(36,39,36,0.12)]">
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                 <div>
                   <p className="text-xs font-medium text-slate-500">LEARNER WORKSPACE</p>
@@ -78,7 +78,7 @@ export default function HomePage() {
         <div className="mt-8 grid gap-7 border-y border-slate-200 py-7 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {pillars.map(({ icon: Icon, title, text }) => (
             <article key={title} className="flex gap-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-sage text-emerald-dark">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight">
                 <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
               </span>
               <div>

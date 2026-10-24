@@ -359,7 +359,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
               <article className="card p-5 sm:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <span className="inline-flex rounded-full bg-sage px-3 py-1 text-xs font-semibold text-emerald-dark">{categoryLabel(opportunity.category)}</span>
+                    <span className="inline-flex rounded-full bg-sunshine-light px-3 py-1 text-xs font-semibold text-midnight">{categoryLabel(opportunity.category)}</span>
                     <h2 className="mt-3 text-xl font-semibold leading-snug text-midnight">{opportunity.title}</h2>
                     <p className="mt-1 text-sm text-slate-600">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>

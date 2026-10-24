@@ -11,10 +11,10 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#e7e5dc] bg-white/95 shadow-[0_2px_12px_rgba(36,39,36,0.04)] backdrop-blur">
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-midnight text-white sm:h-9 sm:w-9">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
               <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
             </span>
             <span className="text-sm sm:text-base">CareerForge</span>
@@ -59,7 +59,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         </div>
       </header>
       <main id="main-content">{children}</main>
-      <footer className={`border-t border-slate-200 bg-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+      <footer className={`border-t border-[#e7e5dc] bg-surface ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <div>
             <p className="font-semibold text-midnight">CareerForge AI</p>

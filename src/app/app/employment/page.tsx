@@ -52,19 +52,19 @@ export default function EmploymentPage() {
             <li key={href}>
               <Link
                 href={href}
-                className={`group flex h-full flex-col rounded-xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-dark focus-visible:ring-offset-2 ${
-                  featured ? 'border-sunshine-dark/50 bg-white' : 'border-slate-200 bg-white'
+                className={`group flex h-full flex-col rounded-2xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 ${
+                  featured ? 'border-sunshine-dark/50 bg-surface' : 'border-[#e7e5dc] bg-surface'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="metadata-label">Step {number}</span>
-                  <span className={`grid h-10 w-10 place-items-center rounded-lg ${featured ? 'bg-sage text-emerald-dark' : 'bg-slate-100 text-midnight'}`}>
+                  <span className={`grid h-10 w-10 place-items-center rounded-full ${featured ? 'bg-sunshine text-midnight' : 'bg-white text-midnight'}`}>
                     <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </div>
                 <h3 className="mt-5 text-lg font-semibold text-midnight">{title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{description}</p>
-                <span className={`mt-5 inline-flex items-center gap-2 text-sm font-semibold ${featured ? 'text-emerald-dark' : 'text-midnight'}`}>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-midnight">
                   {action}
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
                 </span>

@@ -17,7 +17,7 @@ const tabs = [
 export function EmploymentNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Employment Hub" className="mb-7 overflow-x-auto border-b border-slate-200">
+    <nav aria-label="Employment Hub" className="mb-7 overflow-x-auto border-b border-[#e7e5dc]">
       <div className="flex min-w-max gap-1 px-1">
         {tabs.map(({ href, label }) => {
           const active = href === '/app/employment' ? pathname === href : pathname.startsWith(href);
