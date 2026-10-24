@@ -59,19 +59,58 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         </div>
       </header>
       <main id="main-content">{children}</main>
-      <footer className={`border-t border-[#e7e5dc] bg-surface ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <div>
-            <p className="font-semibold text-midnight">CareerForge AI</p>
-            <p className="mt-1">Work readiness, money confidence, and practical next steps.</p>
+      <footer className={`border-t border-[#343832] bg-[#242724] text-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+        <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
+          <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
+            <div className="max-w-sm">
+              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-white focus-visible:outline-white" aria-label="CareerForge home">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-white/10">
+                  <BriefcaseBusiness size={19} strokeWidth={1.8} aria-hidden="true" />
+                </span>
+                <span className="text-lg">CareerForge</span>
+              </Link>
+              <p className="mt-4 text-sm leading-6 text-white/70">
+                A practical starting point for work readiness, money confidence, and your next steps.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/75">
+                <span className="h-2 w-2 rounded-full bg-sunshine" aria-hidden="true" />
+                South African youth-mobility prototype
+              </span>
+            </div>
+
+            <nav aria-label="Explore CareerForge">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-sunshine">Explore</h2>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                <li><Link href="/how-it-works" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">How it works</Link></li>
+                <li><Link href="/opportunities" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Opportunities</Link></li>
+                <li><Link href="/partners" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">For organizations</Link></li>
+                <li><Link href="/about" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">About CareerForge</Link></li>
+              </ul>
+            </nav>
+
+            <nav aria-label="Account and privacy">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-sunshine">Your account</h2>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                {variant === 'workspace' ? (
+                  <>
+                    <li><Link href="/app/profile" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Your profile</Link></li>
+                    <li><Link href="/app/settings" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Account settings</Link></li>
+                  </>
+                ) : (
+                  <>
+                    <li><Link href="/login" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Sign in</Link></li>
+                    <li><Link href="/signup" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Get started</Link></li>
+                  </>
+                )}
+                <li><Link href="/privacy" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Privacy notice</Link></li>
+              </ul>
+            </nav>
           </div>
-          <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-4 gap-y-2 text-xs">
-            <Link href="/how-it-works" className="hover:text-midnight">How it works</Link>
-            <Link href="/opportunities" className="hover:text-midnight">Opportunities</Link>
-            <Link href="/partners" className="hover:text-midnight">For partners</Link>
-            <Link href="/about" className="hover:text-midnight">About</Link>
-            <Link href="/privacy" className="hover:text-midnight">Privacy</Link>
-          </nav>
+
+          <div className="mt-9 flex flex-col gap-3 border-t border-white/15 pt-5 text-xs leading-5 text-white/55 sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
+            <p>Opportunities open on the original provider’s site. You choose what to share and when to apply.</p>
+            <p className="shrink-0">© CareerForge</p>
+          </div>
         </div>
       </footer>
     </>
