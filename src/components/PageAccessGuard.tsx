@@ -28,7 +28,7 @@ export function PageAccessGuard({ children }: { children: ReactNode }) {
         if (authError) throw authError;
         if (!active) return;
         if (!data.user) {
-          router.replace('/');
+          router.replace(`/signup?next=${encodeURIComponent(pathname)}`);
           setAllowed(false);
         } else {
           setAllowed(true);

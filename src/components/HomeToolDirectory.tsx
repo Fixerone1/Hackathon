@@ -12,9 +12,13 @@ import {
   Lightbulb,
   MessageCircle,
   Route,
+  type LucideIcon,
 } from 'lucide-react';
 
-const tools = [
+type ToolFocus = 'study' | 'work' | 'business' | 'money';
+type HomeTool = { icon: LucideIcon; title: string; text: string; href: string; tag: string; focus: readonly ToolFocus[] };
+
+const tools: readonly HomeTool[] = [
   { icon: ClipboardCheck, title: 'Skills assessment', text: 'See your strengths and choose what to grow next.', href: '/app/employment/assessment', tag: 'KNOW YOUR STRENGTHS', focus: ['work', 'study'] },
   { icon: FileText, title: 'CV Builder', text: 'Get your experience and skills ready to share.', href: '/app/employment/cv', tag: 'TELL YOUR STORY', focus: ['work'] },
   { icon: MessageCircle, title: 'Interview Coach', text: 'Get ready to show up with confidence.', href: '/app/employment/interview', tag: 'PREPARE FOR WORK', focus: ['work'] },

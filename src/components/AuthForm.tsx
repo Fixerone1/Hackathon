@@ -46,7 +46,11 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
         setNotice('Check your email for a confirmation link, then return here to sign in.');
         return;
       }
-      router.replace(isSignup ? '/app/profile' : '/app');
+      const requestedPath = new URLSearchParams(window.location.search).get('next');
+      const destination = requestedPath === '/app' || requestedPath?.startsWith('/app/')
+        ? requestedPath
+        : isSignup ? '/app/profile' : '/app';
+      router.replace(destination);
       router.refresh();
     } catch {
       setError('Authentication service is unavailable. Please try again shortly.');

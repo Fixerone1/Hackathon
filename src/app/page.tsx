@@ -92,7 +92,7 @@ export default function HomePage() {
               <Link href="/signup" className="btn-primary w-full sm:w-fit">
                 Start building your next step <ArrowRight size={17} aria-hidden="true" />
               </Link>
-              <Link href="/how-it-works" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-[#d9d9d9] px-4 py-2 text-sm font-semibold text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
+              <Link href="/#journey-heading" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-[#d9d9d9] px-4 py-2 text-sm font-semibold text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
                 See how it works
               </Link>
             </div>

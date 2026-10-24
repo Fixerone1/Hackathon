@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { BriefcaseBusiness, Search } from 'lucide-react';
+import { ArrowUpRight, BriefcaseBusiness, Search } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
