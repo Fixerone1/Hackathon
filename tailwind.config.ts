@@ -6,8 +6,8 @@ const config: Config = {
     extend: {
       colors: {
         white: '#FFFFFF',
-        sand: '#F5F4EF',
-        surface: '#F5F4EF',
+        sand: '#FFFFFF',
+        surface: '#FFFFFF',
         sunshine: { DEFAULT: '#FFE500', light: '#FFF8B8', dark: '#A68F00' },
         ocean: '#222222',
         'ocean-deep': '#111111',

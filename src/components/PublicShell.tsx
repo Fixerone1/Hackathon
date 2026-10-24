@@ -54,41 +54,41 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-midnight text-white shadow-[0_2px_16px_rgba(0,0,0,0.18)]">
+      <header className="sticky top-0 z-30 border-b border-[#e5e5e5] bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-white sm:gap-3" aria-label="CareerForge home">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-white/10 sm:h-9 sm:w-9">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
               <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
             </span>
             <span className="text-sm sm:text-base">CareerForge</span>
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
-              <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 text-white/75 transition-colors hover:bg-white/10 hover:text-sunshine lg:inline-flex">
+              <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
                 How it works
               </Link>
-              <Link href="/opportunities" className="hidden rounded-lg px-3 py-2 text-white/75 transition-colors hover:bg-white/10 hover:text-sunshine sm:inline-flex">
+              <Link href="/opportunities" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light sm:inline-flex">
                 Opportunities
               </Link>
-              <Link href="/partners" className="hidden rounded-lg px-3 py-2 text-white/75 transition-colors hover:bg-white/10 hover:text-sunshine lg:inline-flex">
+              <Link href="/partners" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
                 For organizations
               </Link>
-              <Link href="/about" className="hidden rounded-lg px-3 py-2 text-white/75 transition-colors hover:bg-white/10 hover:text-sunshine lg:inline-flex">
+              <Link href="/about" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
                 About
               </Link>
               <details className="relative lg:hidden">
-                <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-lg px-2.5 text-white/85 transition-colors hover:bg-white/10 hover:text-sunshine marker:hidden">
+                <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-lg px-2.5 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
                   <span>Menu</span>
                 </summary>
-                <div className="absolute right-0 top-full z-40 mt-2 grid min-w-48 gap-1 rounded-xl border border-white/15 bg-midnight p-2 text-sm shadow-xl">
-                  <Link href="/how-it-works" className="rounded-lg px-3 py-2.5 text-white/80 hover:bg-white/10 hover:text-sunshine">How it works</Link>
-                  <Link href="/opportunities" className="rounded-lg px-3 py-2.5 text-white/80 hover:bg-white/10 hover:text-sunshine">Opportunities</Link>
-                  <Link href="/partners" className="rounded-lg px-3 py-2.5 text-white/80 hover:bg-white/10 hover:text-sunshine">For organizations</Link>
-                  <Link href="/about" className="rounded-lg px-3 py-2.5 text-white/80 hover:bg-white/10 hover:text-sunshine">About</Link>
-                  <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-white/80 hover:bg-white/10 hover:text-sunshine">Privacy</Link>
+                <div className="absolute right-0 top-full z-40 mt-2 grid min-w-48 gap-1 rounded-xl border border-[#e5e5e5] bg-white p-2 text-sm shadow-xl">
+                  <Link href="/how-it-works" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">How it works</Link>
+                  <Link href="/opportunities" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Opportunities</Link>
+                  <Link href="/partners" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">For organizations</Link>
+                  <Link href="/about" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">About</Link>
+                  <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Privacy</Link>
                 </div>
               </details>
-              <Link href="/login" className="whitespace-nowrap rounded-lg px-2 py-2 text-white/85 transition-colors hover:bg-white/10 hover:text-sunshine sm:px-3">
+              <Link href="/login" className="whitespace-nowrap rounded-lg px-2 py-2 text-midnight transition-colors hover:bg-sunshine-light sm:px-3">
                 Sign in
               </Link>
               <Link href="/signup" className="btn-primary min-h-10 whitespace-nowrap rounded-lg px-2.5 py-2 text-xs sm:px-3 sm:text-sm">
@@ -97,7 +97,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               </Link>
             </nav>
           ) : (
-            <span className="text-sm font-medium text-sunshine">Learner workspace</span>
+            <span className="text-sm font-medium text-midnight">Learner workspace</span>
           )}
         </div>
       </header>
@@ -105,7 +105,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {!(variant === 'public' && pathname === '/') && (
         <section
           aria-label={`${bannerLabel} banner`}
-          className="relative isolate h-36 overflow-hidden border-b border-black/10 bg-midnight sm:h-48 lg:h-56"
+          className="relative isolate h-36 overflow-hidden border-b border-[#e5e5e5] bg-white sm:h-48 lg:h-56"
         >
           <img
             src={bannerImage}
@@ -115,12 +115,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             height={245}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-midnight/60" />
+          <div aria-hidden="true" className="absolute inset-0 bg-white/70" />
           <div className="pointer-events-none absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
               <div className="max-w-2xl">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-sunshine">CareerForge <span aria-hidden="true" className="text-white/60">/</span> Your journey</p>
-                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-midnight">CareerForge <span aria-hidden="true" className="text-midnight">/</span> Your journey</p>
+                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl lg:text-4xl">
                   {bannerLabel}
                 </h2>
               </div>
@@ -128,26 +128,26 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </div>
         </section>
       )}
-      <main id="main-content" className="bg-[#fffdf0]">{children}</main>
-      <footer className={`border-t border-[#333333] bg-[#222222] text-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+      <main id="main-content" className="bg-white">{children}</main>
+      <footer className={`border-t-4 border-sunshine bg-white text-midnight ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
         <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">
-              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-white focus-visible:outline-white" aria-label="CareerForge home">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-white/10">
+              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label="CareerForge home">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light">
                   <BriefcaseBusiness size={19} strokeWidth={1.8} aria-hidden="true" />
                 </span>
                 <span className="text-lg">CareerForge</span>
               </Link>
-              <p className="mt-4 text-sm leading-6 text-white/70">
+              <p className="mt-4 text-sm leading-6 text-midnight">
                 A practical starting point for work readiness, money confidence, and your next steps.
               </p>
-              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/75">
-                <span className="h-2 w-2 rounded-full bg-sunshine" aria-hidden="true" />
+              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] px-3 py-1 text-xs font-medium text-midnight">
+                <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
                 South African youth-mobility prototype
               </span>
               <div className="mt-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Connect with us</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Connect with us</p>
                 {linkedInUrl && /^https:\/\/(www\.)?linkedin\.com\//i.test(linkedInUrl) ? (
                   <a
                     href={linkedInUrl}
@@ -164,46 +164,46 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   <span
                     title="Set NEXT_PUBLIC_LINKEDIN_URL to your official LinkedIn page"
                     aria-label="LinkedIn profile link not configured"
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-semibold text-white/70"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#e5e5e5] px-4 text-sm font-semibold text-midnight"
                   >
                     <LinkedInMark />
                     LinkedIn
-                    <span className="text-xs font-normal text-white/50">Coming soon</span>
+                    <span className="text-xs font-normal text-midnight">Coming soon</span>
                   </span>
                 )}
               </div>
             </div>
 
             <nav aria-label="Explore CareerForge">
-              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-sunshine">Explore</h2>
-              <ul className="mt-4 space-y-3 text-sm text-white/75">
-                <li><Link href="/how-it-works" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">How it works</Link></li>
-                <li><Link href="/opportunities" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Opportunities</Link></li>
-                <li><Link href="/partners" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">For organizations</Link></li>
-                <li><Link href="/about" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">About CareerForge</Link></li>
+              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Explore</h2>
+              <ul className="mt-4 space-y-3 text-sm text-midnight">
+                <li><Link href="/how-it-works" className="transition-colors hover:bg-sunshine-light">How it works</Link></li>
+                <li><Link href="/opportunities" className="transition-colors hover:bg-sunshine-light">Opportunities</Link></li>
+                <li><Link href="/partners" className="transition-colors hover:bg-sunshine-light">For organizations</Link></li>
+                <li><Link href="/about" className="transition-colors hover:bg-sunshine-light">About CareerForge</Link></li>
               </ul>
             </nav>
 
             <nav aria-label="Account and privacy">
-              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-sunshine">Your account</h2>
-              <ul className="mt-4 space-y-3 text-sm text-white/75">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Your account</h2>
+              <ul className="mt-4 space-y-3 text-sm text-midnight">
                 {variant === 'workspace' ? (
                   <>
-                    <li><Link href="/app/profile" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Your profile</Link></li>
-                    <li><Link href="/app/settings" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Account settings</Link></li>
+                    <li><Link href="/app/profile" className="transition-colors hover:bg-sunshine-light">Your profile</Link></li>
+                    <li><Link href="/app/settings" className="transition-colors hover:bg-sunshine-light">Account settings</Link></li>
                   </>
                 ) : (
                   <>
-                    <li><Link href="/login" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Sign in</Link></li>
-                    <li><Link href="/signup" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Get started</Link></li>
+                    <li><Link href="/login" className="transition-colors hover:bg-sunshine-light">Sign in</Link></li>
+                    <li><Link href="/signup" className="transition-colors hover:bg-sunshine-light">Get started</Link></li>
                   </>
                 )}
-                <li><Link href="/privacy" className="transition-colors hover:text-sunshine focus-visible:text-sunshine">Privacy notice</Link></li>
+                <li><Link href="/privacy" className="transition-colors hover:bg-sunshine-light">Privacy notice</Link></li>
               </ul>
             </nav>
           </div>
 
-          <div className="mt-9 flex flex-col gap-3 border-t border-white/15 pt-5 text-xs leading-5 text-white/55 sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-9 flex flex-col gap-3 border-t border-[#e5e5e5] pt-5 text-xs leading-5 text-midnight sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
             <p>Opportunities open on the original provider’s site. You choose what to share and when to apply.</p>
             <p className="shrink-0">© CareerForge</p>
           </div>
