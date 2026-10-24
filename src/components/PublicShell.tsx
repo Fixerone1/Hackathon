@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { ArrowUpRight, BriefcaseBusiness, Search } from 'lucide-react';
+import { ArrowUpRight, BriefcaseBusiness } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
@@ -92,31 +92,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   About
                 </Link>
               </>}
-              <Link href="/#site-search" aria-label="Search CareerForge"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
-                <Search size={18} strokeWidth={2.2} aria-hidden="true" />
-              </Link>
-              {signedIn && <details className="relative lg:hidden">
-                <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-full px-3 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
-                  <span>Menu</span>
-                </summary>
-                <div className="absolute right-0 top-full z-40 mt-2 grid min-w-48 gap-1 rounded-xl border border-[#e5e5e5] bg-white p-2 text-sm shadow-xl">
-                  <Link href="/how-it-works" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">How it works</Link>
-                  <Link href="/opportunities" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Opportunities</Link>
-                  <Link href="/partners" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">For organizations</Link>
-                  <Link href="/about" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">About</Link>
-                  <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Privacy</Link>
-                </div>
-              </details>}
               <AccountMenu compact onUserChange={setSignedIn} />
             </nav>
           ) : (
             <div className="flex items-center gap-2">
               <span className="hidden text-sm font-medium text-midnight sm:inline">Learner workspace</span>
-              <Link href="/#site-search" aria-label="Search CareerForge"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
-                <Search size={18} strokeWidth={2.2} aria-hidden="true" />
-              </Link>
               <AccountMenu compact />
             </div>
           )}

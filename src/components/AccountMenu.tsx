@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
-import { LogOut, Settings, UserRound } from 'lucide-react';
+import { LayoutDashboard, LogOut, Settings, UserRound } from 'lucide-react';
 
 type AccountUser = { name: string; email: string };
 
@@ -105,6 +105,9 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
             <p className="truncate text-sm font-bold">{user.name}</p>
             <p className="truncate text-xs text-slate-600">{user.email}</p>
           </div>
+          <Link href="/app" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
+            <LayoutDashboard size={17} aria-hidden="true" /> Dashboard
+          </Link>
           <Link href="/app/profile" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
             <UserRound size={17} aria-hidden="true" /> My profile
           </Link>

@@ -13,7 +13,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
-import { SiteSearch } from '@/components/SiteSearch';
 import { HomeToolDirectory } from '@/components/HomeToolDirectory';
 
 const journeySteps = [
@@ -76,19 +75,15 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden bg-white text-midnight">
         <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-sunshine-light" />
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
-          <div className="max-w-2xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-midnight">
-              <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
-              Made for your next move
-            </p>
-            <h1 className="mt-6 text-[2.65rem] font-bold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+          <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
+            <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.25rem]">
               Your future is
               <span className="block"><span className="bg-sunshine px-2 text-midnight">yours to build.</span></span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-midnight sm:text-lg sm:leading-8">
+            <p className="mt-6 max-w-none text-base leading-7 text-midnight sm:text-lg sm:leading-8">
               Whether you’re thinking about studying further, starting a business, or finding your feet in a new job, your next step deserves a plan that starts with you.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:items-start lg:justify-start">
               <Link href="/signup" className="btn-primary w-full sm:w-fit">
                 Start building your next step <ArrowRight size={17} aria-hidden="true" />
               </Link>
@@ -151,13 +146,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="bg-white px-4 pb-8 pt-7 sm:px-6 sm:pb-10 sm:pt-8 lg:px-8">
-        <SiteSearch />
-      </div>
-
       <section id="tools" className="bg-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="tools-heading">
         <div className="mx-auto max-w-6xl">
-          <div className="max-w-2xl">
+          <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
             <p className="eyebrow">Your toolkit, all in one place</p>
             <h2 id="tools-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Find the tool for your next move.</h2>
             <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace; current availability is shown on each tool page.</p>
@@ -182,8 +173,8 @@ export default function HomePage() {
             {journeySteps.map(({ number, icon: Icon, title, text, detail }, index) => (
               <Fragment key={number}>
                 <li className="flex-1">
-                  <article className="relative h-full rounded-2xl border border-[#e5e5e5] bg-white p-5 shadow-[0_8px_26px_rgba(34,34,34,0.05)] transition-transform hover:-translate-y-1 sm:p-6">
-                    <div className="flex items-center justify-between">
+                  <article className="relative h-full rounded-2xl border border-[#e5e5e5] bg-white p-5 text-center shadow-[0_8px_26px_rgba(34,34,34,0.05)] transition-transform hover:-translate-y-1 sm:p-6 md:text-left">
+                    <div className="flex items-center justify-center gap-4 md:justify-between">
                       <span className="text-xs font-extrabold tracking-[0.18em] text-midnight">STEP {number}</span>
                       <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-midnight">
                         <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
@@ -214,12 +205,12 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="pathways-heading">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
+        <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+          <div className="mx-auto max-w-2xl sm:mx-0">
             <p className="eyebrow">Whatever your next move looks like</p>
             <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">There’s more than one way forward.</h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-midnight">Pick the path that feels most like you today. You can explore the others whenever you like.</p>
+          <p className="mx-auto max-w-sm text-sm leading-6 text-midnight sm:mx-0">Pick the path that feels most like you today. You can explore the others whenever you like.</p>
         </div>
 
         <div className="mt-7 grid gap-4 md:grid-cols-3 md:gap-5">
@@ -227,17 +218,17 @@ export default function HomePage() {
             <article key={tag} className={`flex h-full flex-col overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_26px_rgba(34,34,34,0.05)] ${index === 1 ? 'md:-translate-y-2' : ''}`}>
               <div className="relative h-44 overflow-hidden sm:h-52">
                 <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${image}`} alt={imageAlt} loading="lazy" width={1000} height={667} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
-                <span className="absolute bottom-3 left-3 rounded-full bg-sunshine px-3 py-1.5 text-[10px] font-extrabold tracking-[0.12em] text-midnight">{tag}</span>
+                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-sunshine px-3 py-1.5 text-[10px] font-extrabold tracking-[0.12em] text-midnight sm:left-3 sm:translate-x-0">{tag}</span>
               </div>
               <div className="flex flex-1 flex-col p-5 sm:p-6">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-center md:justify-between">
                   <span className={`grid h-11 w-11 place-items-center rounded-full ${index === 1 ? 'bg-midnight text-sunshine' : 'bg-sunshine text-midnight'}`}>
                     <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </div>
-                <h3 className="mt-5 text-xl font-bold leading-snug text-midnight">{title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-6 text-midnight">{text}</p>
-                <p className="mt-5 border-t border-slate-100 pt-4 text-sm font-semibold text-midnight">{prompt}</p>
+                <h3 className="mt-5 text-center text-xl font-bold leading-snug text-midnight md:text-left">{title}</h3>
+                <p className="mt-3 flex-1 text-center text-sm leading-6 text-midnight md:text-left">{text}</p>
+                <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm font-semibold text-midnight md:text-left">{prompt}</p>
               </div>
             </article>
           ))}
@@ -247,11 +238,11 @@ export default function HomePage() {
       <section className="px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20" aria-labelledby="cta-heading">
         <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[1.75rem] bg-sunshine px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
           <div aria-hidden="true" className="absolute -right-12 -top-24 h-64 w-64 rounded-full border-[32px] border-black/[0.06]" />
-          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="relative flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-black/65">Your next chapter starts somewhere</p>
               <h2 id="cta-heading" className="mt-2 text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl">Make today your starting point.</h2>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-black/70 sm:text-base">Create your learner profile and start turning what matters to you into a plan.</p>
+              <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-black/70 sm:text-base md:mx-0">Create your learner profile and start turning what matters to you into a plan.</p>
             </div>
             <Link href="/signup" className="btn min-h-12 w-full shrink-0 rounded-xl bg-sunshine px-5 text-midnight hover:bg-[#f0d600] md:w-auto">
               Get started <ArrowRight size={16} aria-hidden="true" />

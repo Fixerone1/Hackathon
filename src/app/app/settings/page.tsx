@@ -47,6 +47,7 @@ export default function SettingsPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [accessibility, setAccessibility] = useState<AccessibilityPreferences>({ highContrast: false, reduceMotion: false, largerText: false });
+  const [dashboardAlerts, setDashboardAlerts] = useState(true);
   const [homeFocus, setHomeFocus] = useState<HomeFocus>('all');
   const [localPreferencesLoaded, setLocalPreferencesLoaded] = useState(false);
   const [privacyBusy, setPrivacyBusy] = useState(false);
@@ -97,6 +98,7 @@ export default function SettingsPage() {
       if (savedFocus === 'study' || savedFocus === 'work' || savedFocus === 'business' || savedFocus === 'money') {
         setHomeFocus(savedFocus);
       }
+      setDashboardAlerts(localStorage.getItem('careerforge-dashboard-alerts') !== 'false');
     } catch {
       localStorage.removeItem('careerforge-accessibility');
       localStorage.removeItem('careerforge-home-focus');
@@ -113,7 +115,8 @@ export default function SettingsPage() {
     root.classList.toggle('larger-text', accessibility.largerText);
     localStorage.setItem('careerforge-accessibility', JSON.stringify(accessibility));
     localStorage.setItem('careerforge-home-focus', homeFocus);
-  }, [accessibility, homeFocus, localPreferencesLoaded]);
+    localStorage.setItem('careerforge-dashboard-alerts', String(dashboardAlerts));
+  }, [accessibility, dashboardAlerts, homeFocus, localPreferencesLoaded]);
 
   function update<K extends keyof Preferences>(key: K, value: Preferences[K]) {
     setPreferences((current) => ({ ...current, [key]: value }));
@@ -169,6 +172,14 @@ export default function SettingsPage() {
         progress: progress.data,
         email_preferences: emailPreferences.data,
         privacy_consents: privacyConsent.data,
+        local_preferences: {
+          dashboard_alerts: localStorage.getItem('careerforge-dashboard-alerts') !== 'false',
+          homepage_focus: localStorage.getItem('careerforge-home-focus') || 'all',
+          accessibility: localStorage.getItem('careerforge-accessibility'),
+          opportunity_notes: authData.user.email
+            ? localStorage.getItem(`careerforge-opportunity-notes-${authData.user.email}`)
+            : null,
+        },
       }, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(file);
       const anchor = document.createElement('a');
@@ -190,10 +201,16 @@ export default function SettingsPage() {
     setError('');
     try {
       const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again before deleting your account.');
       const { error } = await supabase.rpc('delete_my_account');
       if (error) throw error;
       await supabase.auth.signOut({ scope: 'local' });
       localStorage.removeItem('careerforge-accessibility');
+      localStorage.removeItem('careerforge-home-focus');
+      localStorage.removeItem('careerforge-dashboard-alerts');
+      localStorage.removeItem(`careerforge-opportunities-viewed-${authData.user.id}`);
+      if (authData.user.email) localStorage.removeItem(`careerforge-opportunity-notes-${authData.user.email}`);
       router.replace('/');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Your account could not be deleted.');
@@ -209,8 +226,13 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <PageIntro eyebrow="Account" title="Settings" description="Choose what you agree to receive. All email categories are off until you opt in." />
       <section className="max-w-3xl rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-7" aria-labelledby="notification-heading">
-        <h2 id="notification-heading" className="section-heading">Email notifications</h2>
-        <p className="mt-2 text-sm text-slate-600">Email delivery is not enabled yet. Your preferences are saved for when a provider is configured.</p>
+        <h2 id="notification-heading" className="section-heading">Notification preferences</h2>
+        <p className="mt-2 text-sm text-slate-600">Choose which opportunity updates you want. Dashboard alerts are checked against your profile when you open the dashboard; email delivery is not enabled yet.</p>
+        <label className="mt-4 flex min-h-12 items-center gap-3 rounded-xl border border-[#e5e5e5] bg-white px-3 text-sm font-medium text-midnight">
+          <input type="checkbox" className={toggleClass} checked={dashboardAlerts} onChange={(event) => setDashboardAlerts(event.target.checked)} />
+          Show new matching opportunities in my dashboard inbox
+        </label>
+        <p className="mt-2 text-xs text-slate-600">This dashboard alert preference is saved on this device. Email choices below are saved to your account, but email sending is not active.</p>
         <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
           {([
             ['instant_matches', 'New opportunity alerts'],

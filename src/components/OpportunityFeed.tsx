@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { Heart, Linkedin, MessageCircle } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
@@ -137,6 +138,8 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [aiErrors, setAiErrors] = useState<Record<string, string>>({});
   const [copiedPlanId, setCopiedPlanId] = useState('');
   const [error, setError] = useState('');
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [openNoteId, setOpenNoteId] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -188,6 +191,16 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     void loadFeed();
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    if (!account.email) return;
+    try {
+      const saved = localStorage.getItem(`careerforge-opportunity-notes-${account.email}`);
+      setNotes(saved ? JSON.parse(saved) as Record<string, string> : {});
+    } catch (caught) {
+      setError(caught instanceof Error ? `Private notes could not be loaded: ${caught.message}` : 'Private notes could not be loaded.');
+    }
+  }, [account.email]);
 
   const matches = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
@@ -324,16 +337,26 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     }
   }
 
+  function updateNote(opportunityId: string, value: string) {
+    const updated = { ...notes, [opportunityId]: value };
+    setNotes(updated);
+    try {
+      localStorage.setItem(`careerforge-opportunity-notes-${account.email}`, JSON.stringify(updated));
+    } catch (caught) {
+      setError(caught instanceof Error ? `Your private note could not be saved: ${caught.message}` : 'Your private note could not be saved.');
+    }
+  }
+
   if (loading) return <p className="py-8 text-sm text-slate-600" role="status">Finding verified opportunities...</p>;
 
   return (
     <section aria-label={mode === 'applications' ? 'Saved opportunities and applications' : 'Personalized opportunities'}>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-        <div>
+        <div className="w-full text-center sm:text-left">
           <p className="text-sm text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Current listings from verified sources, ranked against the details in your profile.'}</p>
         </div>
-        <div className="w-full max-w-xs">
-          <label htmlFor="opportunity-category" className="label">Opportunity type</label>
+        <div className="mx-auto w-full max-w-xs sm:mx-0">
+          <label htmlFor="opportunity-category" className="label text-center sm:text-left">Opportunity type</label>
           <select id="opportunity-category" className="input" value={category} onChange={(event) => setCategory(event.target.value)}>
             <option value="all">All types</option>
             {opportunityCategories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
@@ -344,7 +367,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
 
       {matches.length === 0 && !error ? (
-        <div className="border-y border-slate-200 py-7">
+        <div className="border-y border-slate-200 py-7 text-center sm:text-left">
           <h2 className="font-semibold text-midnight">{mode === 'applications' ? 'Nothing saved yet' : 'No current verified listings yet'}</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
             {mode === 'applications'
@@ -358,18 +381,18 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
             <li key={opportunity.id}>
               <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:px-6">
+                <div className="hidden flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:flex sm:px-6">
                   <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Your next opportunity could start here</span>
                   {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
                 </div>
                 <div className="p-5 sm:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0">
+                  <div className="min-w-0 text-center sm:text-left">
                     <span className="inline-flex rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{categoryLabel(opportunity.category)}</span>
                     <h2 className="mt-3 text-xl font-bold leading-snug text-midnight sm:text-2xl">{opportunity.title}</h2>
                     <p className="mt-1 font-semibold text-midnight">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>
-                  <div className="w-full rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3 sm:w-44 sm:shrink-0 sm:text-right">
+                  <div className="hidden w-full rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3 sm:block sm:w-44 sm:shrink-0 sm:text-right">
                     {score === null
                       ? <p className="text-xs leading-5 text-slate-600">Fit guidance</p>
                       : <p className="text-sm font-bold text-midnight"><span className="rounded-full bg-sunshine px-2 py-1">{score}%</span> fit signals</p>}
@@ -377,6 +400,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     <p className="metadata-label mt-2">Closing date</p>
                     <p className="text-sm font-medium text-midnight">{formatDate(opportunity.closing_date)}</p>
                   </div>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-xs font-medium text-slate-600 sm:hidden">
+                  <span className="rounded-full bg-sunshine px-2.5 py-1 font-bold text-midnight">{categoryLabel(opportunity.category)}</span>
+                  {opportunity.location && <span>{opportunity.location}</span>}
+                  <span>Closes {formatDate(opportunity.closing_date)}</span>
+                  {score !== null && <span className="font-bold text-midnight">{score}% fit</span>}
+                  {score === null && <Link href="/app/profile" className="font-semibold underline underline-offset-2">Improve your match</Link>}
                 </div>
 
                 {mode === 'applications' && (
@@ -386,13 +416,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 ) && (
                   <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or been withdrawn. Check its source before taking action.</p>
                 )}
-                <p className="mt-5 max-w-4xl whitespace-pre-line text-base leading-7 text-slate-700">{opportunity.summary}</p>
-                <p className="mt-4 border-l-4 border-sunshine bg-slate-50 px-4 py-3 text-sm font-medium leading-6 text-midnight">
+                <p className="mt-4 max-w-4xl text-center line-clamp-3 whitespace-pre-line text-sm leading-6 text-slate-700 sm:mt-5 sm:line-clamp-none sm:text-left sm:text-base sm:leading-7">{opportunity.summary}</p>
+                <p className="mt-4 hidden rounded-xl bg-sunshine-light px-4 py-3 text-sm font-medium leading-6 text-midnight sm:block">
                   Take a look, see how it fits your goals, and use your profile to get application-ready.
                 </p>
 
                 {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
-                  <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/80 p-4">
+                  <div className="mt-4 hidden rounded-lg border border-slate-200 bg-slate-50/80 p-4 sm:block">
                     <p className="metadata-label mb-2">At a glance · check the original advert for full details</p>
                     <div className="flex flex-wrap gap-2 text-sm text-slate-700">
                       {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
@@ -407,8 +437,8 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 )}
 
-                {reasons.length > 0 && <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
-                {cautions.length > 0 && <p className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
+                {reasons.length > 0 && <p className="mt-4 hidden rounded-lg bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900 sm:block"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
+                {cautions.length > 0 && <p className="mt-3 hidden rounded-lg bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900 sm:block"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
 
                 <details className="mt-5 min-w-0 rounded-lg border border-slate-200 bg-white p-4 open:bg-slate-50/50 sm:p-5">
                   <summary className="min-h-8 cursor-pointer py-1 text-base font-semibold text-midnight marker:text-emerald-dark">Prepare your application</summary>
@@ -447,15 +477,30 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-5 flex flex-col gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+                <div className="mt-5 flex flex-col items-center gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                   <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full sm:w-auto">
                     View &amp; apply <span aria-hidden="true">→</span>
                   </a>
-                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(opportunity.source_url)}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="btn-secondary w-full sm:w-auto">
-                    Share on LinkedIn
-                  </a>
+                  <div role="group" aria-label="Opportunity social actions" className="flex items-center justify-center gap-2 sm:justify-start">
+                    <button type="button" aria-label={action === 'saved' ? 'Unlike and remove from saved opportunities' : 'Like and save this opportunity'}
+                      aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
+                      title={action === 'saved' ? 'Remove from saved' : 'Like and save'}
+                      onClick={() => void setAction(opportunity.id, action === 'saved' ? null : 'saved')}
+                      className="grid h-11 w-11 place-items-center rounded-full border border-[#e5e5e5] bg-white text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light disabled:opacity-50">
+                      <Heart size={19} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" />
+                    </button>
+                    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(opportunity.source_url)}`}
+                      target="_blank" rel="noopener noreferrer" aria-label="Share this opportunity on LinkedIn" title="Share on LinkedIn"
+                      className="grid h-11 w-11 place-items-center rounded-full border border-[#e5e5e5] bg-white text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
+                      <Linkedin size={19} aria-hidden="true" />
+                    </a>
+                    <button type="button" aria-label={openNoteId === opportunity.id ? 'Close private note' : 'Add a private note'}
+                      aria-expanded={openNoteId === opportunity.id} title="Add a private note"
+                      onClick={() => setOpenNoteId((current) => current === opportunity.id ? '' : opportunity.id)}
+                      className="grid h-11 w-11 place-items-center rounded-full border border-[#e5e5e5] bg-white text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
+                      <MessageCircle size={19} aria-hidden="true" />
+                    </button>
+                  </div>
                   {action === 'applied' ? (
                     <>
                       <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>
@@ -465,15 +510,23 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     <>
                       <span className="text-sm font-medium text-slate-600">Saved</span>
                       <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, null)}>Remove</button>
                     </>
                   ) : (
                     <>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Save</button>
                       <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
                     </>
                   )}
                 </div>
+                {openNoteId === opportunity.id && (
+                  <div className="mt-3 rounded-xl border border-[#e5e5e5] bg-slate-50 p-4 text-center sm:text-left">
+                    <label htmlFor={`opportunity-note-${opportunity.id}`} className="block text-sm font-semibold text-midnight">Private note</label>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">Only stored in this browser and not shared with the employer or other learners.</p>
+                    <textarea id={`opportunity-note-${opportunity.id}`} className="input mt-3 min-h-24 resize-y"
+                      maxLength={2000} value={notes[opportunity.id] || ''}
+                      onChange={(event) => updateNote(opportunity.id, event.target.value)}
+                      placeholder="Add a reminder, question, or follow-up idea..." />
+                  </div>
+                )}
 
                 <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Application opens in a new tab and is completed on the employer&apos;s site; CareerForge does not submit it. Fit signals use only listed requirements and profile details; they are not an eligibility decision.</p>
                 </div>

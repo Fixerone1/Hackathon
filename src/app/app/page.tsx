@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OpportunityFeed } from '@/components/OpportunityFeed';
+import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { getSupabase } from '@/lib/supabase';
 import { PageIntro } from '@/components/PageIntro';
 
@@ -58,14 +59,6 @@ export default function DashboardPage() {
     return () => { active = false; };
   }, [router]);
 
-  async function signOut() {
-    try {
-      await getSupabase().auth.signOut({ scope: 'local' });
-    } finally {
-      router.replace('/login');
-    }
-  }
-
   function toggleAction(id: string) {
     if (!user) return;
     const updated = completed.includes(id) ? completed.filter((item) => item !== id) : [...completed, id];
@@ -91,8 +84,8 @@ export default function DashboardPage() {
         title={`Welcome, ${user.name}`}
         description="Choose a practical next step and keep your progress moving."
         actions={<>
+          <DashboardNotifications userId={user.id} />
           <Link href="/app/profile" className="btn-secondary min-h-10 w-full sm:w-auto">Edit profile</Link>
-          <button type="button" onClick={signOut} className="btn-secondary min-h-10 w-full sm:w-auto">Sign out</button>
         </>}
       />
 
