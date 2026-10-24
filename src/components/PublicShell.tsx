@@ -104,17 +104,27 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {variant === 'workspace' && <WorkspaceNav />}
       <section
         aria-label={`${bannerLabel} banner`}
-        className="relative isolate flex min-h-[8.4rem] items-center overflow-hidden border-b border-[#e5e5e5] bg-[#eeeeee] sm:min-h-[10.5rem]"
+        className="relative isolate h-36 overflow-hidden border-b border-[#e5e5e5] bg-[#eeeeee] sm:h-48 lg:h-56"
       >
-        <div
+        <img
+          src={bannerImage}
+          alt=""
           aria-hidden="true"
-          className="absolute inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: `url('${bannerImage}')`, backgroundPosition: 'center 42%', filter: 'grayscale(1)' }}
+          width={612}
+          height={245}
+          className="absolute inset-0 h-full w-full object-cover object-center grayscale"
         />
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-sunshine/70 via-sunshine/35 to-sunshine/5" />
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-black/65">CareerForge <span aria-hidden="true">/</span> Your journey</p>
-          <p className="mt-1 text-xl font-semibold tracking-tight text-black sm:text-2xl">{bannerLabel}</p>
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-sunshine/75 via-sunshine/35 to-sunshine/10" />
+        <div className="pointer-events-none absolute inset-0 flex items-center">
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black/75">CareerForge <span aria-hidden="true">/</span> Your journey</p>
+              <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)] sm:text-3xl lg:text-4xl">
+                <span className="mr-2 inline-block h-6 w-1.5 translate-y-0.5 rounded-full bg-black sm:h-8" aria-hidden="true" />
+                {bannerLabel}
+              </h2>
+            </div>
+          </div>
         </div>
       </section>
       <main id="main-content">{children}</main>
