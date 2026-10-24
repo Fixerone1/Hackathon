@@ -115,8 +115,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             height={245}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-midnight via-midnight/85 to-midnight/35" />
-          <div aria-hidden="true" className="absolute inset-y-0 left-0 w-2 bg-sunshine sm:w-3" />
+          <div aria-hidden="true" className="absolute inset-0 bg-midnight/60" />
           <div className="pointer-events-none absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
               <div className="max-w-2xl">
