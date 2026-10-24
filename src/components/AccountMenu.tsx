@@ -109,7 +109,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
             <UserRound size={17} aria-hidden="true" /> My profile
           </Link>
           <Link href="/app/settings" onClick={() => setOpen(false)} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
-            <Settings size={17} aria-hidden="true" /> Personalise my experience
+            <Settings size={17} aria-hidden="true" /> Settings
           </Link>
           <button type="button" onClick={() => void signOut()} disabled={signingOut}
             className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold text-midnight hover:bg-sunshine-light disabled:opacity-60">

@@ -9,28 +9,28 @@ import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 const bannerLabels: Record<string, string> = {
-  '/': 'A brighter path forward',
+  '/': 'Build your next step',
   '/about': 'About CareerForge',
-  '/how-it-works': 'Your step-by-step journey',
-  '/opportunities': 'Find your next opportunity',
-  '/partners': 'Building opportunity together',
-  '/privacy': 'Your information, your choices',
-  '/login': 'Welcome back',
-  '/signup': 'Start with your next step',
-  '/app': 'Your learner workspace',
-  '/app/employment': 'Build your work readiness',
-  '/app/employment/assessment': 'Understand your strengths',
-  '/app/employment/cv': 'Tell your story with confidence',
-  '/app/employment/interview': 'Prepare for your next conversation',
-  '/app/employment/academy': 'Grow practical skills',
-  '/app/employment/opportunities': 'Explore opportunities',
-  '/app/employment/pathways': 'Explore your pathways',
-  '/app/employment/applications': 'Keep your applications moving',
-  '/app/profile': 'Make your profile yours',
-  '/app/settings': 'Your account, your preferences',
-  '/app/money': 'Build money confidence',
-  '/app/growth': 'Move an idea forward',
-  '/admin': 'Opportunity administration',
+  '/how-it-works': 'How CareerForge works',
+  '/opportunities': 'Explore opportunities',
+  '/partners': 'Partner with us',
+  '/privacy': 'Privacy at CareerForge',
+  '/login': 'Sign in to CareerForge',
+  '/signup': 'Create your account',
+  '/app': 'Your dashboard',
+  '/app/employment': 'Work and career tools',
+  '/app/employment/assessment': 'Skills assessment',
+  '/app/employment/cv': 'Build your CV',
+  '/app/employment/interview': 'Interview practice',
+  '/app/employment/academy': 'Learn new skills',
+  '/app/employment/opportunities': 'Find opportunities',
+  '/app/employment/pathways': 'Study and career paths',
+  '/app/employment/applications': 'Your applications',
+  '/app/profile': 'Your learner profile',
+  '/app/settings': 'Account settings',
+  '/app/money': 'Money skills',
+  '/app/growth': 'Business ideas',
+  '/admin': 'Manage opportunities',
 };
 
 function LinkedInMark() {
@@ -45,7 +45,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
   const pathname = usePathname() || '/';
   const [signedIn, setSignedIn] = useState(false);
   const bannerLabel = bannerLabels[pathname]
-    || (pathname.startsWith('/app/employment/') ? 'Your employment journey' : 'Your next step starts here');
+    || (pathname.startsWith('/app/employment/') ? 'Work and career tools' : 'Your next step');
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
   const bannerImages: Record<string, string> = {
     '/about': 'careerforge-people.jpg',
@@ -126,7 +126,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {!(variant === 'public' && pathname === '/') && (
         <section
           aria-label={`${bannerLabel} banner`}
-          className="relative isolate h-40 overflow-hidden border-y border-[#e5e5e5] bg-white sm:h-56 lg:h-64"
+          className="relative isolate h-36 overflow-hidden border-y border-[#e5e5e5] bg-white sm:h-44 lg:h-52"
         >
           <img
             src={bannerImage}
@@ -136,12 +136,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             height={245}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-black/40" />
+          <div aria-hidden="true" className="absolute inset-0 bg-black/45" />
           <div className="pointer-events-none absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="max-w-2xl">
-                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-sunshine drop-shadow">CareerForge <span aria-hidden="true" className="text-white">/</span> Your journey</p>
-                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-3xl lg:text-4xl">
+              <div className="max-w-full">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-sunshine drop-shadow sm:text-xs">CareerForge</p>
+                <h2 className="mt-1 whitespace-nowrap text-lg font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-2xl lg:text-3xl">
                   {bannerLabel}
                 </h2>
               </div>

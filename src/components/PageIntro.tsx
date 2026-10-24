@@ -11,7 +11,7 @@ type PageIntroProps = {
 export function PageIntro({ eyebrow, title, description, actions, className = '' }: PageIntroProps) {
   return (
     <header className={`mb-8 flex flex-col items-start justify-between gap-5 sm:mb-10 md:flex-row md:items-end ${className}`}>
-      <div className="min-w-0 border-l-4 border-sunshine pl-4 sm:pl-5">
+      <div className="min-w-0">
         <p className="eyebrow">{eyebrow}</p>
         <h1 className="page-title mt-2">{title}</h1>
         {description && <p className="page-description">{description}</p>}

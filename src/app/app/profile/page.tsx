@@ -216,7 +216,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
+      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
         <div className="min-w-0">
           <p className="eyebrow">Your information</p>
           <h1 className="page-title mt-2">Build your learner profile</h1>

@@ -357,7 +357,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         <ul className="grid gap-4">
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
             <li key={opportunity.id}>
-              <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
+              <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:px-6">
                   <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Your next opportunity could start here</span>
                   {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
