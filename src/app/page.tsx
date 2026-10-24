@@ -158,21 +158,24 @@ export default function HomePage() {
             <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace; current availability is shown on each tool page.</p>
           </div>
           <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {tools.map(({ icon: Icon, title, text, href, tag }) => (
-              <Link key={title} href={href} className="group flex min-h-48 flex-col rounded-2xl border border-[#e5e5e5] bg-white p-4 transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(34,34,34,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:p-5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold tracking-[0.12em] text-midnight">{tag}</span>
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-sunshine text-midnight">
-                    <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+            {tools.map(({ icon: Icon, title, text, href, tag }, index) => {
+              const featured = index === 1 || index === 6;
+              return (
+                <Link key={title} href={href} className={`group flex min-h-48 flex-col rounded-3xl border p-4 transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(34,34,34,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:p-5 ${featured ? 'border-sunshine bg-sunshine' : 'border-[#e5e5e5] bg-white'}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold tracking-[0.12em] text-midnight">{tag}</span>
+                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${featured ? 'bg-white' : 'bg-sunshine'}`}>
+                      <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-midnight">{title}</h3>
+                  <p className="mt-1 flex-1 text-sm leading-5 text-midnight">{text}</p>
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-midnight group-hover:underline">
+                    Explore tool <ArrowRight size={14} aria-hidden="true" />
                   </span>
-                </div>
-                <h3 className="mt-4 text-base font-bold text-midnight">{title}</h3>
-                <p className="mt-1 flex-1 text-sm leading-5 text-midnight">{text}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-midnight group-hover:underline">
-                  Explore tool <ArrowRight size={14} aria-hidden="true" />
-                </span>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

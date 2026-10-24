@@ -17,12 +17,12 @@ const tabs = [
 export function EmploymentNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Employment Hub" className="mb-7 overflow-x-auto border-b border-[#e5e5e5]">
-      <div className="flex min-w-max gap-1 px-1">
+    <nav aria-label="Employment Hub" className="mb-7 -mx-1 overflow-x-auto">
+      <div className="flex min-w-max gap-2 px-1 py-1">
         {tabs.map(({ href, label }) => {
           const active = href === '/app/employment' ? pathname === href : pathname.startsWith(href);
           return <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-            className={`border-b-2 px-4 py-3 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark text-midnight' : 'border-transparent text-slate-600 hover:text-midnight'}`}>{label}</Link>;
+            className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${active ? 'bg-sunshine text-midnight' : 'border border-[#e5e5e5] bg-white text-midnight hover:border-sunshine-dark hover:bg-sunshine-light'}`}>{label}</Link>;
         })}
       </div>
     </nav>

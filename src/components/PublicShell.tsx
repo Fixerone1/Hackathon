@@ -54,7 +54,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-30 border-b border-[#e5e5e5] bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
+      <header className="sticky top-0 z-30 border-b-4 border-sunshine bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
@@ -64,20 +64,20 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
-              <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
+              <Link href="/how-it-works" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/how-it-works' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 How it works
               </Link>
-              <Link href="/opportunities" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light sm:inline-flex">
+              <Link href="/opportunities" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light sm:inline-flex ${pathname === '/opportunities' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 Opportunities
               </Link>
-              <Link href="/partners" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
+              <Link href="/partners" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/partners' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 For organizations
               </Link>
-              <Link href="/about" className="hidden rounded-lg px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light lg:inline-flex">
+              <Link href="/about" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/about' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 About
               </Link>
               <details className="relative lg:hidden">
-                <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-lg px-2.5 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
+                <summary className="flex min-h-10 cursor-pointer list-none items-center rounded-full px-3 text-midnight transition-colors hover:bg-sunshine-light marker:hidden">
                   <span>Menu</span>
                 </summary>
                 <div className="absolute right-0 top-full z-40 mt-2 grid min-w-48 gap-1 rounded-xl border border-[#e5e5e5] bg-white p-2 text-sm shadow-xl">
@@ -88,10 +88,10 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Privacy</Link>
                 </div>
               </details>
-              <Link href="/login" className="whitespace-nowrap rounded-lg px-2 py-2 text-midnight transition-colors hover:bg-sunshine-light sm:px-3">
+              <Link href="/login" className="whitespace-nowrap rounded-full px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light">
                 Sign in
               </Link>
-              <Link href="/signup" className="btn-primary min-h-10 whitespace-nowrap rounded-lg px-2.5 py-2 text-xs sm:px-3 sm:text-sm">
+              <Link href="/signup" className="btn-primary min-h-10 whitespace-nowrap px-4 py-2 text-xs sm:text-sm">
                 <span className="sm:hidden">Join</span><span className="hidden sm:inline">Get started</span>
                 <ArrowUpRight size={15} aria-hidden="true" />
               </Link>
