@@ -5,7 +5,7 @@ import { PublicShell } from '@/components/PublicShell';
 export default function PublicOpportunitiesPage() {
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
         <p className="eyebrow">Opportunities</p>
         <h1 className="mt-2 max-w-3xl text-3xl font-semibold text-midnight sm:text-4xl">Find opportunities that fit what you can do today.</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600">CareerForge shares current opportunities with signed-in learners after their source and details have been checked. Every listing links back to its original advert.</p>

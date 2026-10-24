@@ -185,10 +185,10 @@ export default function SettingsPage() {
   }
 
   const toggleClass = 'h-5 w-5 accent-emerald';
-  if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600" role="status">Loading settings...</p>;
+  if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Loading settings...</p>;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <p className="eyebrow">Account</p>
       <h1 className="mt-1 text-3xl font-semibold text-midnight">Settings</h1>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Choose what you agree to receive. All email categories are off until you opt in.</p>

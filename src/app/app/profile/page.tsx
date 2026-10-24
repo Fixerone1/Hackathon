@@ -197,17 +197,17 @@ export default function ProfilePage() {
   const selectClass = 'input';
   const title = ['Qualification', 'Goal', 'Location & details'][step];
 
-  if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600" role="status">Loading your profile...</p>;
+  if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Loading your profile...</p>;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-5 border-b border-slate-200 pb-6">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
+      <header className="mb-7 flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
         <div>
           <p className="eyebrow">Your information</p>
-          <h1 className="mt-1 text-3xl font-semibold text-midnight">Build your learner profile</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
+          <h1 className="page-title mt-1">Build your learner profile</h1>
+          <p className="page-description">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="min-w-40">
+        <div className="w-full sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
             <div className="h-full bg-emerald transition-[width]" style={{ width: `${strength}%` }} />
@@ -215,14 +215,14 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_16rem]">
-        <section aria-labelledby="step-heading">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.85fr)] xl:gap-8">
+        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
           <ol className="mb-7 grid grid-cols-3 border-b border-slate-200" aria-label="Profile setup steps">
             {['Qualification', 'Goal', 'Location'].map((label, index) => (
               <li key={label}>
                 <button type="button" onClick={() => setStep(index)} aria-current={step === index ? 'step' : undefined}
-                  className={`w-full border-b-2 px-2 pb-3 text-left text-xs font-semibold sm:text-sm ${step === index ? 'border-emerald text-midnight' : 'border-transparent text-slate-500'}`}>
-                  <span className="mr-2 text-emerald-dark">0{index + 1}</span>{label}
+                  className={`w-full border-b-2 px-1 pb-3 text-left text-xs font-semibold sm:px-2 sm:text-sm ${step === index ? 'border-emerald text-midnight' : 'border-transparent text-slate-500'}`}>
+                  <span className="mr-1 text-emerald-dark sm:mr-2">0{index + 1}</span>{label}
                 </button>
               </li>
             ))}
@@ -331,16 +331,16 @@ export default function ProfilePage() {
 
           {error && <p className="mt-5 text-sm text-red-700" role="alert">{error}</p>}
           {message && <p className="mt-5 text-sm text-emerald-dark" role="status">{message}</p>}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5">
-            <button type="button" className="btn-secondary" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0}>Back</button>
-            <div className="flex gap-2">
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <button type="button" className="btn-secondary w-full sm:w-auto" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0}>Back</button>
+            <div className="flex flex-col gap-2 sm:flex-row">
               {step < 2 ? <button type="button" className="btn-primary" onClick={() => setStep((current) => Math.min(2, current + 1))}>Continue</button> : null}
               <button type="button" className="btn-primary" onClick={saveProfile} disabled={saving}>{saving ? 'Saving...' : 'Save profile'}</button>
             </div>
           </div>
         </section>
 
-        <aside className="border-t border-slate-200 pt-5 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+        <aside className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
           <h2 className="font-semibold text-midnight">What your profile improves</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">As verified opportunities are connected, these details can help check stated requirements more accurately.</p>
           <p className="mt-5 border-l-2 border-emerald pl-3 text-sm leading-6 text-slate-700">{nextStep}</p>

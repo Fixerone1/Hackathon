@@ -32,10 +32,10 @@ export function WorkspaceGuard({ children }: { children: ReactNode }) {
   }, [router]);
 
   if (state === 'checking') {
-    return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600" role="status">Checking your session...</p>;
+    return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Checking your session...</p>;
   }
   if (state === 'unavailable') {
-    return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600" role="alert">Authentication is unavailable. Check the Supabase configuration and try again.</p>;
+    return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="alert">Authentication is unavailable. Check the Supabase configuration and try again.</p>;
   }
   return children;
 }

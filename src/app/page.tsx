@@ -12,25 +12,25 @@ export default function HomePage() {
   return (
     <PublicShell>
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-12 md:grid-cols-[1fr_0.9fr] md:py-16 lg:gap-16">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
           <div className="max-w-xl">
             <p className="eyebrow mb-4">A workforce-readiness platform</p>
-            <h1 className="text-4xl font-semibold leading-[1.12] text-midnight sm:text-[3.25rem]">
+            <h1 className="text-4xl font-semibold leading-[1.12] tracking-tight text-midnight sm:text-5xl lg:text-[3.25rem]">
               Prepare emerging talent for what comes next.
             </h1>
             <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">
               CareerForge gives young people a structured starting point for work readiness, financial capability, and exploring enterprise.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/signup" className="btn-primary">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/signup" className="btn-primary w-full sm:w-fit">
                 Explore the learner experience <ArrowRight size={16} aria-hidden="true" />
               </Link>
-              <Link href="/#organizations" className="btn-secondary">For organizations</Link>
+              <Link href="/#organizations" className="btn-secondary w-full sm:w-fit">For organizations</Link>
             </div>
             <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
           </div>
-          <div className="relative mx-auto w-full max-w-[540px]" aria-label="Illustrative learner dashboard preview">
-            <div className="absolute -inset-3 -z-10 rounded-xl bg-sage" />
+          <div className="relative mx-auto w-full max-w-[540px] lg:justify-self-end" aria-label="Illustrative learner dashboard preview">
+            <div className="absolute -inset-2 -z-10 rounded-xl bg-sage sm:-inset-3" />
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_55px_rgba(23,43,58,0.12)]">
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                 <div>
@@ -69,13 +69,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section id="platform" className="mx-auto max-w-6xl px-4 py-12 md:py-16" aria-labelledby="pillars-heading">
+      <section id="platform" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8" aria-labelledby="pillars-heading">
         <div className="max-w-2xl">
           <p className="eyebrow">One learner journey</p>
           <h2 id="pillars-heading" className="mt-2 text-2xl font-semibold text-midnight sm:text-3xl">Support the whole transition to work</h2>
           <p className="mt-3 leading-7 text-slate-600">Bring practical guidance together in one simple experience, so learners can focus on the next achievable step.</p>
         </div>
-        <div className="mt-8 grid gap-8 border-y border-slate-200 py-7 md:grid-cols-3 md:gap-10">
+        <div className="mt-8 grid gap-7 border-y border-slate-200 py-7 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {pillars.map(({ icon: Icon, title, text }) => (
             <article key={title} className="flex gap-4">
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-sage text-emerald-dark">
@@ -90,7 +90,7 @@ export default function HomePage() {
         </div>
       </section>
       <section id="organizations" className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-10 md:grid-cols-[1fr_auto] md:items-center md:py-12">
+        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-10 sm:px-6 md:grid-cols-[1fr_auto] md:items-center md:py-12 lg:px-8">
           <div className="max-w-2xl">
             <p className="eyebrow">For employers, funders, and training partners</p>
             <h2 className="mt-2 text-2xl font-semibold text-midnight">Start with a shared view of learner readiness.</h2>

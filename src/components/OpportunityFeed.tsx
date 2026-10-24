@@ -290,13 +290,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           {matches.map(({ opportunity, score, reasons, cautions, action }) => (
             <li key={opportunity.id}>
               <article className="card p-5 sm:p-6">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
                     <span className="inline-flex rounded-full bg-sage px-3 py-1 text-xs font-semibold text-emerald-dark">{categoryLabel(opportunity.category)}</span>
                     <h2 className="mt-3 text-xl font-semibold leading-snug text-midnight">{opportunity.title}</h2>
                     <p className="mt-1 text-sm text-slate-600">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>
-                  <div className="min-w-36 rounded-lg bg-slate-50 px-3 py-2 sm:text-right">
+                  <div className="w-full rounded-lg bg-slate-50 px-3 py-3 sm:w-44 sm:shrink-0 sm:py-2 sm:text-right">
                     {score === null
                       ? <p className="text-xs leading-5 text-slate-600">Fit guidance</p>
                       : <p className="text-sm font-semibold text-emerald-dark">{score}% fit signals</p>}
@@ -330,13 +330,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 {reasons.length > 0 && <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
                 {cautions.length > 0 && <p className="mt-3 rounded-lg bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
 
-                <details className="mt-5 rounded-lg border border-slate-200 bg-white p-4 open:bg-slate-50/50 sm:p-5">
+                <details className="mt-5 min-w-0 rounded-lg border border-slate-200 bg-white p-4 open:bg-slate-50/50 sm:p-5">
                   <summary className="min-h-8 cursor-pointer py-1 text-base font-semibold text-midnight marker:text-emerald-dark">Prepare your application</summary>
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     Review and copy relevant details from your profile, then paste them into the employer&apos;s form as needed.
                     Your profile is not sent to the employer by CareerForge.
                   </p>
-                  <pre className="mt-3 whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm text-slate-700">{applicationProfileSummary(opportunity, profile)}</pre>
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">{applicationProfileSummary(opportunity, profile)}</pre>
                   <div className="mt-3 flex flex-wrap items-center gap-3">
                     <button type="button" className="btn-secondary min-h-10" onClick={() => void copyApplicationDetails(opportunity)}>
                       {copiedOpportunityId === opportunity.id ? 'Copied profile details' : 'Copy profile details'}
@@ -345,7 +345,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                   <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
                     <h3 className="font-semibold text-midnight">AI application plan</h3>
-                    <p className="mt-1 text-xs leading-5 text-slate-600">
+                    <p className="mt-1 text-sm leading-6 text-slate-600">
                       When you choose to create a plan, this listing and the profile details shown above are sent to the configured AI provider for suggestions. CareerForge does not send them to the employer or save the generated plan. Check the original listing and edit all AI-written content before using it.
                     </p>
                     <button
@@ -359,7 +359,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     {aiErrors[opportunity.id] && <p className="mt-3 text-sm text-amber-800" role="alert">{aiErrors[opportunity.id]}</p>}
                     {aiPlans[opportunity.id] && (
                       <div className="mt-4">
-                        <pre className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">{aiPlans[opportunity.id]}</pre>
+                        <pre className="overflow-x-auto whitespace-pre-wrap break-words rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-700">{aiPlans[opportunity.id]}</pre>
                         <button type="button" className="btn-secondary mt-3 min-h-10" onClick={() => void copyApplicationPlan(opportunity.id)}>
                           {copiedPlanId === opportunity.id ? 'Copied AI plan' : 'Copy AI plan'}
                         </button>
@@ -368,25 +368,25 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-5">
-                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10">
+                <div className="mt-5 flex flex-col gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full sm:w-auto">
                     Apply on employer site
                   </a>
                   {action === 'applied' ? (
                     <>
                       <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>
-                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
                     </>
                   ) : action === 'saved' ? (
                     <>
                       <span className="text-sm font-medium text-slate-600">Saved</span>
-                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
-                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, null)}>Remove</button>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, null)}>Remove</button>
                     </>
                   ) : (
                     <>
-                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Save</button>
-                      <button type="button" className="btn-secondary min-h-10" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Save</button>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
                     </>
                   )}
                 </div>

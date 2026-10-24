@@ -2,7 +2,7 @@ import { PhaseOneStatus } from '@/components/PhaseOneStatus';
 
 export default function GrowthStudioPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <p className="eyebrow">Growth Studio</p>
       <h1 className="mt-1 text-3xl font-semibold text-midnight">Explore your ideas</h1>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Develop a practical next step for a side project or business idea.</p>

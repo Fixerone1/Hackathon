@@ -4,7 +4,7 @@ import { PublicShell } from '@/components/PublicShell';
 export default function PartnersPage() {
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
         <p className="eyebrow">For organizations</p>
         <h1 className="mt-2 max-w-3xl text-3xl font-semibold text-midnight sm:text-4xl">Support a more practical transition into work.</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600">CareerForge is designed for employers, funders, education providers, and youth-development partners who want to help young people understand their next steps.</p>

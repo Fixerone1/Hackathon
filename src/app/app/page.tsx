@@ -77,14 +77,14 @@ export default function DashboardPage() {
   }
 
   if (authUnavailable) {
-    return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600" role="alert">Authentication is unavailable. Check the Supabase configuration and try again.</div>;
+    return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600 sm:px-6 lg:px-8" role="alert">Authentication is unavailable. Check the Supabase configuration and try again.</div>;
   }
   if (checkingSession || !user) {
-    return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600" role="status">Checking your session...</div>;
+    return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Checking your session...</div>;
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white px-5 py-6 shadow-card sm:px-7">
         <div>
           <p className="eyebrow">Learner workspace</p>

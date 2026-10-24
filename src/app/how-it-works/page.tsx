@@ -10,7 +10,7 @@ const steps = [
 export default function HowItWorksPage() {
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
         <p className="eyebrow">How it works</p>
         <h1 className="mt-2 max-w-3xl text-3xl font-semibold text-midnight sm:text-4xl">A clearer route from your current skills to your next opportunity.</h1>
         <div className="mt-9 grid gap-8 border-y border-slate-200 py-7 md:grid-cols-3 md:gap-10">

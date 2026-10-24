@@ -34,7 +34,7 @@ const nextSteps = [
 
 export default function EmploymentPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <p className="eyebrow">Employment Hub</p>
       <h1 className="page-title mt-1">Build your work readiness</h1>
       <p className="page-description">Take one step at a time: prepare your profile, explore verified opportunities, and keep track of applications.</p>
