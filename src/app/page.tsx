@@ -1,120 +1,222 @@
 import Link from 'next/link';
-import { ArrowRight, Check, CircleDollarSign, Compass, Target } from 'lucide-react';
+import { Fragment } from 'react';
+import {
+  ArrowDown,
+  ArrowRight,
+  BriefcaseBusiness,
+  Check,
+  CircleDollarSign,
+  Compass,
+  GraduationCap,
+  Lightbulb,
+  Sparkles,
+} from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
-import { PhotoPlaceholder } from '@/components/PhotoPlaceholder';
 
-const pillars = [
-  { icon: Target, title: 'Employment readiness', text: 'Build practical skills and turn career goals into clear next steps.' },
-  { icon: CircleDollarSign, title: 'Money confidence', text: 'Practice everyday financial decisions with simple, guided tools.' },
-  { icon: Compass, title: 'Growth potential', text: 'Explore ideas and identify useful experiments to move them forward.' },
+const journeySteps = [
+  {
+    number: '01',
+    icon: Compass,
+    title: 'Find your direction',
+    text: 'Get clear on what matters to you, what you already bring, and what you want to do next.',
+    detail: 'Your goals, your pace',
+  },
+  {
+    number: '02',
+    icon: Sparkles,
+    title: 'Build your toolkit',
+    text: 'Grow practical skills, strengthen your CV, and get more confident with money decisions.',
+    detail: 'Skills for real life',
+  },
+  {
+    number: '03',
+    icon: ArrowRight,
+    title: 'Make your next move',
+    text: 'Explore opportunities, test an idea, or take a small step towards the future you want.',
+    detail: 'Progress you can own',
+  },
+];
+
+const pathways = [
+  {
+    icon: GraduationCap,
+    tag: 'STUDY FURTHER',
+    title: 'Turn “maybe one day” into a plan.',
+    text: 'Explore pathways, recognise your strengths, and map a practical next step towards further study.',
+    prompt: 'Your next chapter can start now.',
+  },
+  {
+    icon: Lightbulb,
+    tag: 'START SOMETHING',
+    title: 'Got an idea? Give it a first step.',
+    text: 'Shape a business idea, think through who it could help, and choose one small thing to test.',
+    prompt: 'Big ideas grow from small moves.',
+  },
+  {
+    icon: BriefcaseBusiness,
+    tag: 'NEW JOB, NEW GOALS',
+    title: 'Make your money work for you.',
+    text: 'Build everyday money confidence, set a savings goal, and feel more in control of your next pay day.',
+    prompt: 'Your first pay is a fresh start.',
+  },
 ];
 
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="border-b border-[#e5e5e5] bg-surface">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
-          <div className="max-w-xl">
-            <p className="eyebrow mb-4">A workforce-readiness platform</p>
-            <h1 className="text-4xl font-bold leading-[1.08] tracking-tight text-midnight sm:text-5xl lg:text-[3.5rem]">
-              Prepare emerging talent for what comes next.
+      <section className="relative isolate overflow-hidden bg-midnight text-white">
+        <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-white/[0.04]" />
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
+          <div className="max-w-2xl">
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/85">
+              <span className="h-2 w-2 rounded-full bg-sunshine" aria-hidden="true" />
+              Made for your next move
+            </p>
+            <h1 className="mt-6 text-[2.65rem] font-bold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+              Your future is
+              <span className="block text-sunshine">yours to build.</span>
             </h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-[#555555]">
-              CareerForge gives young people a structured starting point for work readiness, financial capability, and exploring enterprise.
+            <p className="mt-6 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+              Whether you’re thinking about studying further, starting a business, or finding your feet in a new job, your next step deserves a plan that starts with you.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link href="/signup" className="btn-primary w-full sm:w-fit">
-                Explore the learner experience <ArrowRight size={16} aria-hidden="true" />
+                Start building your next step <ArrowRight size={17} aria-hidden="true" />
               </Link>
-              <Link href="/#organizations" className="btn-secondary w-full sm:w-fit">For organizations</Link>
+              <Link href="/how-it-works" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-sunshine hover:text-sunshine focus-visible:outline-white">
+                See how it works
+              </Link>
             </div>
-            <p className="mt-4 text-xs text-slate-500">Create a demo account to enter the learner workspace.</p>
+            <p className="mt-4 text-xs text-white/55">A practical starting point for young South Africans. Go at your own pace.</p>
           </div>
-          <div className="relative mx-auto w-full max-w-[540px] lg:justify-self-end" aria-label="Illustrative learner dashboard preview">
-            <div className="absolute -inset-2 -z-10 rounded-2xl bg-sunshine sm:-inset-3" />
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(36,39,36,0.12)]">
-              <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-                <div>
-                  <p className="text-xs font-medium text-slate-500">LEARNER WORKSPACE</p>
-                  <p className="mt-1 font-semibold text-midnight">My progress</p>
-                </div>
-                <span className="rounded-full bg-emerald-light px-2.5 py-1 text-xs font-semibold text-emerald-dark">Sample view</span>
-              </div>
-              <div className="grid grid-cols-[1fr_auto] items-center gap-6 px-5 py-5 sm:px-6">
-                <div>
-                  <p className="text-sm font-semibold text-midnight">Your next steps</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">A clear starting point across three focus areas.</p>
-                </div>
-                <div className="grid h-[68px] w-[68px] place-items-center rounded-full border-[6px] border-sunshine text-lg font-semibold text-midnight">
-                  2/3
-                </div>
-              </div>
-              <div className="px-5 pb-5 sm:px-6">
-                <div className="space-y-3 border-t border-slate-100 pt-4">
-                  {[
-                    'Add your skills and experience',
-                    'Set a monthly savings goal',
-                    'Choose one idea to explore',
-                  ].map((task, index) => (
-                    <div key={task} className="flex items-center gap-3 text-sm">
-                      <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${index < 2 ? 'bg-midnight text-white' : 'border border-slate-300 text-transparent'}`}>
-                        {index < 2 && <Check size={12} strokeWidth={3} aria-hidden="true" />}
-                      </span>
-                      <span className={index < 2 ? 'text-slate-500' : 'font-medium text-midnight'}>{task}</span>
-                    </div>
-                  ))}
-                </div>
+
+          <div className="relative mx-auto w-full max-w-[570px] lg:justify-self-end">
+            <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-[2rem] bg-sunshine sm:-inset-4" />
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/20 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.3)]">
+              <img
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+                alt="A group of young people smiling together"
+                width={519}
+                height={345}
+                className="h-56 w-full object-cover sm:h-72"
+              />
+              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 to-transparent" aria-hidden="true" />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-midnight shadow-sm sm:left-5 sm:top-5">
+                <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
+                Your journey. Your way.
+              </span>
+              <div className="grid gap-3 bg-white p-4 sm:grid-cols-3 sm:gap-2 sm:p-5">
+                {[
+                  { icon: GraduationCap, label: 'Study further' },
+                  { icon: Lightbulb, label: 'Grow an idea' },
+                  { icon: CircleDollarSign, label: 'Own your money' },
+                ].map(({ icon: Icon, label }) => (
+                  <div key={label} className="flex items-center gap-3 rounded-xl bg-[#f7f7f7] px-3 py-2.5 text-sm font-semibold text-midnight sm:flex-col sm:items-start sm:gap-2 sm:px-3 sm:py-3">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sunshine">
+                      <Icon size={17} strokeWidth={1.9} aria-hidden="true" />
+                    </span>
+                    {label}
+                  </div>
+                ))}
               </div>
             </div>
-            <p className="mt-3 text-right text-xs text-slate-500">Illustrative interface. Sample progress only.</p>
+            <div className="absolute -bottom-5 -left-2 hidden items-center gap-2 rounded-xl border border-black/5 bg-white px-4 py-3 text-sm font-semibold text-midnight shadow-lg sm:flex lg:-left-8">
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-sunshine"><Check size={15} strokeWidth={3} aria-hidden="true" /></span>
+              Small steps count.
+            </div>
           </div>
         </div>
       </section>
-      <section id="platform" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8" aria-labelledby="pillars-heading">
-        <div className="max-w-2xl border-l-4 border-sunshine pl-4 sm:pl-5">
-          <p className="eyebrow">One learner journey</p>
-          <h2 id="pillars-heading" className="section-heading mt-2">Support the whole transition to work</h2>
-          <p className="section-description">Bring practical guidance together in one simple experience, so learners can focus on the next achievable step.</p>
+
+      <section className="bg-[#fffdf0] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="journey-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center">No one-size-fits-all route</p>
+            <h2 id="journey-heading" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-midnight sm:text-4xl">
+              Big goals. <span className="underline decoration-sunshine decoration-[6px] underline-offset-4">One step at a time.</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#555555] sm:text-base sm:leading-7">
+              Start wherever you are. Build momentum with practical steps you can come back to whenever you’re ready.
+            </p>
+          </div>
+
+          <ol className="mt-9 flex flex-col items-stretch gap-2 md:mt-12 md:flex-row md:items-center md:gap-3">
+            {journeySteps.map(({ number, icon: Icon, title, text, detail }, index) => (
+              <Fragment key={number}>
+                <li className="flex-1">
+                  <article className="relative h-full rounded-2xl border border-[#e6e2d0] bg-white p-5 shadow-[0_8px_26px_rgba(34,34,34,0.05)] transition-transform hover:-translate-y-1 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-extrabold tracking-[0.18em] text-[#777777]">STEP {number}</span>
+                      <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-midnight">
+                        <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
+                      </span>
+                    </div>
+                    <h3 className="mt-5 text-xl font-bold text-midnight">{title}</h3>
+                    <p className="mt-2 min-h-[4.5rem] text-sm leading-6 text-[#555555]">{text}</p>
+                    <p className="mt-4 border-t border-slate-100 pt-3 text-xs font-semibold uppercase tracking-wide text-[#777777]">{detail}</p>
+                  </article>
+                </li>
+                {index < journeySteps.length - 1 && (
+                  <li aria-hidden="true" className="flex h-9 shrink-0 items-center justify-center text-sunshine-dark md:h-auto md:w-12">
+                    <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine md:h-10 md:w-10">
+                      <ArrowRight size={20} strokeWidth={2.5} className="hidden md:block" />
+                      <ArrowDown size={20} strokeWidth={2.5} className="md:hidden" />
+                    </span>
+                  </li>
+                )}
+              </Fragment>
+            ))}
+          </ol>
+          <div className="mt-8 text-center">
+            <Link href="/signup" className="btn-primary">
+              Take your first step <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
-        <div className="mt-8 grid gap-7 border-y border-slate-200 py-7 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          {pillars.map(({ icon: Icon, title, text }) => (
-            <article key={title} className="flex gap-4">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight">
-                <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
-              </span>
-              <div>
-                <h3 className="font-semibold text-midnight">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="pathways-heading">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="eyebrow">Whatever your next move looks like</p>
+            <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">There’s more than one way forward.</h2>
+          </div>
+          <p className="max-w-sm text-sm leading-6 text-[#555555]">Pick the path that feels most like you today. You can explore the others whenever you like.</p>
+        </div>
+
+        <div className="mt-7 grid gap-4 md:grid-cols-3 md:gap-5">
+          {pathways.map(({ icon: Icon, tag, title, text, prompt }, index) => (
+            <article key={tag} className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white shadow-[0_8px_26px_rgba(34,34,34,0.05)] ${index === 1 ? 'md:-translate-y-2' : ''}`}>
+              <div className={`h-2 ${index === 1 ? 'bg-midnight' : 'bg-sunshine'}`} aria-hidden="true" />
+              <div className="flex flex-1 flex-col p-5 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-extrabold tracking-[0.14em] text-slate-500">{tag}</span>
+                  <span className={`grid h-11 w-11 place-items-center rounded-full ${index === 1 ? 'bg-midnight text-sunshine' : 'bg-sunshine text-midnight'}`}>
+                    <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
+                  </span>
+                </div>
+                <h3 className="mt-5 text-xl font-bold leading-snug text-midnight">{title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-6 text-[#555555]">{text}</p>
+                <p className="mt-5 border-t border-slate-100 pt-4 text-sm font-semibold text-midnight">{prompt}</p>
               </div>
             </article>
           ))}
         </div>
       </section>
-      <section className="border-y border-[#e5e5e5] bg-surface" aria-labelledby="real-life-heading">
-        <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 py-10 sm:px-6 md:grid-cols-2 md:gap-10 md:py-14 lg:px-8">
-          <div className="order-2 md:order-1">
-            <PhotoPlaceholder
-              label="A community that feels familiar"
-              description="Add a real photo of young people learning, working, or planning their next step together."
-              className="min-h-[15rem] sm:min-h-[19rem]"
-            />
+
+      <section className="px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20" aria-labelledby="cta-heading">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[1.75rem] bg-sunshine px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
+          <div aria-hidden="true" className="absolute -right-12 -top-24 h-64 w-64 rounded-full border-[32px] border-black/[0.06]" />
+          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-black/65">Your next chapter starts somewhere</p>
+              <h2 id="cta-heading" className="mt-2 text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl">Make today your starting point.</h2>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-black/70 sm:text-base">Create your learner profile and start turning what matters to you into a plan.</p>
+            </div>
+            <Link href="/signup" className="btn min-h-12 w-full shrink-0 rounded-xl bg-midnight px-5 text-white hover:bg-black focus-visible:ring-midnight md:w-auto">
+              Get started <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </div>
-          <div className="order-1 md:order-2">
-            <p className="eyebrow">Made for real life</p>
-            <h2 id="real-life-heading" className="section-heading mt-2">Practical support, shaped around people like you.</h2>
-            <p className="section-description">Your journey is your own. Start with what you already know, find useful opportunities, and choose the next step that fits your life today.</p>
-            <Link href="/how-it-works" className="link mt-5 inline-flex items-center gap-2">See how it works <ArrowRight size={16} aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
-      <section id="organizations" className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-10 sm:px-6 md:grid-cols-[1fr_auto] md:items-center md:py-12 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="eyebrow">For employers, funders, and training partners</p>
-            <h2 className="mt-2 text-2xl font-semibold text-midnight">Start with a shared view of learner readiness.</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Explore the learner experience and assess whether CareerForge fits your youth development goals. Partner reporting and organization accounts are not part of this demo.</p>
-          </div>
-          <Link href="/signup" className="btn-secondary w-fit">View the learner experience <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
       </section>
     </PublicShell>

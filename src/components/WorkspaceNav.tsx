@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Banknote,
   BookOpen,
@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   Route,
   Settings,
+  X,
   UserRound,
 } from 'lucide-react';
 
@@ -40,6 +41,8 @@ const tools = [
 export function WorkspaceNav() {
   const pathname = usePathname();
   const [toolsOpen, setToolsOpen] = useState(false);
+  const mobileNavRef = useRef<HTMLElement>(null);
+  const toolsMenuRef = useRef<HTMLDivElement>(null);
   const inTools = tools.some(({ href }) => pathname.startsWith(href))
     || pathname === '/app/profile'
     || pathname === '/app/settings';
@@ -47,6 +50,29 @@ export function WorkspaceNav() {
   useEffect(() => {
     setToolsOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!toolsOpen) return;
+
+    function closeOnOutsidePress(event: PointerEvent) {
+      if (event.target instanceof Node
+        && !mobileNavRef.current?.contains(event.target)
+        && !toolsMenuRef.current?.contains(event.target)) {
+        setToolsOpen(false);
+      }
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setToolsOpen(false);
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePress);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePress);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [toolsOpen]);
 
   return (
     <>
@@ -63,38 +89,7 @@ export function WorkspaceNav() {
           })}
         </div>
       </nav>
-      <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e5e5e5] bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(34,34,34,0.08)] backdrop-blur md:hidden">
-        <div id="workspace-tools-menu" hidden={!toolsOpen}
-          className="absolute inset-x-0 bottom-full max-h-[min(70vh,36rem)] overflow-y-auto border-t border-[#e5e5e5] bg-white px-4 pb-4 pt-3 shadow-[0_-8px_24px_rgba(34,34,34,0.12)]">
-            <div className="mx-auto max-w-xl">
-              <h2 className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Employment tools</h2>
-              <div className="grid grid-cols-2 gap-2">
-                {tools.map(({ href, label, Icon }) => {
-                  const active = pathname.startsWith(href);
-                  return (
-                    <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-                      className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
-                      <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
-                      <span>{label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-              <h2 className="px-1 pb-2 pt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Account</h2>
-              <div className="grid grid-cols-2 gap-2">
-                {items.slice(4).map(({ href, label, Icon }) => {
-                  const active = pathname === href;
-                  return (
-                    <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-                      className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
-                      <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
-                      <span>{label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-        </div>
+      <nav ref={mobileNavRef} aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-50 border-t border-[#e5e5e5] bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(34,34,34,0.08)] backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-xl">
           {items.slice(0, 4).map(({ href, label, shortLabel, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
@@ -115,6 +110,45 @@ export function WorkspaceNav() {
           </button>
         </div>
       </nav>
+      {toolsOpen && (
+        <div ref={toolsMenuRef} id="workspace-tools-menu"
+          className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-1/2 z-[60] max-h-[min(70dvh,36rem)] w-[calc(100%-1.5rem)] max-w-xl -translate-x-1/2 overflow-y-auto rounded-2xl border border-[#e5e5e5] bg-white px-4 pb-4 pt-3 shadow-[0_-8px_24px_rgba(34,34,34,0.16)] md:hidden">
+          <div className="mx-auto">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Explore your tools</h2>
+              <button type="button" aria-label="Close tools menu" onClick={() => setToolsOpen(false)}
+                className="grid h-9 w-9 place-items-center rounded-full text-slate-600 transition hover:bg-surface hover:text-midnight">
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {tools.map(({ href, label, Icon }) => {
+                const active = pathname.startsWith(href);
+                return (
+                  <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+                    className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
+                    <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                    <span>{label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+            <h2 className="px-1 pb-2 pt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Account</h2>
+            <div className="grid grid-cols-2 gap-2">
+              {items.slice(4).map(({ href, label, Icon }) => {
+                const active = pathname === href;
+                return (
+                  <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+                    className={`flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${active ? 'border-sunshine-dark bg-sunshine-light text-midnight' : 'border-[#e5e5e5] text-slate-700 hover:bg-surface hover:text-midnight'}`}>
+                    <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                    <span>{label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

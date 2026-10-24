@@ -102,31 +102,33 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         </div>
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
-      <section
-        aria-label={`${bannerLabel} banner`}
-        className="relative isolate h-36 overflow-hidden border-b border-[#e5e5e5] bg-[#eeeeee] sm:h-48 lg:h-56"
-      >
-        <img
-          src={bannerImage}
-          alt=""
-          aria-hidden="true"
-          width={612}
-          height={245}
-          className="absolute inset-0 h-full w-full object-cover object-center grayscale"
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-sunshine/75 via-sunshine/35 to-sunshine/10" />
-        <div className="pointer-events-none absolute inset-0 flex items-center">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-black/75">CareerForge <span aria-hidden="true">/</span> Your journey</p>
-              <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)] sm:text-3xl lg:text-4xl">
-                <span className="mr-2 inline-block h-6 w-1.5 translate-y-0.5 rounded-full bg-black sm:h-8" aria-hidden="true" />
-                {bannerLabel}
-              </h2>
+      {!(variant === 'public' && pathname === '/') && (
+        <section
+          aria-label={`${bannerLabel} banner`}
+          className="relative isolate h-36 overflow-hidden border-b border-[#e5e5e5] bg-[#eeeeee] sm:h-48 lg:h-56"
+        >
+          <img
+            src={bannerImage}
+            alt=""
+            aria-hidden="true"
+            width={612}
+            height={245}
+            className="absolute inset-0 h-full w-full object-cover object-center grayscale"
+          />
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-sunshine/75 via-sunshine/35 to-sunshine/10" />
+          <div className="pointer-events-none absolute inset-0 flex items-center">
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+              <div className="max-w-2xl">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-black/75">CareerForge <span aria-hidden="true">/</span> Your journey</p>
+                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)] sm:text-3xl lg:text-4xl">
+                  <span className="mr-2 inline-block h-6 w-1.5 translate-y-0.5 rounded-full bg-black sm:h-8" aria-hidden="true" />
+                  {bannerLabel}
+                </h2>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       <main id="main-content">{children}</main>
       <footer className={`border-t border-[#333333] bg-[#222222] text-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
         <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
