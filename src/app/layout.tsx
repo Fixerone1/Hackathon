@@ -5,6 +5,7 @@ import '@fontsource/ibm-plex-sans/500.css';
 import '@fontsource/ibm-plex-sans/600.css';
 import '@fontsource/ibm-plex-sans/700.css';
 import './globals.css';
+import { PageAccessGuard } from '@/components/PageAccessGuard';
 
 export const metadata: Metadata = {
   title: {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en-ZA">
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen"><PageAccessGuard>{children}</PageAccessGuard></body>
     </html>
   );
 }

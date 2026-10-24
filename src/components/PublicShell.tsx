@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, BriefcaseBusiness, Search } from 'lucide-react';
+import { BriefcaseBusiness, Search } from 'lucide-react';
+import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 const bannerLabels: Record<string, string> = {
@@ -65,12 +66,6 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
 
   return (
     <>
-      <a
-        href="#main-content"
-        className="sr-only z-50 rounded bg-white p-3 text-midnight focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-      >
-        Skip to content
-      </a>
       <header className="sticky top-0 z-30 border-b-4 border-sunshine bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
@@ -80,7 +75,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             <span className="text-sm sm:text-base">CareerForge</span>
           </Link>
           {variant === 'public' ? (
-            <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
+            <nav aria-label="Main navigation" className="flex min-w-0 items-center justify-end gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
               <Link href="/how-it-works" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/how-it-works' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
                 How it works
               </Link>
@@ -109,13 +104,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   <Link href="/privacy" className="rounded-lg px-3 py-2.5 text-midnight hover:bg-sunshine-light">Privacy</Link>
                 </div>
               </details>
-              <Link href="/login" className="whitespace-nowrap rounded-full px-3 py-2 text-midnight transition-colors hover:bg-sunshine-light">
-                Sign in
-              </Link>
-              <Link href="/signup" className="btn-primary min-h-10 whitespace-nowrap px-4 py-2 text-xs sm:text-sm">
-                <span className="sm:hidden">Join</span><span className="hidden sm:inline">Get started</span>
-                <ArrowUpRight size={15} aria-hidden="true" />
-              </Link>
+              <AccountMenu />
             </nav>
           ) : (
             <div className="flex items-center gap-2">
@@ -124,6 +113,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                 className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sunshine text-midnight transition hover:bg-[#f0d600] focus-visible:ring-2 focus-visible:ring-sunshine-dark">
                 <Search size={18} strokeWidth={2.2} aria-hidden="true" />
               </Link>
+              <AccountMenu compact />
             </div>
           )}
         </div>
@@ -142,12 +132,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             height={245}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-white/45" />
+          <div aria-hidden="true" className="absolute inset-0 bg-black/40" />
           <div className="pointer-events-none absolute inset-0 flex items-center">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="inline-block max-w-2xl rounded-3xl border border-white/80 bg-white/90 px-5 py-4 shadow-[0_12px_36px_rgba(0,0,0,0.12)] backdrop-blur-sm sm:px-8 sm:py-6">
-                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-midnight">CareerForge <span aria-hidden="true" className="text-sunshine-dark">/</span> Your journey</p>
-                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl lg:text-4xl">
+              <div className="max-w-2xl">
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-sunshine drop-shadow">CareerForge <span aria-hidden="true" className="text-white">/</span> Your journey</p>
+                <h2 className="mt-2 max-w-xl text-2xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-3xl lg:text-4xl">
                   {bannerLabel}
                 </h2>
               </div>
