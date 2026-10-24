@@ -155,7 +155,7 @@ export default function HomePage() {
           <div className="max-w-2xl">
             <p className="eyebrow">Your toolkit, all in one place</p>
             <h2 id="tools-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Find the tool for your next move.</h2>
-            <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace.</p>
+            <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace; current availability is shown on each tool page.</p>
           </div>
           <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {tools.map(({ icon: Icon, title, text, href, tag }) => (
