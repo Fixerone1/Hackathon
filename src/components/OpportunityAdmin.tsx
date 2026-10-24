@@ -5,6 +5,7 @@ import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
   isValidWebUrl,
+  normalizeOpportunity,
   opportunityCategories,
   type Opportunity,
   type OpportunityCategory,
@@ -91,7 +92,7 @@ export function OpportunityAdmin() {
       .select('*')
       .order('created_at', { ascending: false });
     if (queryError) throw queryError;
-    setListings((data || []) as Opportunity[]);
+    setListings(((data || []) as Opportunity[]).map(normalizeOpportunity));
   }
 
   useEffect(() => {
@@ -103,7 +104,7 @@ export function OpportunityAdmin() {
           .select('*')
           .order('created_at', { ascending: false });
         if (queryError) throw queryError;
-        if (active) setListings((data || []) as Opportunity[]);
+        if (active) setListings(((data || []) as Opportunity[]).map(normalizeOpportunity));
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : 'The opportunity review queue could not be loaded.');
       } finally {

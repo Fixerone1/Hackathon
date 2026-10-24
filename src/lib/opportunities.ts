@@ -32,6 +32,17 @@ export type Opportunity = {
   created_at: string;
 };
 
+export function normalizeOpportunity(opportunity: Opportunity): Opportunity {
+  return {
+    ...opportunity,
+    provinces: Array.isArray(opportunity.provinces) ? opportunity.provinces : [],
+    required_skills: Array.isArray(opportunity.required_skills) ? opportunity.required_skills : [],
+    shift_types: Array.isArray(opportunity.shift_types) ? opportunity.shift_types : [],
+    salary_min_monthly: typeof opportunity.salary_min_monthly === 'number' ? opportunity.salary_min_monthly : null,
+    salary_max_monthly: typeof opportunity.salary_max_monthly === 'number' ? opportunity.salary_max_monthly : null,
+  };
+}
+
 export type OpportunityProfile = {
   target_role?: string | null;
   highest_qualification?: string | null;

@@ -6,6 +6,7 @@ import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
   matchOpportunity,
+  normalizeOpportunity,
   opportunityCategories,
   type LearnerOpportunityAction,
   type Opportunity,
@@ -152,7 +153,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         const opportunityResult = await supabase.from('opportunities').select('*');
         if (opportunityResult.error) throw opportunityResult.error;
         if (!active) return;
-        setOpportunities(opportunityResult.data || []);
+        setOpportunities((opportunityResult.data || []).map(normalizeOpportunity));
 
         const [profileResult, actionResult] = await Promise.all([
           supabase.from('learner_profiles').select('target_role,highest_qualification,qualification_status,qualification_year,field_of_study,subjects,skills,skill_ratings,experience_months,experience_by_area,province,city,nqf_level,languages,certifications,work_authorization,availability_start_date,shift_preferences,hours_available_per_week,target_income_monthly,target_income_monthly_max,employment_status,drivers_license,own_transport,willing_to_relocate,remote_ok,computer_or_data_access').maybeSingle(),
