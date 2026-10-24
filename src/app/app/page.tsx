@@ -8,7 +8,7 @@ import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { getSupabase } from '@/lib/supabase';
 import { PageIntro } from '@/components/PageIntro';
 
-type CurrentUser = { id: string; name: string; email: string };
+type CurrentUser = { id: string; name: string; email: string; personalGoal: string; interests: string[] };
 
 const starterActions = [
   { id: 'profile', label: 'Add your skills and experience' },
@@ -40,14 +40,30 @@ export default function DashboardPage() {
             id: authData.user.id,
             name: authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'Learner',
             email: authData.user.email || '',
+            personalGoal: '',
+            interests: [],
           });
         }
-        const { data, error } = await supabase.from('learner_progress').select('checklist').maybeSingle();
-        if (error) {
+        const [progressResult, profileResult] = await Promise.all([
+          supabase.from('learner_progress').select('checklist').maybeSingle(),
+          supabase.from('learner_profiles').select('display_name,personal_goal,interests').maybeSingle(),
+        ]);
+        if (progressResult.error) {
           if (active) setStorageWarning('Your progress could not be loaded. Check that the Supabase migrations are applied.');
         } else if (active) {
-          const checklist = Array.isArray(data?.checklist) ? data.checklist as string[] : [];
+          const checklist = Array.isArray(progressResult.data?.checklist) ? progressResult.data.checklist as string[] : [];
           setCompleted(checklist.filter((id) => starterActions.some((action) => action.id === id)));
+        }
+        if (profileResult.error) {
+          if (active) setStorageWarning('Your profile could not be loaded. Check that the profile migrations are applied.');
+        } else if (active && authData.user) {
+          const profile = profileResult.data;
+          setUser((current) => current ? {
+            ...current,
+            name: profile?.display_name?.trim() || current.name,
+            personalGoal: profile?.personal_goal || '',
+            interests: Array.isArray(profile?.interests) ? profile.interests.filter((item: unknown): item is string => typeof item === 'string') : [],
+          } : current);
         }
       } catch {
         if (active) setAuthUnavailable(true);
@@ -90,13 +106,13 @@ export default function DashboardPage() {
       />
 
       <section className="mb-8 rounded-2xl border border-[#e5e5e5] bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div>
             <p className="eyebrow">Opportunity connector</p>
             <h2 id="matches-heading" className="section-heading mt-2">Your matches today</h2>
             <p className="section-description">Explore verified listings and choose the ones that fit your next step.</p>
           </div>
-          <Link href="/app/employment/opportunities" className="link text-sm">Open opportunities</Link>
+          <Link href="/app/employment/opportunities" className="link text-sm">See all opportunities</Link>
         </div>
         <div className="mt-6 border-t border-[#e5e5e5] pt-5">
           <OpportunityFeed />

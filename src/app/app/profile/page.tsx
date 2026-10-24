@@ -9,6 +9,11 @@ type SubjectResult = { name: string; mark: number | null };
 type SkillRating = { name: string; level: number; source: 'self_reported'; evidence_note: string };
 type ExperienceEntry = { area: string; months: number };
 type ProfileDraft = {
+  display_name: string;
+  pronouns: string;
+  about_me: string;
+  personal_goal: string;
+  interests_text: string;
   highest_qualification: string;
   qualification_status: string;
   field_of_study: string;
@@ -51,6 +56,7 @@ type ProfileApiResponse = {
 };
 
 const emptyProfile: ProfileDraft = {
+  display_name: '', pronouns: '', about_me: '', personal_goal: '', interests_text: '',
   highest_qualification: '', qualification_status: '', field_of_study: '', qualification_year: '',
   subjects_text: '', skills_text: '', experience_by_area_text: '', province: '', city: '', target_role: '',
   target_income_monthly: '', target_income_monthly_max: '', hours_available_per_week: '', employment_status: '',
@@ -72,6 +78,7 @@ function toDraft(profile: ProfileApiResponse['profile']): ProfileDraft {
   return {
     ...emptyProfile,
     ...profile,
+    interests_text: Array.isArray(profile.interests) ? profile.interests.filter((item): item is string => typeof item === 'string').join(', ') : '',
     shift_preferences: profile.shift_preferences || [],
     certifications_text: (profile.certifications || []).join('\n'),
     qualification_year: profile.qualification_year ? String(profile.qualification_year) : '',
@@ -157,6 +164,11 @@ export default function ProfilePage() {
     setError('');
     setMessage('');
     const payload = {
+      display_name: profile.display_name.trim(),
+      pronouns: profile.pronouns.trim(),
+      about_me: profile.about_me.trim(),
+      personal_goal: profile.personal_goal.trim(),
+      interests: profile.interests_text.split(/[,\n]/).map((item) => item.trim()).filter(Boolean).slice(0, 20),
       highest_qualification: profile.highest_qualification,
       qualification_status: profile.qualification_status,
       field_of_study: profile.field_of_study,
@@ -210,7 +222,7 @@ export default function ProfilePage() {
 
   const inputClass = 'input';
   const selectClass = 'input';
-  const title = ['Qualification', 'Goal', 'Location & details'][step];
+  const title = ['About you & learning', 'Goals', 'Experience & location'][step];
 
   if (loading) return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Loading your profile...</p>;
 
@@ -233,7 +245,7 @@ export default function ProfilePage() {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.85fr)] xl:gap-8">
         <section className="min-w-0 rounded-2xl border border-[#e5e5e5] bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
           <ol className="mb-7 grid grid-cols-3 border-b border-slate-200" aria-label="Profile setup steps">
-            {['Qualification', 'Goal', 'Location'].map((label, index) => (
+            {['About you', 'Goals', 'Experience'].map((label, index) => (
               <li key={label}>
                 <button type="button" onClick={() => setStep(index)} aria-current={step === index ? 'step' : undefined}
                   className={`w-full border-b-2 px-1 pb-3 text-left text-xs font-semibold sm:px-2 sm:text-sm ${step === index ? 'border-sunshine-dark text-midnight' : 'border-transparent text-slate-500'}`}>
@@ -246,6 +258,22 @@ export default function ProfilePage() {
           <h2 id="step-heading" className="mb-5 text-xl font-semibold text-midnight">{title}</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             {step === 0 && <>
+              <div className="sm:col-span-2 rounded-2xl border border-sunshine bg-sunshine-light/50 p-4 sm:p-5">
+                <h3 className="font-bold text-midnight">Make this profile yours</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Share only what feels useful. These details are optional, private to your account, and can be changed or cleared whenever you want.</p>
+              </div>
+              <div>
+                <label htmlFor="display-name" className="label">What should we call you? <span className="font-normal text-slate-500">(optional)</span></label>
+                <input id="display-name" className={inputClass} maxLength={80} autoComplete="nickname" placeholder="Your preferred name" value={profile.display_name} onChange={(event) => update('display_name', event.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="pronouns" className="label">Pronouns <span className="font-normal text-slate-500">(optional)</span></label>
+                <input id="pronouns" className={inputClass} maxLength={50} placeholder="For example, she/her" value={profile.pronouns} onChange={(event) => update('pronouns', event.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="about-me" className="label">A little about you <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="about-me" rows={3} maxLength={600} className={inputClass} placeholder="What would you like people supporting your journey to know about you?" value={profile.about_me} onChange={(event) => update('about_me', event.target.value)} />
+              </div>
               <div>
                 <label htmlFor="qualification" className="label">Highest qualification</label>
                 <select id="qualification" className={selectClass} value={profile.highest_qualification} onChange={(event) => update('highest_qualification', event.target.value)}>
@@ -276,6 +304,15 @@ export default function ProfilePage() {
             </>}
 
             {step === 1 && <>
+              <div className="sm:col-span-2">
+                <label htmlFor="personal-goal" className="label">What matters most to you right now? <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="personal-goal" rows={3} maxLength={600} className={inputClass} placeholder="For example, get into college, support my family, or test a side-business idea" value={profile.personal_goal} onChange={(event) => update('personal_goal', event.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="interests" className="label">Interests and strengths <span className="font-normal text-slate-500">(optional)</span></label>
+                <textarea id="interests" rows={2} maxLength={500} className={inputClass} placeholder="For example, music, coding, helping people, sport, design" value={profile.interests_text} onChange={(event) => update('interests_text', event.target.value)} />
+                <p className="mt-1 text-xs text-slate-500">Separate interests with commas. This is for your personal profile and won’t change eligibility decisions.</p>
+              </div>
               <div className="sm:col-span-2">
                 <label htmlFor="target-role" className="label">What kind of role or field interests you?</label>
                 <input id="target-role" className={inputClass} maxLength={120} placeholder="For example, IT support" value={profile.target_role} onChange={(event) => update('target_role', event.target.value)} />
