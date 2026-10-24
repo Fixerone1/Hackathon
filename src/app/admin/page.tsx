@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getSupabase } from '@/lib/supabase';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -11,16 +12,18 @@ export default function AdminPage() {
 
   useEffect(() => {
     let active = true;
-    fetch('/auth-api/admin/me', { cache: 'no-store', credentials: 'same-origin' })
-      .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 401) router.replace('/login');
+    getSupabase().auth.getUser()
+      .then(({ data, error }) => {
+        if (error || !data.user) {
+          router.replace('/login');
+          return;
+        }
+        if (data.user.app_metadata?.role !== 'admin') {
           if (active) setState('denied');
           return;
         }
-        const result = await response.json() as { user: { email: string } };
         if (active) {
-          setEmail(result.user.email);
+          setEmail(data.user.email || '');
           setState('allowed');
         }
       })

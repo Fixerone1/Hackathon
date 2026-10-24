@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getSupabase } from '@/lib/supabase';
+import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
 
 type SubjectResult = { name: string; mark: number | null };
 type SkillRating = { name: string; level: number; source: 'self_reported'; evidence_note: string };
@@ -116,19 +118,22 @@ export default function ProfilePage() {
 
   useEffect(() => {
     let active = true;
-    fetch('/auth-api/profile', { cache: 'no-store', credentials: 'same-origin' })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Profile could not be loaded. Please sign in again.');
-        return response.json() as Promise<ProfileApiResponse>;
-      })
-      .then((result) => {
+    async function loadProfile() {
+      try {
+        const { data, error } = await getSupabase().from('learner_profiles').select('*').maybeSingle();
+        if (error) throw error;
+        const savedProfile = (data || {}) as ProfileApiResponse['profile'];
         if (!active) return;
-        setProfile(toDraft(result.profile));
-        setStrength(result.strength);
-        setNextStep(result.next_step);
-      })
-      .catch((caught: Error) => { if (active) setError(caught.message); })
-      .finally(() => { if (active) setLoading(false); });
+        setProfile(toDraft(savedProfile));
+        setStrength(profileStrength(savedProfile));
+        setNextStep(profileNextStep(savedProfile));
+      } catch (caught) {
+        if (active) setError(caught instanceof Error ? caught.message : 'Profile could not be loaded.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    void loadProfile();
     return () => { active = false; };
   }, []);
 
@@ -166,17 +171,20 @@ export default function ProfilePage() {
     };
 
     try {
-      const response = await fetch('/auth-api/profile', {
-        method: 'PUT',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json() as ProfileApiResponse & { detail?: string };
-      if (!response.ok) throw new Error(result.detail || 'Profile could not be saved.');
-      setProfile(toDraft(result.profile));
-      setStrength(result.strength);
-      setNextStep(result.next_step);
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to save your profile.');
+      const profileData = {
+        user_id: authData.user.id,
+        ...payload,
+        nqf_level: qualificationNqfLevels[profile.highest_qualification] ?? null,
+      };
+      const { error: saveError } = await supabase.from('learner_profiles').upsert(profileData, { onConflict: 'user_id' });
+      if (saveError) throw saveError;
+      const savedProfile = payload as ProfileApiResponse['profile'];
+      setProfile(toDraft(savedProfile));
+      setStrength(profileStrength(savedProfile));
+      setNextStep(profileNextStep(savedProfile));
       setMessage('Profile saved. You can update it at any time.');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Profile could not be saved.');

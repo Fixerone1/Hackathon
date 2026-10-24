@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getSupabase } from '@/lib/supabase';
 
-type CurrentUser = { name: string; email: string };
+type CurrentUser = { id: string; name: string; email: string };
 
 const starterActions = [
   { id: 'profile', label: 'Add your skills and experience' },
@@ -23,54 +24,55 @@ export default function DashboardPage() {
 
   useEffect(() => {
     let active = true;
-    fetch('/auth-api/me', { cache: 'no-store', credentials: 'same-origin' })
-      .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 401) router.replace('/login');
-          else setAuthUnavailable(true);
-          return null;
+    async function loadDashboard() {
+      try {
+        const supabase = getSupabase();
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) {
+          router.replace('/login');
+          return;
         }
-        const result = await response.json() as { user: CurrentUser };
-        if (active) setUser(result.user);
-        const checklistResponse = await fetch('/auth-api/checklist', { cache: 'no-store', credentials: 'same-origin' });
-        if (checklistResponse.ok) {
-          const checklist = await checklistResponse.json() as { items: string[] };
-          if (active) setCompleted(checklist.items.filter((id) => starterActions.some((action) => action.id === id)));
+        if (active) {
+          setUser({
+            id: authData.user.id,
+            name: authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'Learner',
+            email: authData.user.email || '',
+          });
+        }
+        const { data, error } = await supabase.from('learner_progress').select('checklist').maybeSingle();
+        if (error) {
+          if (active) setStorageWarning('Your progress could not be loaded. Check that the Supabase migrations are applied.');
         } else if (active) {
-          setStorageWarning('Your progress could not be loaded. Check the Supabase data setup.');
+          const checklist = Array.isArray(data?.checklist) ? data.checklist as string[] : [];
+          setCompleted(checklist.filter((id) => starterActions.some((action) => action.id === id)));
         }
-        return result;
-      })
-      .then((result) => {
-        if (active && result) setUser(result.user);
-      })
-      .catch(() => router.replace('/login'))
-      .finally(() => {
+      } catch {
+        if (active) setAuthUnavailable(true);
+      } finally {
         if (active) setCheckingSession(false);
-      });
+      }
+    }
+    void loadDashboard();
     return () => { active = false; };
   }, [router]);
 
   async function signOut() {
     try {
-      await fetch('/auth-api/logout', { method: 'POST', credentials: 'same-origin' });
+      await getSupabase().auth.signOut({ scope: 'local' });
     } finally {
       router.replace('/login');
     }
   }
 
   function toggleAction(id: string) {
+    if (!user) return;
     const updated = completed.includes(id) ? completed.filter((item) => item !== id) : [...completed, id];
     setCompleted(updated);
-    fetch('/auth-api/checklist', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({ items: updated }),
-    }).then((response) => {
-      if (!response.ok) setStorageWarning('Your change could not be saved. Check the Supabase data setup.');
-      else setStorageWarning('');
-    }).catch(() => setStorageWarning('Your change could not be saved. Please try again.'));
+    getSupabase().from('learner_progress').upsert({ user_id: user.id, checklist: updated }, { onConflict: 'user_id' })
+      .then(({ error }) => {
+        if (error) setStorageWarning('Your change could not be saved. Check the Supabase data setup.');
+        else setStorageWarning('');
+      });
   }
 
   if (authUnavailable) {

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { getSupabase } from '@/lib/supabase';
 
 export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const router = useRouter();
@@ -18,26 +19,30 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
     setSubmitting(true);
 
     const form = new FormData(event.currentTarget);
-    const body = {
-      ...(isSignup ? { name: String(form.get('name') || '') } : {}),
-      ...(isSignup ? { privacy_consent: form.get('privacy_consent') === 'on' } : {}),
-      email: String(form.get('email') || ''),
-      password: String(form.get('password') || ''),
-    };
-
     try {
-      const response = await fetch(`/auth-api/${mode}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify(body),
-      });
-      const result = await response.json() as { detail?: string; confirmation_required?: boolean };
-      if (!response.ok) {
-        setError(result.detail || 'We could not sign you in. Please try again.');
+      const supabase = getSupabase();
+      const email = String(form.get('email') || '').trim().toLowerCase();
+      const password = String(form.get('password') || '');
+      const result = isSignup
+        ? await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                name: String(form.get('name') || '').trim(),
+                privacy_consent: form.get('privacy_consent') === 'on',
+                privacy_notice_version: 'prototype-1',
+              },
+              emailRedirectTo: new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/login`, window.location.origin).toString(),
+            },
+          })
+        : await supabase.auth.signInWithPassword({ email, password });
+
+      if (result.error) {
+        setError(result.error.message);
         return;
       }
-      if (result.confirmation_required) {
+      if (isSignup && !result.data.session) {
         setNotice('Check your email for a confirmation link, then return here to sign in.');
         return;
       }

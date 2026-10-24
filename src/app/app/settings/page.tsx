@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getSupabase } from '@/lib/supabase';
 
 type Preferences = {
   instant_matches: boolean;
@@ -17,6 +18,12 @@ type AccessibilityPreferences = {
   highContrast: boolean;
   reduceMotion: boolean;
   largerText: boolean;
+};
+
+type ConsentDates = {
+  instant_matches_consented_at: string | null;
+  weekly_digest_consented_at: string | null;
+  closing_reminders_consented_at: string | null;
 };
 
 const defaults: Preferences = {
@@ -38,17 +45,35 @@ export default function SettingsPage() {
   const [error, setError] = useState('');
   const [accessibility, setAccessibility] = useState<AccessibilityPreferences>({ highContrast: false, reduceMotion: false, largerText: false });
   const [privacyBusy, setPrivacyBusy] = useState(false);
+  const [consentDates, setConsentDates] = useState<ConsentDates>({
+    instant_matches_consented_at: null,
+    weekly_digest_consented_at: null,
+    closing_reminders_consented_at: null,
+  });
 
   useEffect(() => {
     let active = true;
-    fetch('/auth-api/notification-preferences', { credentials: 'same-origin', cache: 'no-store' })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Settings could not be loaded. Sign in and try again.');
-        return response.json() as Promise<{ preferences: Preferences }>;
-      })
-      .then((result) => { if (active) setPreferences({ ...defaults, ...result.preferences }); })
-      .catch((caught: Error) => { if (active) setError(caught.message); })
-      .finally(() => { if (active) setLoading(false); });
+    async function loadPreferences() {
+      try {
+        const supabase = getSupabase();
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) throw new Error('Sign in again to load your settings.');
+        const { data, error } = await supabase.from('email_preferences').select('*').maybeSingle();
+        if (error) throw error;
+        if (!active) return;
+        setPreferences({ ...defaults, ...data });
+        setConsentDates({
+          instant_matches_consented_at: data?.instant_matches_consented_at || null,
+          weekly_digest_consented_at: data?.weekly_digest_consented_at || null,
+          closing_reminders_consented_at: data?.closing_reminders_consented_at || null,
+        });
+      } catch (caught) {
+        if (active) setError(caught instanceof Error ? caught.message : 'Settings could not be loaded.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    void loadPreferences();
     return () => { active = false; };
   }, []);
 
@@ -81,14 +106,22 @@ export default function SettingsPage() {
     setError('');
     setMessage('');
     try {
-      const response = await fetch('/auth-api/notification-preferences', {
-        method: 'PUT',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(preferences),
-      });
-      const result = await response.json() as { detail?: string };
-      if (!response.ok) throw new Error(result.detail || 'Settings could not be saved.');
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to save your settings.');
+      const now = new Date().toISOString();
+      const updatedConsentDates: ConsentDates = {
+        instant_matches_consented_at: preferences.instant_matches ? consentDates.instant_matches_consented_at || now : null,
+        weekly_digest_consented_at: preferences.weekly_digest ? consentDates.weekly_digest_consented_at || now : null,
+        closing_reminders_consented_at: preferences.closing_reminders ? consentDates.closing_reminders_consented_at || now : null,
+      };
+      const { error } = await supabase.from('email_preferences').upsert({
+        user_id: authData.user.id,
+        ...preferences,
+        ...updatedConsentDates,
+      }, { onConflict: 'user_id' });
+      if (error) throw error;
+      setConsentDates(updatedConsentDates);
       setMessage('Your notification preferences and email consent choices were saved.');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Settings could not be saved.');
@@ -101,9 +134,24 @@ export default function SettingsPage() {
     setPrivacyBusy(true);
     setError('');
     try {
-      const response = await fetch('/auth-api/export', { credentials: 'same-origin', cache: 'no-store' });
-      if (!response.ok) throw new Error('Your export could not be prepared. Please try again.');
-      const file = await response.blob();
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to export your data.');
+      const [profile, progress, emailPreferences, privacyConsent] = await Promise.all([
+        supabase.from('learner_profiles').select('*').maybeSingle(),
+        supabase.from('learner_progress').select('*').maybeSingle(),
+        supabase.from('email_preferences').select('*').maybeSingle(),
+        supabase.from('privacy_consents').select('*').maybeSingle(),
+      ]);
+      const queryError = profile.error || progress.error || emailPreferences.error || privacyConsent.error;
+      if (queryError) throw queryError;
+      const file = new Blob([JSON.stringify({
+        account: { id: authData.user.id, email: authData.user.email, name: authData.user.user_metadata?.name || '' },
+        profile: profile.data,
+        progress: progress.data,
+        email_preferences: emailPreferences.data,
+        privacy_consents: privacyConsent.data,
+      }, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(file);
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -123,11 +171,10 @@ export default function SettingsPage() {
     setPrivacyBusy(true);
     setError('');
     try {
-      const response = await fetch('/auth-api/account', { method: 'DELETE', credentials: 'same-origin' });
-      if (!response.ok) {
-        const result = await response.json() as { detail?: string };
-        throw new Error(result.detail || 'Your account could not be deleted.');
-      }
+      const supabase = getSupabase();
+      const { error } = await supabase.rpc('delete_my_account');
+      if (error) throw error;
+      await supabase.auth.signOut({ scope: 'local' });
       localStorage.removeItem('careerforge-accessibility');
       router.replace('/');
     } catch (caught) {

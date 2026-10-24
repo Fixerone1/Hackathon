@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { getSupabase } from '@/lib/supabase';
 
 export function WorkspaceGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -9,20 +10,25 @@ export function WorkspaceGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    fetch('/auth-api/me', { cache: 'no-store', credentials: 'same-origin' })
-      .then((response) => {
-        if (response.status === 401) {
+    let unsubscribe = () => {};
+    try {
+      const supabase = getSupabase();
+      supabase.auth.getUser().then(({ data, error }) => {
+        if (!active) return;
+        if (error || !data.user) {
           router.replace('/login');
           return;
         }
-        if (!response.ok) {
-          if (active) setState('unavailable');
-          return;
-        }
-        if (active) setState('authenticated');
-      })
-      .catch(() => { if (active) setState('unavailable'); });
-    return () => { active = false; };
+        setState('authenticated');
+      }).catch(() => { if (active) setState('unavailable'); });
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT' || !session) router.replace('/login');
+      });
+      unsubscribe = () => authListener.subscription.unsubscribe();
+    } catch {
+      setState('unavailable');
+    }
+    return () => { active = false; unsubscribe(); };
   }, [router]);
 
   if (state === 'checking') {
