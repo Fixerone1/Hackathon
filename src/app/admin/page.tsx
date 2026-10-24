@@ -48,7 +48,7 @@ export default function AdminPage() {
             <h2 className="font-semibold text-midnight">Review queue</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">Opportunity-source management and scam review are not connected yet. No listings are being ingested or promoted by this preview.</p>
           </div>
-          <p className="mt-5 text-xs leading-5 text-slate-500">Admin access is controlled by the server-side ADMIN_EMAILS environment variable.</p>
+          <p className="mt-5 text-xs leading-5 text-slate-500">Admin access is granted through the server-managed Supabase app_metadata role.</p>
         </>}
       </section>
     </main>
