@@ -36,9 +36,9 @@ export function WorkspaceNav() {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} aria-current={active ? 'page' : undefined} aria-label={label}
-                className={`flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors sm:text-[11px] ${active ? 'bg-sunshine-light text-midnight' : 'text-slate-600 hover:bg-surface hover:text-midnight'}`}>
+                className={`flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 text-center text-[10px] font-medium leading-none transition-colors sm:text-[11px] ${active ? 'bg-sunshine-light text-midnight' : 'text-slate-600 hover:bg-surface hover:text-midnight'}`}>
                 <Icon size={18} strokeWidth={active ? 2.2 : 1.7} aria-hidden="true" />
-                <span className="max-w-full truncate">{shortLabel}</span>
+                <span className="whitespace-nowrap">{shortLabel}</span>
               </Link>
             );
           })}
