@@ -85,7 +85,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-[#e7e5dc] bg-surface px-5 py-6 shadow-card sm:px-7">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-[#e5e5e5] bg-surface px-5 py-6 shadow-card sm:px-7">
         <div>
           <p className="eyebrow">Learner workspace</p>
           <h1 className="page-title mt-1">Welcome, {user.name}</h1>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </section>
 
       <div className="grid gap-10 py-8 md:grid-cols-[minmax(0,1fr)_17rem] md:py-10">
-        <section className="rounded-2xl border border-[#e7e5dc] bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
+        <section className="rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <h2 id="actions-heading" className="text-xl font-semibold text-midnight">Your starter plan</h2>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
           </ul>
         </section>
 
-        <aside className="space-y-7 rounded-2xl border border-[#e7e5dc] bg-surface p-5 shadow-card sm:p-6">
+        <aside className="space-y-7 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6">
           <section aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
             <h2 id="mobility-score-heading" className="mt-2 text-2xl font-semibold text-midnight">Not calculated</h2>

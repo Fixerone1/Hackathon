@@ -19,7 +19,7 @@ export const GROWTH_TABS: SectionTabItem[] = [
 
 export function SectionTabs({ items }: { items: SectionTabItem[] }) {
   return (
-    <nav aria-label="App sections" className="border-b border-[#e7e5dc] bg-white">
+    <nav aria-label="App sections" className="border-b border-[#e5e5e5] bg-white">
       <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4">
         {items.map((item) => (
           <Link

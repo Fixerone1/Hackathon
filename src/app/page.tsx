@@ -11,7 +11,7 @@ const pillars = [
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="border-b border-[#e7e5dc] bg-surface">
+      <section className="border-b border-[#e5e5e5] bg-surface">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-16">
           <div className="max-w-xl">
             <p className="eyebrow mb-4">A workforce-readiness platform</p>

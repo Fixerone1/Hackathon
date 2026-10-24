@@ -1,8 +1,51 @@
+'use client';
+
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { ArrowUpRight, BriefcaseBusiness } from 'lucide-react';
+import { WorkspaceNav } from '@/components/WorkspaceNav';
+
+const bannerLabels: Record<string, string> = {
+  '/': 'A brighter path forward',
+  '/about': 'About CareerForge',
+  '/how-it-works': 'Your step-by-step journey',
+  '/opportunities': 'Find your next opportunity',
+  '/partners': 'Building opportunity together',
+  '/privacy': 'Your information, your choices',
+  '/login': 'Welcome back',
+  '/signup': 'Start with your next step',
+  '/app': 'Your learner workspace',
+  '/app/employment': 'Build your work readiness',
+  '/app/employment/assessment': 'Understand your strengths',
+  '/app/employment/cv': 'Tell your story with confidence',
+  '/app/employment/interview': 'Prepare for your next conversation',
+  '/app/employment/academy': 'Grow practical skills',
+  '/app/employment/opportunities': 'Explore opportunities',
+  '/app/employment/pathways': 'Explore your pathways',
+  '/app/employment/applications': 'Keep your applications moving',
+  '/app/profile': 'Make your profile yours',
+  '/app/settings': 'Your account, your preferences',
+  '/app/money': 'Build money confidence',
+  '/app/growth': 'Move an idea forward',
+  '/admin': 'Opportunity administration',
+};
+
+function LinkedInMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+      <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.97V9.2h2.96v9.55ZM6.45 7.9a1.72 1.72 0 1 1 0-3.44 1.72 1.72 0 0 1 0 3.44Zm12.3 10.85h-2.95V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.5V9.2h2.84v1.3h.04c.4-.75 1.36-1.55 2.8-1.55 3 0 3.57 1.97 3.57 4.53v5.27Z"/>
+    </svg>
+  );
+}
 
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
+  const pathname = usePathname() || '/';
+  const bannerLabel = bannerLabels[pathname]
+    || (pathname.startsWith('/app/employment/') ? 'Your employment journey' : 'Your next step starts here');
+  const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
+  const bannerImage = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`;
+
   return (
     <>
       <a
@@ -11,7 +54,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-30 border-b border-[#e7e5dc] bg-white/95 shadow-[0_2px_12px_rgba(36,39,36,0.04)] backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#e5e5e5] bg-white/95 shadow-[0_2px_12px_rgba(34,34,34,0.05)] backdrop-blur">
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
@@ -58,8 +101,24 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           )}
         </div>
       </header>
+      {variant === 'workspace' && <WorkspaceNav />}
+      <section
+        aria-label={`${bannerLabel} banner`}
+        className="relative isolate flex min-h-[8.4rem] items-center overflow-hidden border-b border-[#e5e5e5] bg-[#eeeeee] sm:min-h-[10.5rem]"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{ backgroundImage: `url('${bannerImage}')`, backgroundPosition: 'center 42%', filter: 'grayscale(1)' }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-sunshine/70 via-sunshine/35 to-sunshine/5" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-black/65">CareerForge <span aria-hidden="true">/</span> Your journey</p>
+          <p className="mt-1 text-xl font-semibold tracking-tight text-black sm:text-2xl">{bannerLabel}</p>
+        </div>
+      </section>
       <main id="main-content">{children}</main>
-      <footer className={`border-t border-[#343832] bg-[#242724] text-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+      <footer className={`border-t border-[#333333] bg-[#222222] text-white ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
         <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">
@@ -76,6 +135,32 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                 <span className="h-2 w-2 rounded-full bg-sunshine" aria-hidden="true" />
                 South African youth-mobility prototype
               </span>
+              <div className="mt-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">Connect with us</p>
+                {linkedInUrl && /^https:\/\/(www\.)?linkedin\.com\//i.test(linkedInUrl) ? (
+                  <a
+                    href={linkedInUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="CareerForge on LinkedIn (opens in a new tab)"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-sunshine px-4 text-sm font-semibold text-black transition hover:bg-[#f0d600] focus-visible:outline-white"
+                  >
+                    <LinkedInMark />
+                    LinkedIn
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </a>
+                ) : (
+                  <span
+                    title="Set NEXT_PUBLIC_LINKEDIN_URL to your official LinkedIn page"
+                    aria-label="LinkedIn profile link not configured"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-semibold text-white/70"
+                  >
+                    <LinkedInMark />
+                    LinkedIn
+                    <span className="text-xs font-normal text-white/50">Coming soon</span>
+                  </span>
+                )}
+              </div>
             </div>
 
             <nav aria-label="Explore CareerForge">

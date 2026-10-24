@@ -17,7 +17,7 @@ export function WorkspaceNav() {
   const pathname = usePathname();
   return (
     <>
-      <nav aria-label="Workspace sections" className="hidden border-b border-[#e7e5dc] bg-white md:block">
+      <nav aria-label="Workspace sections" className="hidden border-b border-[#e5e5e5] bg-white md:block">
         <div className="mx-auto flex max-w-6xl overflow-x-auto px-4">
           {items.map(({ href, label, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
@@ -30,7 +30,7 @@ export function WorkspaceNav() {
           })}
         </div>
       </nav>
-      <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e7e5dc] bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(36,39,36,0.08)] backdrop-blur md:hidden">
+      <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e5e5e5] bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(34,34,34,0.08)] backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-xl">
           {items.map(({ href, label, shortLabel, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);

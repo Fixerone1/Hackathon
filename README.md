@@ -67,7 +67,7 @@ The synthetic learner fixture is [`tests/fixtures/learner_profile.json`](tests/f
 The AI route applies an in-memory rate limit and basic request-size and prompt-injection checks. These controls are demo-level and should be replaced with shared, production-grade controls before deployment to real users.
 
 ## Notes
-- Palette: warm Sand `#F7F4E8`, Sunshine Yellow `#F4C542`, white content panels, and Deep Ocean Teal `#0F2E35` text. Yellow primary actions use dark text for contrast.
+- Palette: white, near-black `#222222`, Sunshine Yellow `#FFE500`, and neutral gray. Shared page banners use the supplied learner photo in grayscale with a yellow gradient overlay. Set `NEXT_PUBLIC_LINKEDIN_URL` to the official LinkedIn page URL to enable the primary LinkedIn footer link; until configured, the icon is shown as “Coming soon.” For GitHub Pages, add this as a repository Actions variable with an `https://www.linkedin.com/` URL.
 
 ## Publish on GitHub (free, GitHub Pages)
 

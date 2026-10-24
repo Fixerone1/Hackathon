@@ -7,9 +7,9 @@
   --page-background: #ffffff;
   --surface: #ffffff;
   --surface-muted: #f5f4ef;
-  --ink-primary: #242724;
-  --ink-muted: #575b55;
-  --line: #e7e5dc;
+  --ink-primary: #222222;
+  --ink-muted: #5c5c5c;
+  --line: #e5e5e5;
   --accent: #ffe500;
   --accent-action: #ffe500;
   --support: #fff8b8;
@@ -30,12 +30,12 @@ body {
 
 ::selection {
   background: #ffe500;
-  color: #242724;
+  color: #222222;
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-[#e7e5dc] bg-surface p-5 shadow-card;
+    @apply rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card;
   }
   .btn {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
@@ -49,7 +49,7 @@ body {
     box-shadow: 0 4px 14px rgba(166, 143, 0, 0.2);
   }
   .btn-secondary {
-    @apply btn border border-[#d9d7ce] bg-white text-ink hover:border-[#242724] hover:bg-surface;
+    @apply btn border border-[#d9d9d9] bg-white text-ink hover:border-[#222222] hover:bg-surface;
   }
   .btn-accent {
     @apply btn text-midnight;
@@ -59,13 +59,13 @@ body {
     background-color: #f0d600;
   }
   .input {
-    @apply min-h-12 w-full rounded-xl border border-[#d9d7ce] bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine/40;
+    @apply min-h-12 w-full rounded-xl border border-[#d9d9d9] bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine/40;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;
   }
   .chip {
-    @apply inline-flex items-center rounded-full border border-[#e2dfd3] bg-surface px-3 py-1 text-xs font-medium text-slate-700;
+    @apply inline-flex items-center rounded-full border border-[#e2e2e2] bg-surface px-3 py-1 text-xs font-medium text-slate-700;
   }
   .link {
     @apply font-medium text-midnight underline-offset-2 hover:underline;
