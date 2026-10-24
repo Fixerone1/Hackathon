@@ -71,12 +71,12 @@ GitHub Pages serves the static frontend. Authentication and learner data use Sup
    git push -u origin main
    ```
 3. In the repository go to **Settings → Pages → Build and deployment → Source: GitHub Actions**. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` under **Settings → Secrets and variables → Actions**.
-4. The workflow in `.github/workflows/deploy.yml` runs automatically on every push to `main`. When it finishes (about 2 minutes, see the **Actions** tab) your site is live at `https://YOUR-USERNAME.github.io/careerforge/`.
+4. The workflow in `.github/workflows/deploy.yml` runs automatically on every push to `main`. It configures the GitHub Pages environment, builds a static export, creates a `404.html` fallback, and writes `.nojekyll` so `_next` assets load correctly on Pages. When it finishes (about 2 minutes, see the **Actions** tab) your site is live at `https://YOUR-USERNAME.github.io/careerforge/`.
 
 Notes
 - The base path is taken from the repository name automatically, so you can rename the repo without editing code.
 - GitHub Pages serves static files only; the workflow removes the optional server AI route. Authentication and learner data use Supabase directly.
-- To preview the Pages build locally: `GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Hackathon NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run build` then serve the `out` folder.
+- To preview the Pages build locally: `GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Hackathon NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run build` then `touch out/.nojekyll` and serve the `out` folder.
 
 ## Other hosting
 - **Frontend:** GitHub Pages, Vercel, or another static-capable host.
