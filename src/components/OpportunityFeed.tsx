@@ -20,6 +20,14 @@ function formatDate(value: string | null): string {
   return new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
 }
 
+function errorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+    return error.message;
+  }
+  return fallback;
+}
+
 export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [profile, setProfile] = useState<OpportunityProfile>({});
@@ -36,19 +44,37 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         const supabase = getSupabase();
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError || !authData.user) throw new Error('Sign in again to view your opportunity feed.');
-        const [opportunityResult, profileResult, actionResult] = await Promise.all([
-          supabase.from('opportunities').select('*'),
+        const opportunityResult = await supabase.from('opportunities').select('*');
+        if (opportunityResult.error) throw opportunityResult.error;
+        if (!active) return;
+        setOpportunities(opportunityResult.data || []);
+
+        const [profileResult, actionResult] = await Promise.all([
           supabase.from('learner_profiles').select('target_role,skills,skill_ratings,province,nqf_level').maybeSingle(),
           supabase.from('learner_opportunity_actions').select('opportunity_id,status'),
         ]);
-        const queryError = opportunityResult.error || profileResult.error || actionResult.error;
-        if (queryError) throw queryError;
         if (!active) return;
-        setOpportunities((opportunityResult.data || []) as Opportunity[]);
-        setProfile((profileResult.data || {}) as OpportunityProfile);
-        setActions(Object.fromEntries(((actionResult.data || []) as ActionRow[]).map((action) => [action.opportunity_id, action.status])));
+        const supportingErrors: string[] = [];
+        if (profileResult.error) {
+          supportingErrors.push(`Profile matching unavailable: ${errorMessage(profileResult.error, 'profile query failed')}`);
+          console.error('Could not load learner profile for opportunity matching:', profileResult.error);
+        } else {
+          setProfile((profileResult.data || {}) as OpportunityProfile);
+        }
+        if (actionResult.error) {
+          supportingErrors.push(`Saving status unavailable: ${errorMessage(actionResult.error, 'saved listings query failed')}`);
+          console.error('Could not load saved opportunity actions:', actionResult.error);
+        } else {
+          setActions(Object.fromEntries(((actionResult.data || []) as ActionRow[]).map((action) => [action.opportunity_id, action.status])));
+        }
+        if (supportingErrors.length) {
+          setError(`Listings loaded, but ${supportingErrors.join('; ')}.`);
+        }
       } catch (caught) {
-        if (active) setError(caught instanceof Error ? caught.message : 'Opportunities could not be loaded.');
+        if (active) {
+          console.error('Failed to load opportunity feed:', caught);
+          setError(errorMessage(caught, 'Opportunities could not be loaded.'));
+        }
       } finally {
         if (active) setLoading(false);
       }
