@@ -9,8 +9,8 @@ import { PageAccessGuard } from '@/components/PageAccessGuard';
 
 export const metadata: Metadata = {
   title: {
-    default: 'CareerForge AI',
-    template: '%s | CareerForge AI',
+    default: 'Ukukhanya',
+    template: '%s | Ukukhanya',
   },
   description: 'Build career readiness, money confidence, and a plan for your next opportunity.',
 };

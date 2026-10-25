@@ -1,4 +1,4 @@
-# CareerForge AI — Youth Economic Mobility Platform
+# Ukukhanya — Youth Economic Mobility Platform
 
 > From employment readiness to economic independence.
 
@@ -46,7 +46,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
 For GitHub Pages, add repository Actions secrets named `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The anon key is public by design; RLS must protect every table. Never add a service-role key.
 
 ### Optional: real AI feedback
-The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.env.example`. Learners can request an AI application plan from a verified opportunity's “Prepare your application” section. Only the selected listing and relevant profile fields are sent when they click the button; CareerForge does not save the generated plan or send it to the employer. Plans are suggestions, not eligibility decisions, and must be checked against the original advert. The employer's site remains responsible for application submission. Without Azure OpenAI configuration the endpoint returns an explicit service-unavailable error.
+The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.env.example`. Learners can request an AI application plan from a verified opportunity's “Prepare your application” section. Only the selected listing and relevant profile fields are sent when they click the button; Ukukhanya does not save the generated plan or send it to the employer. Plans are suggestions, not eligibility decisions, and must be checked against the original advert. The employer's site remains responsible for application submission. Without Azure OpenAI configuration the endpoint returns an explicit service-unavailable error.
 
 ## Routes in this preview
 
@@ -59,7 +59,7 @@ The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.en
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
 
 For the current schema-to-feature inventory, known mismatches, rollback notes, and the authenticated-user export query, see [`docs/sql-audit.md`](docs/sql-audit.md).
-For the public-source consumer-app review and patterns selected for CareerForge, see [`docs/benchmark.md`](docs/benchmark.md).
+For the public-source consumer-app review and patterns selected for Ukukhanya, see [`docs/benchmark.md`](docs/benchmark.md).
 
 ### Schema map
 
@@ -129,7 +129,7 @@ erDiagram
 
 ### Verified opportunity feed
 
-The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, NQF level, certifications, shift preferences, and salary range, and explain the fit signals. Admins should only enter salary or shift information explicitly stated in the original advert. The optional learner profile also supports work authorization, availability, certificates, and existing experience, language, and transport information. These details are included only in a learner-reviewed application pack and AI coaching; they affect matching only when a listing includes the relevant verified requirement. Learners can copy a pack of saved details to paste into another form. A normal web app cannot access or fill forms on external employer sites. Learners review and submit applications themselves; CareerForge never applies on a learner's behalf. ID/passport numbers, bank details, demographics, and reference contact details are not collected. A reminder prompts learners to provide documents or references directly to an employer only if requested. Fit signals are guidance, not an eligibility decision.
+The learner dashboard and Employment Hub show published opportunities from Supabase, compare stated listing requirements with a learner's saved role, skills, province, NQF level, certifications, shift preferences, and salary range, and explain the fit signals. Admins should only enter salary or shift information explicitly stated in the original advert. The optional learner profile also supports work authorization, availability, certificates, and existing experience, language, and transport information. These details are included only in a learner-reviewed application pack and AI coaching; they affect matching only when a listing includes the relevant verified requirement. Learners can copy a pack of saved details to paste into another form. A normal web app cannot access or fill forms on external employer sites. Learners review and submit applications themselves; Ukukhanya never applies on a learner's behalf. ID/passport numbers, bank details, demographics, and reference contact details are not collected. A reminder prompts learners to provide documents or references directly to an employer only if requested. Fit signals are guidance, not an eligibility decision.
 
 Listings are admin-curated rather than scraped. Check the live original advert and its terms before publishing; use a short summary you have permission to share. Possible primary sources include [SAYouth](https://sayouth.mobi/), the [DPSA Public Service Vacancy Circular](https://www.dpsa.gov.za/newsroom/psvc/), and [NSFAS](https://www.nsfas.org.za/), as well as the opportunity provider's own advert. Each listing is hidden from the feed if its closing date passes or it has not been re-verified for 30 days. Admins can confirm that a listing is still open from `/admin`.
 
@@ -155,7 +155,7 @@ GitHub Pages serves the static frontend. Authentication and learner data use Sup
 1. Create a new **public** repository on GitHub (for example `careerforge`).
 2. Upload everything in this folder to it (or push with git):
    ```bash
-   git init && git add . && git commit -m "CareerForge AI"
+   git init && git add . && git commit -m "Ukukhanya"
    git branch -M main
    git remote add origin https://github.com/YOUR-USERNAME/careerforge.git
    git push -u origin main

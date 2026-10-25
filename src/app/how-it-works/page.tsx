@@ -6,7 +6,7 @@ import { PhotoPlaceholder } from '@/components/PhotoPlaceholder';
 const steps = [
   { number: '01', title: 'Tell us what you have', text: 'Build a profile from your qualification, subjects, skills, location, and goals. You can add detail over time.' },
   { number: '02', title: 'Check what is open to you', text: 'When verified opportunity sources are connected, requirements can be compared with your profile and gaps explained.' },
-  { number: '03', title: 'Choose your next step', text: 'Review the original advert and decide for yourself. CareerForge does not apply or contact employers on your behalf.' },
+  { number: '03', title: 'Choose your next step', text: 'Review the original advert and decide for yourself. Ukukhanya does not apply or contact employers on your behalf.' },
 ];
 
 export default function HowItWorksPage() {
@@ -37,7 +37,7 @@ export default function HowItWorksPage() {
           <div className="px-1 py-2 sm:px-3">
             <p className="eyebrow">You stay in control</p>
             <h2 className="section-heading mt-2">Guidance that helps you decide, not decide for you.</h2>
-            <p className="section-description">Check the original advert, compare its requirements with your profile, and choose how to apply. CareerForge does not submit applications for you.</p>
+            <p className="section-description">Check the original advert, compare its requirements with your profile, and choose how to apply. Ukukhanya does not submit applications for you.</p>
             <p className="mt-5 rounded-xl border-l-4 border-sunshine bg-[#f7f7f7] px-4 py-3 text-sm leading-6 text-[#444444]">Current preview: opportunities are curated by administrators. Availability and match guidance depend on verified listing details.</p>
             <Link href="/signup" className="btn-primary mt-5">Create a learner profile</Link>
           </div>

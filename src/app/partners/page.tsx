@@ -9,7 +9,7 @@ export default function PartnersPage() {
         <PageIntro
           eyebrow="For organizations"
           title="Support a more practical transition into work."
-          description="CareerForge is designed for employers, funders, education providers, and youth-development partners who want to help young people understand their next steps."
+          description="Ukukhanya is designed for employers, funders, education providers, and youth-development partners who want to help young people understand their next steps."
           className="max-w-4xl"
         />
         <div className="rounded-2xl border border-[#e5e5e5] border-l-4 border-l-sunshine bg-[#f7f7f7] p-5 sm:p-7">

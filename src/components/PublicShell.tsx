@@ -10,12 +10,12 @@ import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 const bannerLabels: Record<string, string> = {
   '/': 'Build your next step',
-  '/about': 'About CareerForge',
-  '/how-it-works': 'How CareerForge works',
+  '/about': 'About Ukukhanya',
+  '/how-it-works': 'How Ukukhanya works',
   '/opportunities': 'Explore opportunities',
   '/partners': 'Partner with us',
-  '/privacy': 'Privacy at CareerForge',
-  '/login': 'Sign in to CareerForge',
+  '/privacy': 'Privacy at Ukukhanya',
+  '/login': 'Sign in to Ukukhanya',
   '/signup': 'Create your account',
   '/app': 'Your dashboard',
   '/app/employment': 'Work and career tools',
@@ -77,11 +77,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
     <>
       <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-black sm:gap-3" aria-label="CareerForge home">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-black sm:gap-3" aria-label="Ukukhanya home">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-black text-white sm:h-10 sm:w-10">
               <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
             </span>
-            <span className="text-base sm:text-lg">CareerForge</span>
+            <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
@@ -122,9 +122,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {variant === 'workspace' && <WorkspaceNav />}
       {variant === 'public' && pathname !== '/' && (
         <section aria-label={`${bannerLabel} banner`} className="relative isolate overflow-hidden bg-black text-white min-h-64 sm:min-h-72">
-          <div className="mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
+          <img src={bannerImage} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-55" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" aria-hidden="true" />
+          <div className="relative z-10 mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
             <div className="relative z-10 max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">CareerForge · Your next step</p>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">Ukukhanya · Your next step</p>
               <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Practical support for work, money confidence, and the future you want to build.</p>
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
@@ -142,15 +144,17 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         </section>
       )}
       <main id="main-content" className="min-h-[50vh] bg-canvas">{children}</main>
-      <footer className={`site-footer ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
-        <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
+      <footer className={`site-footer relative isolate overflow-hidden ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+        <div className="relative mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">
-              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label="CareerForge home">
+              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label="Ukukhanya home">
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light">
                   <BriefcaseBusiness size={19} strokeWidth={1.8} aria-hidden="true" />
                 </span>
-                <span className="text-lg">CareerForge</span>
+                <span className="text-lg">Ukukhanya</span>
               </Link>
               <p className="mt-4 text-sm leading-6 text-midnight">
                 A practical starting point for work readiness, money confidence, and your next steps.
@@ -166,7 +170,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                     href={linkedInUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="CareerForge on LinkedIn (opens in a new tab)"
+                    aria-label="Ukukhanya on LinkedIn (opens in a new tab)"
                     className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald px-4 text-sm font-semibold text-black transition hover:bg-emerald-300 focus-visible:outline-white"
                   >
                     <LinkedInMark />
@@ -187,13 +191,13 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               </div>
             </div>
 
-            <nav aria-label="Explore CareerForge">
+            <nav aria-label="Explore Ukukhanya">
               <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Explore</h2>
               <ul className="mt-4 space-y-3 text-sm text-midnight">
                 <li><Link href="/how-it-works" className="transition-colors hover:bg-sunshine-light">How it works</Link></li>
                 <li><Link href="/opportunities" className="transition-colors hover:bg-sunshine-light">Opportunities</Link></li>
                 <li><Link href="/partners" className="transition-colors hover:bg-sunshine-light">For organizations</Link></li>
-                <li><Link href="/about" className="transition-colors hover:bg-sunshine-light">About CareerForge</Link></li>
+                <li><Link href="/about" className="transition-colors hover:bg-sunshine-light">About Ukukhanya</Link></li>
               </ul>
             </nav>
 
@@ -218,7 +222,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
 
           <div className="mt-9 flex flex-col gap-3 border-t border-[#e5e5e5] pt-5 text-xs leading-5 text-midnight sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
             <p>Opportunities open on the original provider’s site. You choose what to share and when to apply.</p>
-            <p className="shrink-0">© CareerForge</p>
+            <p className="shrink-0">© Ukukhanya</p>
           </div>
         </div>
       </footer>

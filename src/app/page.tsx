@@ -73,8 +73,15 @@ export default function HomePage() {
   return (
     <PublicShell>
       <section className="relative isolate overflow-hidden bg-black text-white">
+        <img
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-45"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-black/55" />
         <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-emerald/20" />
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
           <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
             <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] text-white sm:text-6xl lg:text-[4.25rem]">
               Your future is

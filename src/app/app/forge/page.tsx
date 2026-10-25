@@ -123,7 +123,7 @@ export default function ForgeMemoryPage() {
       <header className="mt-3 border-b border-slate-200 pb-5">
         <p className="eyebrow">Your data, your call</p>
         <h1 className="page-title mt-2">What Forge knows about me</h1>
-        <p className="page-description">Only details you added or actions you took in CareerForge appear here. Nothing inferred is used.</p>
+        <p className="page-description">Only details you added or actions you took in Ukukhanya appear here. Nothing inferred is used.</p>
       </header>
       {loading && <p className="py-6 text-sm text-slate-600" role="status">Loading your facts...</p>}
       {error && <p className="mt-5 text-sm text-red-700" role="alert">{error}</p>}

@@ -7,9 +7,9 @@ export default function AboutPage() {
     <PublicShell>
       <section className="page-section">
         <PageIntro
-          eyebrow="About CareerForge"
+          eyebrow="About Ukukhanya"
           title="Practical support for economic mobility."
-          description="CareerForge is a South African youth economic-mobility prototype focused on work readiness, money confidence, and growth potential. It helps people see practical next steps while keeping decisions in their hands."
+          description="Ukukhanya means light in isiZulu. We are a South African youth economic-mobility platform focused on work readiness, money confidence, and growth potential, helping people see practical next steps while keeping decisions in their hands."
           className="max-w-4xl"
         />
         <div className="grid items-stretch gap-5 md:grid-cols-2 md:gap-8">

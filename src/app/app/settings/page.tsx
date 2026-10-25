@@ -216,7 +216,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(file);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'careerforge-data-export.json';
+      anchor.download = 'ukukhanya-data-export.json';
       anchor.click();
       URL.revokeObjectURL(url);
       setMessage('Your data export was downloaded.');
@@ -228,7 +228,7 @@ export default function SettingsPage() {
   }
 
   async function deleteAccount() {
-    if (!window.confirm('Permanently delete your CareerForge account and its saved profile, checklist, and notification settings? This cannot be undone.')) return;
+    if (!window.confirm('Permanently delete your Ukukhanya account and its saved profile, checklist, and notification settings? This cannot be undone.')) return;
     setPrivacyBusy(true);
     setError('');
     try {
@@ -302,7 +302,7 @@ export default function SettingsPage() {
         <button type="button" className="btn-primary mt-5" onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save preferences'}</button>
       </section>
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="accessibility-heading">
-        <h2 id="accessibility-heading" className="font-semibold text-midnight">Make CareerForge work for you</h2>
+        <h2 id="accessibility-heading" className="font-semibold text-midnight">Make Ukukhanya work for you</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">Choose a focus and we’ll bring the most relevant tools to the top of your homepage. You can change it any time.</p>
         <label htmlFor="home-focus" className="label mt-4">My main focus right now</label>
         <select id="home-focus" className="input max-w-sm" value={homeFocus} onChange={(event) => setHomeFocus(event.target.value as HomeFocus)}>

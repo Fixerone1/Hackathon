@@ -172,7 +172,7 @@ export function ForgeProvider({ children }: { children: ReactNode }) {
     actions.forEach((action) => facts.push({
       label: action.status === 'applied' ? 'Marked applied' : 'Saved opportunity',
       value: `${action.opportunities.title} · ${action.opportunities.organization}`,
-      source: 'Action you took in CareerForge',
+      source: 'Action you took in Ukukhanya',
     }));
     return {
       loading,

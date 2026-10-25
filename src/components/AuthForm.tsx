@@ -98,7 +98,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
       {notice && <p role="status" className="rounded-lg border border-emerald/30 bg-emerald-light p-3 text-sm text-midnight">{notice}</p>}
       <p className="text-center text-sm text-slate-600">
-        {isSignup ? 'Already have an account?' : 'New to CareerForge?'}{' '}
+        {isSignup ? 'Already have an account?' : 'New to Ukukhanya?'}{' '}
         <Link href={isSignup ? '/login' : '/signup'} className="link">
           {isSignup ? 'Sign in' : 'Create an account'}
         </Link>

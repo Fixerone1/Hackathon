@@ -1,8 +1,8 @@
 {
-  "name": "careerforge",
+  "name": "ukukhanya",
   "version": "0.1.0",
   "private": true,
-  "description": "CareerForge AI - a Youth Economic Mobility Platform (employment readiness, money confidence, entrepreneurship)",
+  "description": "Ukukhanya - a youth economic mobility platform for employment readiness, money confidence, and entrepreneurship",
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
     "dev:web": "next dev --hostname 0.0.0.0",

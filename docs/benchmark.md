@@ -4,7 +4,7 @@
 
 ## Findings
 
-| Product | Official material checked | Observed pattern | CareerForge decision |
+| Product | Official material checked | Observed pattern | Ukukhanya decision |
 |---|---|---|---|
 | Monzo | [Monzo account page](https://monzo.com/) | The current public page leads with concrete money jobs such as salary organisation and savings Pots, instead of exposing the full feature inventory first. | Adopt a clear “one useful next step” hierarchy and goal progress tied to a real user-set goal. Avoid copying product claims or assuming a UK banking feature fits South African needs. |
 | FNB | [FNB personal banking](https://www.fnb.co.za/) | Public navigation is organized around everyday tasks and account needs. Signed-in home screen, insights and notification timing were not inspected. | Keep primary tasks recognizable and make settings/consent easy to reach. Do not infer spending or income behaviour. |

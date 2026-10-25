@@ -10,7 +10,7 @@ export default function PublicOpportunitiesPage() {
         <PageIntro
           eyebrow="Opportunities"
           title="Find opportunities that fit what you can do today."
-          description="CareerForge shares current opportunities with signed-in learners after their source and details have been checked. Every listing links back to its original advert."
+          description="Ukukhanya shares current opportunities with signed-in learners after their source and details have been checked. Every listing links back to its original advert."
           className="max-w-4xl"
         />
         <div className="rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-7">

@@ -83,13 +83,15 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
 
   return (
     <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-black px-5 py-4 text-white sm:px-6">
-        <div>
+      <div className="relative isolate flex flex-wrap items-center justify-between gap-3 overflow-hidden bg-black px-5 py-4 text-white sm:px-6">
+        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-45" />
+        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+        <div className="relative z-10">
           <p className="text-xs font-bold uppercase text-yellow-300">Your saved opportunities</p>
           <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-white">Application calendar</h2>
           <p className="mt-1 text-sm text-slate-300">Return dates and closing dates, in your local time.</p>
         </div>
-        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white hover:border-yellow-300 hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href="/app/profile" className="relative z-10 inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white hover:border-yellow-300 hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
       </div>
 
       {saved.length === 0 && <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
@@ -241,9 +243,9 @@ export default function DashboardPage() {
           src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[60%_center] opacity-45"
+          className="absolute inset-0 h-full w-full object-cover object-[60%_center] opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/55" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/70 to-black/45" aria-hidden="true" />
         <div className="relative grid items-center gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-8">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-yellow-300"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} · {forge.stage}</p>
