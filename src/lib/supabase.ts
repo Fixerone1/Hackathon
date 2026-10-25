@@ -11,6 +11,12 @@ export function supabaseConfigurationError(): string | null {
   return null;
 }
 
+export function isMissingAuthSession(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const authError = error as { name?: unknown; message?: unknown };
+  return authError.name === 'AuthSessionMissingError' || authError.message === 'Auth session missing!';
+}
+
 export function getSupabase(): SupabaseClient {
   if (client) return client;
 

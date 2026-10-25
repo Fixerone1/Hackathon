@@ -2,9 +2,12 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { getSupabase } from '@/lib/supabase';
+import { getSupabase, isMissingAuthSession } from '@/lib/supabase';
 
-const publicRoutes = new Set(['/', '/login', '/signup', '/privacy']);
+function requiresAuthentication(pathname: string): boolean {
+  return pathname === '/admin' || pathname.startsWith('/admin/')
+    || pathname === '/app' || pathname.startsWith('/app/');
+}
 
 export function PageAccessGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '/';
@@ -12,10 +15,11 @@ export function PageAccessGuard({ children }: { children: ReactNode }) {
   const [allowed, setAllowed] = useState(false);
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState('');
+  const protectedRoute = requiresAuthentication(pathname);
 
   useEffect(() => {
     let active = true;
-    if (publicRoutes.has(pathname)) {
+    if (!protectedRoute) {
       setAllowed(true);
       setChecking(false);
       setError('');
@@ -25,10 +29,10 @@ export function PageAccessGuard({ children }: { children: ReactNode }) {
     async function checkAccess() {
       try {
         const { data, error: authError } = await getSupabase().auth.getUser();
-        if (authError) throw authError;
+        if (authError && !isMissingAuthSession(authError)) throw authError;
         if (!active) return;
         if (!data.user) {
-          router.replace(`/signup?next=${encodeURIComponent(pathname)}`);
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           setAllowed(false);
         } else {
           setAllowed(true);
@@ -44,9 +48,9 @@ export function PageAccessGuard({ children }: { children: ReactNode }) {
     setAllowed(false);
     void checkAccess();
     return () => { active = false; };
-  }, [pathname, router]);
+  }, [pathname, protectedRoute, router]);
 
-  if (publicRoutes.has(pathname)) return children;
+  if (!protectedRoute) return children;
   if (checking) {
     return <p className="mx-auto max-w-6xl px-4 py-10 text-sm text-midnight" role="status">Checking your session...</p>;
   }
