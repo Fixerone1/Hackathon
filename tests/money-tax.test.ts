@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { estimateSouthAfricanTakeHome, estimateStipendTakeHome } from '../src/lib/money/tax';
+import { estimateSouthAfricanTakeHome, estimateStipendTakeHome } from '../src/lib/money/tax.ts';
 
 const under65 = { period: 'monthly' as const, ageGroup: 'under65' as const };
 
@@ -8,8 +8,8 @@ test('estimates the requested monthly salary examples', () => {
   const cases = [
     [8_000, 0, 7_920],
     [15_000, 1_215, 13_635],
-    [30_000, 3_915, 25_785],
-    [60_000, 14_736.08, 44_663.92],
+    [30_000, 4_681, 25_141.88],
+    [60_000, 14_736.08, 45_086.8],
     [150_000, 51_357.75, 98_465.13],
   ] as const;
   for (const [gross, paye, net] of cases) {

@@ -344,8 +344,8 @@ export default function DashboardPage() {
         <aside className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5 sm:px-6">
           <section className="py-5 first:pt-5" aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
-            <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Not calculated</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
+            <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Live as you complete each pillar</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">The full score updates from employment, money, and growth progress. Finish each pillar to see the complete calculation.</p>
           </section>
           <section className="py-5" aria-labelledby="progress-heading">
             <p className="eyebrow">Starter plan progress</p>

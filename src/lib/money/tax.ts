@@ -1,4 +1,4 @@
-import { taxTables2026_27 } from './tax-tables-2026-27';
+import { taxTables2026_27 } from './tax-tables-2026-27.ts';
 
 export type PayPeriod = 'monthly' | 'annual' | 'weekly' | 'hourly';
 export type AgeGroup = 'under65' | 'age65to74' | 'age75plus';
