@@ -19,53 +19,61 @@ const journeySteps = [
   {
     number: '01',
     icon: Compass,
-    title: 'Find your direction',
-    text: 'Get clear on what matters to you, what you already bring, and what you want to do next.',
-    detail: 'Your goals, your pace',
+    title: 'Create your learner profile',
+    text: 'Add your education, skills, location, and goals. You can build your profile over time.',
+    detail: 'Start with what you know',
   },
   {
     number: '02',
     icon: Sparkles,
-    title: 'Build your toolkit',
-    text: 'Grow practical skills, strengthen your CV, and get more confident with money decisions.',
-    detail: 'Skills for real life',
+    title: 'Explore the options',
+    text: 'See the tools and verified opportunities available in the learner workspace.',
+    detail: 'Check what is available',
   },
   {
     number: '03',
     icon: ArrowRight,
-    title: 'Make your next move',
-    text: 'Explore opportunities, test an idea, or take a small step towards the future you want.',
-    detail: 'Progress you can own',
+    title: 'Choose your next step',
+    text: 'Check the original provider’s requirements and decide what works for you. You stay in control.',
+    detail: 'Your plan, your decision',
   },
 ];
 
-const pathways = [
+const audiences = [
   {
     icon: GraduationCap,
-    tag: 'STUDY FURTHER',
-    title: 'Turn “maybe one day” into a plan.',
-    text: 'Explore pathways, recognise your strengths, and map a practical next step towards further study.',
-    prompt: 'Your next chapter can start now.',
-    image: '/images/careerforge-students.jpg',
-    imageAlt: 'Students sharing ideas around a laptop in a library',
+    title: 'Still in secondary school or matric?',
+    text: 'Start thinking about what interests you, the subjects you enjoy, and the options you may want to explore after school.',
   },
   {
-    icon: Lightbulb,
-    tag: 'START SOMETHING',
-    title: 'Got an idea? Give it a first step.',
-    text: 'Shape a business idea, think through who it could help, and choose one small thing to test.',
-    prompt: 'Big ideas grow from small moves.',
-    image: '/images/careerforge-founders.jpg',
-    imageAlt: 'A Black woman and colleague working together at a computer',
+    icon: GraduationCap,
+    title: 'Completed matric and choosing what comes next?',
+    text: 'Explore study, training, and work directions that could fit your goals. Check entry criteria and dates with each institution.',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Planning to apply to university?',
+    text: 'Keep your study goals and profile details in one place, then confirm application requirements and deadlines on official university websites.',
   },
   {
     icon: BriefcaseBusiness,
-    tag: 'NEW JOB, NEW GOALS',
-    title: 'Make your money work for you.',
-    text: 'Build everyday money confidence, set a savings goal, and feel more in control of your next pay day.',
-    prompt: 'Your first pay is a fresh start.',
-    image: '/images/careerforge-people.jpg',
-    imageAlt: 'A diverse group of young people smiling together',
+    title: 'Looking for an internship, first job, or graduate role?',
+    text: 'Check the learner workspace for verified opportunity listings when they are available, and follow each listing to its original source.',
+  },
+  {
+    icon: Compass,
+    title: 'Not sure which career to choose?',
+    text: 'Use your profile to gather your interests, skills, and goals as you consider possible directions. A dedicated career assessment is not active in this preview.',
+  },
+  {
+    icon: Lightbulb,
+    title: 'Have a business idea or need funding?',
+    text: 'You can explore a business direction, but verified business-funding listings are not connected yet. Check funding offers directly with the official provider.',
+  },
+  {
+    icon: Banknote,
+    title: 'Want to feel more confident with money?',
+    text: 'Explore the Money Skills area for practical next steps. Its lessons and budgeting calculators are not active in this preview yet.',
   },
 ];
 
@@ -83,19 +91,20 @@ export default function HomePage() {
         <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-emerald/20" />
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
           <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">Ukukhanya means “light” in isiZulu</p>
             <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] text-white sm:text-6xl lg:text-[4.25rem]">
               Your future is
               <span className="block"><span className="text-emerald">yours to build.</span></span>
             </h1>
             <p className="mt-6 max-w-none text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              Whether you’re thinking about studying further, starting a business, or finding your feet in a new job, your next step deserves a plan that starts with you.
+              Whether you’re still in school, planning to study, looking for an internship, exploring a career, or building a business idea, start with a next step that fits you.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:items-start lg:justify-start">
               <Link href="/signup" className="btn-primary w-full sm:w-fit">
-                Start building your next step <ArrowRight size={17} aria-hidden="true" />
+                Create your learner profile <ArrowRight size={17} aria-hidden="true" />
               </Link>
-              <Link href="/#journey-heading" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[10px] border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-emerald hover:bg-white/10">
-                See how it works
+              <Link href="#learner-paths" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[10px] border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-emerald hover:bg-white/10">
+                Find your next step
               </Link>
             </div>
             <p className="mt-4 text-xs text-slate-400">A practical starting point for young South Africans. Go at your own pace.</p>
@@ -158,7 +167,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
             <p className="eyebrow">Your toolkit, all in one place</p>
             <h2 id="tools-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Find the tool for your next move.</h2>
-            <p className="section-description">Explore career, study, business, and money tools. Create an account to open your learner workspace; current availability is shown on each tool page.</p>
+            <p className="section-description">Create an account to open your learner workspace and explore career, study, work, business, and money tools. See the preview notes below for what is currently available.</p>
           </div>
           <HomeToolDirectory />
         </div>
@@ -211,34 +220,40 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="pathways-heading">
+      <section id="learner-paths" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="pathways-heading">
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div className="mx-auto max-w-2xl sm:mx-0">
-            <p className="eyebrow">Whatever your next move looks like</p>
-            <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">There’s more than one way forward.</h2>
+            <p className="eyebrow">A starting point for your stage of life</p>
+            <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Who Ukukhanya is for</h2>
           </div>
-          <p className="mx-auto max-w-sm text-sm leading-6 text-midnight sm:mx-0">Pick the path that feels most like you today. You can explore the others whenever you like.</p>
+          <p className="mx-auto max-w-sm text-sm leading-6 text-midnight sm:mx-0">You do not need to have everything figured out. Choose a starting point and explore at your own pace.</p>
         </div>
 
-        <div className="mt-7 grid gap-4 md:grid-cols-3 md:gap-5">
-          {pathways.map(({ icon: Icon, tag, title, text, prompt, image, imageAlt }, index) => (
-            <article key={tag} className={`flex h-full flex-col overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_26px_rgba(34,34,34,0.05)] ${index === 1 ? 'md:-translate-y-2' : ''}`}>
-              <div className="relative h-44 overflow-hidden sm:h-52">
-                <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${image}`} alt={imageAlt} loading="lazy" width={1000} height={667} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
-                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-sunshine px-3 py-1.5 text-[10px] font-extrabold tracking-[0.12em] text-midnight sm:left-3 sm:translate-x-0">{tag}</span>
-              </div>
-              <div className="flex flex-1 flex-col p-5 sm:p-6">
-                <div className="flex items-center justify-center md:justify-between">
-                  <span className={`grid h-11 w-11 place-items-center rounded-full ${index === 1 ? 'bg-midnight text-sunshine' : 'bg-sunshine text-midnight'}`}>
-                    <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
-                  </span>
-                </div>
-                <h3 className="mt-5 text-center text-xl font-bold leading-snug text-midnight md:text-left">{title}</h3>
-                <p className="mt-3 flex-1 text-center text-sm leading-6 text-midnight md:text-left">{text}</p>
-                <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm font-semibold text-midnight md:text-left">{prompt}</p>
-              </div>
+        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {audiences.map(({ icon: Icon, title, text }) => (
+            <article key={title} className="rounded-2xl border border-[#e5e5e5] bg-white p-5 shadow-[0_8px_26px_rgba(34,34,34,0.05)] sm:p-6">
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-midnight">
+                <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <h3 className="mt-4 text-lg font-bold leading-snug text-midnight">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-midnight">{text}</p>
             </article>
           ))}
+        </div>
+        <div className="mt-6 rounded-2xl border-l-4 border-sunshine bg-white p-5 sm:p-6">
+          <h3 className="font-bold text-midnight">What to expect in this preview</h3>
+          <p className="mt-2 text-sm leading-6 text-midnight">
+            This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Study pathways do not yet include verified courses or university deadlines. CV, interview, career-assessment, Skills Academy, and Money Skills tools are not active yet, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you, guarantee funding, or replace official application information. Always confirm details directly with the institution, employer, or funder.
+          </p>
+        </div>
+        <div className="mt-4 rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6">
+          <h3 className="font-bold text-midnight">Your information stays yours</h3>
+          <p className="mt-2 text-sm leading-6 text-midnight">
+            The profile does not ask for your national ID or passport number, bank details, or photos. You can review the <Link href="/privacy" className="font-semibold underline underline-offset-2">privacy notice</Link> before creating an account. You choose what to add and can export or delete your data in Settings.
+          </p>
+        </div>
+        <div className="mt-6 text-center">
+          <Link href="/signup" className="btn-primary">Start with your learner profile <ArrowRight size={16} aria-hidden="true" /></Link>
         </div>
       </section>
 

@@ -10,10 +10,6 @@ import { WorkspaceNav } from '@/components/WorkspaceNav';
 
 const bannerLabels: Record<string, string> = {
   '/': 'Build your next step',
-  '/about': 'About Ukukhanya',
-  '/how-it-works': 'How Ukukhanya works',
-  '/opportunities': 'Explore opportunities',
-  '/partners': 'Partner with us',
   '/privacy': 'Privacy at Ukukhanya',
   '/login': 'Sign in to Ukukhanya',
   '/signup': 'Create your account',
@@ -43,7 +39,6 @@ function LinkedInMark() {
 
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
   const pathname = usePathname() || '/';
-  const [signedIn, setSignedIn] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Work and career tools' : 'Your next step');
@@ -55,10 +50,6 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       ? { href: '/login', label: 'Sign in' }
       : { href: '/signup', label: 'Get started' };
   const bannerImages: Record<string, string> = {
-    '/about': 'careerforge-people.jpg',
-    '/how-it-works': 'careerforge-students.jpg',
-    '/opportunities': 'careerforge-founders.jpg',
-    '/partners': 'careerforge-founders.jpg',
     '/app': 'careerforge-people.jpg',
     '/app/employment': 'careerforge-people.jpg',
     '/app/employment/assessment': 'careerforge-students.jpg',
@@ -85,15 +76,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
-              {signedIn && [
-                ['/how-it-works', 'How it works'],
-                ['/opportunities', 'Opportunities'],
-                ['/partners', 'For organizations'],
-                ['/about', 'About'],
-              ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 transition-colors hover:bg-slate-50 ${pathname === href ? 'font-bold text-black' : 'text-slate-700'}`}>
-                {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
-              </Link>)}
-              <AccountMenu compact onUserChange={setSignedIn} />
+              <AccountMenu compact />
             </nav>
           ) : (
             <div className="flex items-center gap-2">
@@ -108,8 +91,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         {mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
           <div className="mx-auto grid max-w-6xl gap-1">
             {(variant === 'public' ? [
-              ['/', 'Home'], ['/how-it-works', 'How it works'], ['/opportunities', 'Opportunities'],
-              ['/partners', 'For organizations'], ['/about', 'About'], ['/login', 'Sign in'], ['/signup', 'Create account'],
+              ['/', 'Home'], ['/login', 'Sign in'], ['/signup', 'Create account'],
             ] : [
               ['/app', 'Dashboard'], ['/app/employment', 'Employment Hub'], ['/app/money', 'Money skills'],
               ['/app/growth', 'Growth Studio'], ['/app/profile', 'My profile'], ['/app/settings', 'Settings'],
@@ -131,7 +113,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Practical support for work, money confidence, and the future you want to build.</p>
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                 <Link href={primaryCta.href} className="btn-accent w-full sm:w-auto">{primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
-                <Link href="/opportunities" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">Explore opportunities</Link>
+                <Link href="/#learner-paths" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">Explore learner paths</Link>
               </div>
             </div>
             <div className={`relative h-28 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-36 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
@@ -194,10 +176,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             <nav aria-label="Explore Ukukhanya">
               <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Explore</h2>
               <ul className="mt-4 space-y-3 text-sm text-midnight">
-                <li><Link href="/how-it-works" className="transition-colors hover:bg-sunshine-light">How it works</Link></li>
-                <li><Link href="/opportunities" className="transition-colors hover:bg-sunshine-light">Opportunities</Link></li>
-                <li><Link href="/partners" className="transition-colors hover:bg-sunshine-light">For organizations</Link></li>
-                <li><Link href="/about" className="transition-colors hover:bg-sunshine-light">About Ukukhanya</Link></li>
+                <li><Link href="/#learner-paths" className="transition-colors hover:bg-sunshine-light">Who we support</Link></li>
+                <li><Link href="/#tools" className="transition-colors hover:bg-sunshine-light">Explore the tools</Link></li>
+                <li><Link href="/privacy" className="transition-colors hover:bg-sunshine-light">Privacy and trust</Link></li>
               </ul>
             </nav>
 

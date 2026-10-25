@@ -19,14 +19,14 @@ type ToolFocus = 'study' | 'work' | 'business' | 'money';
 type HomeTool = { icon: LucideIcon; title: string; text: string; href: string; tag: string; focus: readonly ToolFocus[] };
 
 const tools: readonly HomeTool[] = [
-  { icon: ClipboardCheck, title: 'Skills assessment', text: 'See your strengths and choose what to grow next.', href: '/app/employment/assessment', tag: 'KNOW YOUR STRENGTHS', focus: ['work', 'study'] },
-  { icon: FileText, title: 'CV Builder', text: 'Get your experience and skills ready to share.', href: '/app/employment/cv', tag: 'TELL YOUR STORY', focus: ['work'] },
-  { icon: MessageCircle, title: 'Interview Coach', text: 'Get ready to show up with confidence.', href: '/app/employment/interview', tag: 'PREPARE FOR WORK', focus: ['work'] },
-  { icon: BookOpen, title: 'Skills Academy', text: 'Explore practical activities to build your skills.', href: '/app/employment/academy', tag: 'KEEP LEARNING', focus: ['study', 'work'] },
-  { icon: BriefcaseBusiness, title: 'Opportunities', text: 'Browse verified listings and keep track of your next move.', href: '/app/employment/opportunities', tag: 'FIND YOUR OPENING', focus: ['work', 'business'] },
-  { icon: Route, title: 'Study & career pathways', text: 'Explore routes that can take you towards your goals.', href: '/app/employment/pathways', tag: 'PLAN WHAT’S NEXT', focus: ['study'] },
-  { icon: Banknote, title: 'Money Skills', text: 'Build confidence with budgets, savings, and everyday choices.', href: '/app/money', tag: 'OWN YOUR MONEY', focus: ['money'] },
-  { icon: Lightbulb, title: 'Growth Studio', text: 'Shape a business idea into a small first experiment.', href: '/app/growth', tag: 'START AN IDEA', focus: ['business'] },
+  { icon: ClipboardCheck, title: 'Skills assessment', text: 'A dedicated career assessment is not active in this preview yet.', href: '/app/employment/assessment', tag: 'NOT ACTIVE YET', focus: ['work', 'study'] },
+  { icon: FileText, title: 'CV Builder', text: 'The CV builder is not active in this preview yet.', href: '/app/employment/cv', tag: 'NOT ACTIVE YET', focus: ['work'] },
+  { icon: MessageCircle, title: 'Interview Coach', text: 'Interview practice is not active in this preview yet.', href: '/app/employment/interview', tag: 'NOT ACTIVE YET', focus: ['work'] },
+  { icon: BookOpen, title: 'Skills Academy', text: 'Lessons and course credentials are not available in this preview yet.', href: '/app/employment/academy', tag: 'NOT ACTIVE YET', focus: ['study', 'work'] },
+  { icon: BriefcaseBusiness, title: 'Opportunities', text: 'Browse verified listings when they are available and open the original advert.', href: '/app/employment/opportunities', tag: 'LISTINGS MAY VARY', focus: ['work', 'business'] },
+  { icon: Route, title: 'Study & career pathways', text: 'Verified courses, learnerships, and university deadlines are not connected yet.', href: '/app/employment/pathways', tag: 'MORE TO COME', focus: ['study'] },
+  { icon: Banknote, title: 'Money Skills', text: 'Money lessons and budgeting calculators are not active in this preview yet.', href: '/app/money', tag: 'MORE TO COME', focus: ['money'] },
+  { icon: Lightbulb, title: 'Growth Studio', text: 'Business idea tools and verified funding listings are not connected yet.', href: '/app/growth', tag: 'MORE TO COME', focus: ['business'] },
 ] as const;
 
 type Focus = 'all' | 'study' | 'work' | 'business' | 'money';
