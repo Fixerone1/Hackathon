@@ -7,14 +7,15 @@ import { useState } from 'react';
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Menu, X } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
+import { normalizePathname } from '@/lib/normalizePathname';
 
 const bannerLabels: Record<string, string> = {
   '/': 'Build your next step',
   '/privacy': 'Privacy at Ukukhanya',
   '/login': 'Sign in to Ukukhanya',
   '/signup': 'Create your account',
-  '/app': 'Your dashboard',
-  '/app/employment': 'Work and career tools',
+  '/app': 'Dashboard',
+  '/app/employment': 'Employment Hub',
   '/app/employment/assessment': 'Skills assessment',
   '/app/employment/cv': 'Build your CV',
   '/app/employment/interview': 'Interview practice',
@@ -22,10 +23,10 @@ const bannerLabels: Record<string, string> = {
   '/app/employment/opportunities': 'Find opportunities',
   '/app/employment/pathways': 'Study and career paths',
   '/app/employment/applications': 'Your applications',
-  '/app/profile': 'Your learner profile',
-  '/app/settings': 'Account settings',
-  '/app/money': 'Money skills',
-  '/app/growth': 'Business ideas',
+  '/app/profile': 'My profile',
+  '/app/settings': 'Settings',
+  '/app/money': 'Money Skills',
+  '/app/growth': 'Growth Studio',
   '/admin': 'Manage opportunities',
 };
 
@@ -47,7 +48,7 @@ function LinkedInMark() {
 }
 
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
-  const pathname = usePathname() || '/';
+  const pathname = normalizePathname(usePathname() || '/');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Work and career tools' : 'Your next step');
@@ -115,10 +116,10 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
       {showBanner && (
-        <section aria-label={`${bannerLabel} banner`} className="relative isolate overflow-hidden bg-black text-white min-h-64 sm:min-h-72">
+        <section aria-label={`${bannerLabel} banner`} className="relative isolate min-h-[220px] overflow-hidden bg-black text-white sm:min-h-[260px] lg:min-h-[300px]">
           <img src={bannerImage} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-55" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" aria-hidden="true" />
-          <div className="relative z-10 mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
+          <div className="relative z-10 mx-auto grid min-h-[inherit] w-full max-w-6xl grid-cols-1 items-center gap-5 px-4 py-7 sm:gap-6 sm:px-6 sm:py-9 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8 lg:py-10">
             <div className="relative z-10 max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">Ukukhanya · Your next step</p>
               {variant === 'public' ? (
@@ -134,7 +135,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                 </div>
               )}
             </div>
-            <div className={`relative h-28 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-36 lg:h-40 ${variant === 'public' && authPage ? 'lg:hidden' : ''}`}>
+            <div className={`relative h-24 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-32 lg:h-40 ${variant === 'public' && authPage ? 'lg:hidden' : ''}`}>
               <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
               <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>

@@ -10,6 +10,7 @@ import {
   Settings,
   UserRound,
 } from 'lucide-react';
+import { normalizePathname } from '@/lib/normalizePathname';
 
 const items = [
   { href: '/app', label: 'Dashboard', shortLabel: 'Home', Icon: LayoutDashboard },
@@ -21,7 +22,7 @@ const items = [
 ];
 
 export function WorkspaceNav() {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname() || '/');
 
   return (
     <>

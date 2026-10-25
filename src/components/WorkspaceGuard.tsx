@@ -3,10 +3,11 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getSupabase, isMissingAuthSession } from '@/lib/supabase';
+import { normalizePathname } from '@/lib/normalizePathname';
 
 export function WorkspaceGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname() || '/app';
+  const pathname = normalizePathname(usePathname() || '/app');
   const [state, setState] = useState<'checking' | 'authenticated' | 'unavailable'>('checking');
 
   useEffect(() => {

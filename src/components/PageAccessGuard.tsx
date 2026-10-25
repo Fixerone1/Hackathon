@@ -3,13 +3,14 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getSupabase, isMissingAuthSession } from '@/lib/supabase';
+import { normalizePathname } from '@/lib/normalizePathname';
 
 function requiresAuthentication(pathname: string): boolean {
   return pathname === '/admin' || pathname.startsWith('/admin/');
 }
 
 export function PageAccessGuard({ children }: { children: ReactNode }) {
-  const pathname = usePathname() || '/';
+  const pathname = normalizePathname(usePathname() || '/');
   const router = useRouter();
   const [allowed, setAllowed] = useState(false);
   const [checking, setChecking] = useState(true);
