@@ -13,7 +13,7 @@
   --color-canvas: #FFFFFF;
   --color-text: #0A0A0A;
   --color-muted: #0A0A0A;
-  --color-line: #FFF8B8;
+  --color-line: #0A0A0A;
   --color-emerald-soft: var(--color-yellow-soft);
   --page-background: var(--color-canvas);
   --surface: var(--color-white);
@@ -39,6 +39,36 @@ html {
 *::after {
   border-color: var(--color-line);
   --tw-ring-color: var(--color-black);
+}
+
+[class*="border-slate-"],
+[class*="border-yellow-"],
+[class*="border-sunshine"],
+[class*="border-amber-"],
+[class*="border-red-"],
+[class*="border"][class*="FFF8B8"],
+[class*="border"][class*="FFE500"],
+[class*="border-t-yellow"],
+[class*="border-b-yellow"],
+[class*="border-l-yellow"],
+[class*="border-r-yellow"],
+[class*="border-x-yellow"],
+[class*="border-y-yellow"],
+[class*="border-t-sunshine"],
+[class*="border-b-sunshine"],
+[class*="border-l-sunshine"],
+[class*="border-r-sunshine"],
+[class*="border-x-sunshine"],
+[class*="border-y-sunshine"] {
+  border-color: var(--color-black);
+}
+
+[class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-yellow-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-sunshine"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-amber-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-red-"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--color-black);
 }
 
 ::placeholder {
