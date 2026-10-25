@@ -550,7 +550,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           )}
         </div>
       ) : matches.length > 0 ? (
-        <ul className="divide-y divide-slate-200 border-y border-slate-200">
+        <ul className="space-y-4">
           {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
               <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(10,10,10,0.04)] transition-shadow hover:shadow-[0_8px_20px_rgba(10,10,10,0.08)]">
@@ -665,7 +665,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     View &amp; apply <span aria-hidden="true">→</span>
                   </a>
                   {action === 'saved' && <span className="text-xs font-medium text-emerald-800">Saved to your plan</span>}
-                  <div role="group" aria-label="Opportunity social actions" className="flex items-center justify-center gap-2 sm:justify-start">
+                  <div role="group" aria-label="Opportunity social actions" className="flex w-full items-center justify-center gap-2">
                     <button type="button" aria-label={action === 'saved' ? 'Unlike and remove from saved opportunities' : 'Like and save this opportunity'}
                       aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
                       title={action === 'saved' ? 'Remove from saved' : 'Like and save'}
