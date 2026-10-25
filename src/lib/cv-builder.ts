@@ -167,14 +167,6 @@ export type CvProfileSeed = {
   skill_ratings?: unknown;
   certifications?: unknown;
   languages?: unknown;
-  experience_by_area?: unknown;
-  work_authorization?: string;
-  availability_start_date?: string | null;
-  drivers_license?: boolean | null;
-  own_transport?: boolean | null;
-  willing_to_relocate?: boolean | null;
-  shift_preferences?: unknown;
-  remote_ok?: boolean | null;
 };
 
 export function listOfStrings(value: unknown): string[] {
@@ -182,7 +174,10 @@ export function listOfStrings(value: unknown): string[] {
   return value.flatMap((item) => {
     if (typeof item === 'string') return item.trim() ? [item.trim()] : [];
     if (item && typeof item === 'object' && 'name' in item && typeof item.name === 'string') {
-      return item.name.trim() ? [item.name.trim()] : [];
+      if (!item.name.trim()) return [];
+      return ['level' in item && typeof item.level === 'number'
+        ? `${item.name.trim()} — Level ${item.level}`
+        : item.name.trim()];
     }
     return [];
   });
@@ -213,13 +208,6 @@ export function prefillCvData(
   const legacySummary = typeof legacy?.summary === 'string' ? legacy.summary : '';
   const legacyEducation = typeof legacy?.education === 'string' ? legacy.education : '';
   const profileList = (value: unknown) => listOfStrings(value).join('\n');
-  const profileAuthorization = profile.work_authorization === 'citizen'
-    ? 'South African citizen'
-    : profile.work_authorization === 'permanent_resident'
-      ? 'Permanent resident'
-      : profile.work_authorization === 'work_visa'
-        ? 'Valid work visa'
-        : '';
   const savedValue = (key: keyof CvData, fallback = '') => (
     typeof savedData[key] === 'string' ? savedData[key] as string : fallback
   );
@@ -234,15 +222,8 @@ export function prefillCvData(
     email: savedValue('email', auth.email),
     town: savedValue('town', profile.city),
     province: savedValue('province', profile.province),
-    workStatus: savedValue('workStatus', profileAuthorization),
-    availableFrom: savedValue('availableFrom', profile.availability_start_date || ''),
-    licenceCode: savedValue('licenceCode', profile.drivers_license ? 'Licence held (add code)' : ''),
-    transport: savedValue('transport', profile.own_transport === true ? 'Yes' : profile.own_transport === false ? 'No' : ''),
-    relocate: savedValue('relocate', profile.willing_to_relocate === true ? 'Yes' : profile.willing_to_relocate === false ? 'No' : ''),
-    shifts: savedValue('shifts', profileList(profile.shift_preferences)),
-    workModes: savedValue('workModes', profile.remote_ok ? 'Remote' : ''),
     headline: savedValue('headline', profile.target_role),
-    summary: savedValue('summary', legacySummary || profile.about_me || profile.personal_goal || ''),
+    summary: savedValue('summary', legacySummary || profile.about_me || ''),
     formalExperience: savedValue('formalExperience', typeof legacy?.experience === 'string' ? legacy.experience : ''),
     schoolGrade: savedValue('schoolGrade', profile.highest_qualification),
     schoolDetails: savedValue('schoolDetails', legacyEducation || qualifications),

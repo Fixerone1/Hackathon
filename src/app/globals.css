@@ -264,9 +264,11 @@ html.larger-text body {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     margin: 0;
     padding: 0;
     min-height: 0;
+    width: 100%;
     box-shadow: none !important;
     border: none !important;
     color: #0A0A0A;

@@ -354,6 +354,8 @@ export function CvBuilder() {
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
     const phone = data.phone.replace(/[\s()-]/g, '');
     const phoneValid = /^(?:0[1-8]\d{8}|\+27[1-8]\d{8})$/.test(phone);
+    const links = [data.linkedin, ...data.portfolio.split(/\n+/)].map((link) => link.trim()).filter(Boolean);
+    const linksValid = links.every((link) => /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(link));
     const keywordsOkay = !data.advert.trim() || match.total === 0 || match.matched / match.total >= 0.7;
     const experienceLines = [
       ...data.primaryDuties.split('\n'),
@@ -363,10 +365,12 @@ export function CvBuilder() {
       ...data.informalExperienceDetails.split('\n'),
     ].map((line) => line.trim()).filter((line) => line.length > 12);
     const quantifiedCount = experienceLines.filter((line) => /\d/.test(line)).length;
-    const expiredYears = [...data.certificates.matchAll(/\b(?:expires?|expiry)\s*:?\s*((?:19|20)\d{2})\b/gi)]
+    const expiredYears = [...data.certificates.matchAll(/\b(?:expires?|expiry|expired)\s*:?\s*(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+)?((?:19|20)\d{2})\b/gi)]
       .map((entry) => Number(entry[1]))
       .filter((year) => year < new Date().getFullYear());
-    const privateTerms = /\b(?:id number|date of birth|street address|marital status|bank account)\b/i.test(allOutput);
+    const privateTerms = /\b(?:id\s*(?:number|no\.?|#)|date of birth|street address|marital status|bank account)\b/i.test(allOutput) || /\b\d{13}\b/.test(allOutput);
+    const permitExpired = data.workStatus === 'Valid work permit'
+      && (!data.workPermitExpiry || new Date(`${data.workPermitExpiry}T00:00:00`) < new Date(new Date().toDateString()));
     const words = plainText.split(/\s+/).filter(Boolean).length;
     const experienceYears = Number((data.formalExperience.match(/(\d+)\s+years?/i) || [])[1] || 0);
     return [
@@ -381,6 +385,8 @@ export function CvBuilder() {
       { label: 'ATS-friendly layout', pass: true, note: 'The CV uses one column, standard section headings, selectable text, and no photo.' },
       { label: 'Privacy check', pass: !privateTerms, note: 'Do not include an ID number, birth date, or street address in CV text.' },
       { label: 'References', pass: data.referencesDisplay !== 'Show permitted reference contacts' || (data.referenceOnePermission === 'Yes' && data.referenceTwoPermission === 'Yes'), note: 'Only print reference contact details after getting their permission.' },
+      { label: 'Portfolio links', pass: linksValid, note: 'Check that each LinkedIn or portfolio link is a complete public HTTPS URL.' },
+      { label: 'Work permit expiry', pass: !permitExpired, note: data.workPermitExpiry ? 'Your permit date appears to have passed; verify it before applying.' : 'Add the expiry date for a work permit or choose the status that applies.' },
       { label: 'Certificate expiry', pass: expiredYears.length === 0, note: expiredYears.length ? `Review expired credential dates: ${[...new Set(expiredYears)].join(', ')}.` : 'Check that every certificate and licence is still current.' },
       { label: 'File name', pass: Boolean(data.fullName.trim()), note: `Download as ${safeFilename(data.fullName)}.pdf.` },
     ];
