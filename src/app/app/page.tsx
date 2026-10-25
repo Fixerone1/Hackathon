@@ -319,7 +319,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <div className="grid items-start gap-5 py-5 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
+      <div className="grid items-start gap-5 border-t-2 border-yellow-300 py-6 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
         <section className="rounded-2xl border border-[#e5e5e5] border-t-4 border-t-yellow bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
@@ -351,22 +351,22 @@ export default function DashboardPage() {
           </ul>
         </section>
 
-        <aside className="space-y-6 rounded-2xl border border-[#e5e5e5] bg-[#f7f7f7] p-5 sm:p-6">
-          <section aria-labelledby="mobility-score-heading">
+        <aside className="divide-y divide-yellow-200 rounded-2xl border border-slate-200 border-t-4 border-t-yellow bg-white px-5 sm:px-6">
+          <section className="py-5 first:pt-5" aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
             <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Not calculated</h2>
             <p className="mt-2 text-sm leading-6 text-[#555555]">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
           </section>
-          <section aria-labelledby="progress-heading">
+          <section className="py-5" aria-labelledby="progress-heading">
             <p className="eyebrow">Starter plan progress</p>
             <h2 id="progress-heading" className="mt-2 text-3xl font-bold text-midnight">{progress}%</h2>
             <p className="mt-2 text-sm leading-6 text-[#555555]">Completion of the three checklist actions shown here.</p>
           </section>
-          <section id="money-skills" className="border-t border-slate-200 pt-5">
+          <section id="money-skills" className="py-5">
             <h2 className="font-semibold text-midnight">Money confidence</h2>
             <p className="mt-1 text-sm leading-6 text-slate-600">Set a savings goal and practice everyday money decisions.</p>
           </section>
-          <section id="growth-studio" className="border-t border-slate-200 pt-5">
+          <section id="growth-studio" className="py-5">
             <h2 className="font-semibold text-midnight">Growth potential</h2>
             <p className="mt-1 text-sm leading-6 text-slate-600">Capture an idea and choose one small experiment.</p>
           </section>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Menu, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 import { normalizePathname } from '@/lib/normalizePathname';
@@ -96,9 +96,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
     <>
       <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-black sm:gap-3" aria-label="Ukukhanya home">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-black text-white sm:h-10 sm:w-10">
-              <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
+          <Link href={variant === 'workspace' ? '/app' : '/'} className="flex shrink-0 items-center gap-2.5 rounded-xl font-bold text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:gap-3" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
+            <span className="grid h-10 w-12 place-items-center overflow-hidden rounded-xl bg-black p-1 sm:h-11 sm:w-14">
+              <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/logo.webp`} alt="" aria-hidden="true" className="h-full w-full object-contain" />
             </span>
             <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
@@ -112,18 +112,17 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <AccountMenu compact />
             </div>
           )}
-          <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
-            {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-          </button>
+          {variant === 'public' && (
+            <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
+              {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+            </button>
+          )}
         </div>
-        {mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+        {variant === 'public' && mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
           <div className="mx-auto grid max-w-6xl gap-1">
-            {(variant === 'public' ? [
+            {[
               ['/', 'Home'], ['/login', 'Sign in'], ['/signup', 'Create account'],
-            ] : [
-              ['/app', 'Dashboard'], ['/app/employment', 'Employment Hub'], ['/app/money', 'Money skills'],
-              ['/app/growth', 'Growth Studio'], ['/app/profile', 'My profile'], ['/app/settings', 'Settings'],
-            ]).map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
+            ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
               {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
             </Link>)}
           </div>
@@ -168,9 +167,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         <div className="relative mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">
-              <Link href="/" className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label="Ukukhanya home">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light">
-                  <BriefcaseBusiness size={19} strokeWidth={1.8} aria-hidden="true" />
+              <Link href={variant === 'workspace' ? '/app' : '/'} className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
+                <span className="grid h-11 w-14 place-items-center overflow-hidden rounded-xl bg-black p-1">
+                  <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/logo.webp`} alt="" aria-hidden="true" className="h-full w-full object-contain" />
                 </span>
                 <span className="text-lg">Ukukhanya</span>
               </Link>
