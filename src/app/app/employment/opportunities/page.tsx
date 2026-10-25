@@ -11,7 +11,7 @@ export default function OpportunitiesPage() {
         description="Review verified opportunities, see how stated requirements compare with your profile, and apply on the original source site."
         className="mb-5"
       />
-      <p className="mb-5 mt-0 text-sm leading-6 text-[#0A0A0A]">Start with the closing date and fit signals. Open a listing to see application preparation options.</p>
+      <p className="mb-5 mt-0 text-sm leading-6 text-slate-600">Start with the closing date and fit signals. Open a listing to see application preparation options.</p>
       <EmploymentNav />
       <OpportunityFeed />
     </div>

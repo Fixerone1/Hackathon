@@ -298,13 +298,13 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#FFF8B8] bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
+      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
         <div className="min-w-0">
           <p className="eyebrow">Your information</p>
           <h1 className="page-title mt-2">Build your learner profile</h1>
           <p className="page-description">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="w-full rounded-xl bg-[#FFF8B8] p-3 sm:w-48 sm:shrink-0">
+        <div className="w-full rounded-xl bg-slate-50 p-3 sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
             <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />
@@ -313,7 +313,7 @@ export default function ProfilePage() {
       </header>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.85fr)] xl:gap-8">
-        <section className="min-w-0 rounded-2xl border border-[#FFF8B8] bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
+        <section className="min-w-0 rounded-2xl border border-slate-200 bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
           <ol className="mb-7 grid grid-cols-3 border-b border-slate-200" aria-label="Profile setup steps">
             {['About you', 'Goals', 'Experience'].map((label, index) => (
               <li key={label}>
@@ -506,7 +506,7 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <aside className="min-w-0 rounded-2xl border border-[#FFF8B8] bg-surface p-5 shadow-card sm:p-6">
+        <aside className="min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-card sm:p-6">
           <h2 className="font-semibold text-midnight">What your profile improves</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">As verified opportunities are connected, these details can help check stated requirements more accurately.</p>
           <p className="mt-5 border-l-2 border-sunshine-dark pl-3 text-sm leading-6 text-slate-700">{nextStep}</p>

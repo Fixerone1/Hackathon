@@ -257,10 +257,10 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <PageIntro eyebrow="Account" title="Settings" description="Choose what you agree to receive. All email categories are off until you opt in." />
-      <section className="max-w-3xl rounded-2xl border border-[#FFF8B8] bg-[#FFF8B8] p-5 sm:p-7" aria-labelledby="notification-heading">
+      <section className="max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7" aria-labelledby="notification-heading">
         <h2 id="notification-heading" className="section-heading">Notification preferences</h2>
         <p className="mt-2 text-sm text-slate-600">Choose which opportunity updates you want. Dashboard alerts are checked against your profile when you open the dashboard; email delivery is not enabled yet.</p>
-        <label className="mt-4 flex min-h-12 items-center gap-3 rounded-xl border border-[#FFF8B8] bg-white px-3 text-sm font-medium text-midnight">
+        <label className="mt-4 flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-midnight">
           <input type="checkbox" className={toggleClass} checked={dashboardAlerts} onChange={(event) => setDashboardAlerts(event.target.checked)} />
           Show new matching opportunities in my dashboard inbox
         </label>

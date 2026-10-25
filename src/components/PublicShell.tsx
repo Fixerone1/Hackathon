@@ -150,7 +150,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               )}
             </div>
             {variant === 'public' && (
-              <div className={`relative h-24 overflow-hidden rounded-xl border border-white/10 bg-[#0A0A0A] sm:h-32 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
+              <div className={`relative h-24 overflow-hidden rounded-xl border border-white/10 bg-slate-900 sm:h-32 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
                 <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
                 <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>
@@ -176,7 +176,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <p className="mt-4 text-sm leading-6 text-midnight">
                 A practical starting point for work readiness, money confidence, and your next steps.
               </p>
-              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#FFF8B8] px-3 py-1 text-xs font-medium text-midnight">
+              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-xs font-medium text-slate-200">
                 <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
                 South African youth-mobility prototype
               </span>
@@ -198,7 +198,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                   <span
                     title="Set NEXT_PUBLIC_LINKEDIN_URL to your official LinkedIn page"
                     aria-label="LinkedIn profile link not configured"
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#FFF8B8] px-4 text-sm font-semibold text-midnight"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-semibold text-slate-200"
                   >
                     <LinkedInMark />
                     LinkedIn
@@ -236,7 +236,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             </nav>
           </div>
 
-          <div className="mt-9 flex flex-col gap-3 border-t border-[#FFF8B8] pt-5 text-xs leading-5 text-midnight sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-9 flex flex-col gap-3 border-t border-white/20 pt-5 text-xs leading-5 text-midnight sm:mt-10 sm:flex-row sm:items-center sm:justify-between">
             <p>Opportunities open on the original provider’s site. You choose what to share and when to apply.</p>
             <p className="shrink-0">© Ukukhanya</p>
           </div>

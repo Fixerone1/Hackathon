@@ -95,13 +95,13 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
     <div className="relative">
       <button type="button" aria-label={`Open account menu for ${user.name}`} aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className={`flex items-center gap-2 rounded-full border border-[#FFF8B8] bg-white p-1.5 text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
+        className={`flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 text-midnight transition hover:border-slate-300 hover:bg-slate-50 ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
         <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-xs font-bold text-midnight">{initials || <UserRound size={17} aria-hidden="true" />}</span>
         {!compact && <span className="hidden max-w-28 truncate pr-2 text-sm font-semibold sm:block">{user.name}</span>}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-[70] mt-2 w-64 rounded-2xl border border-[#FFF8B8] bg-white p-3 text-midnight shadow-xl">
-          <div className="border-b border-[#FFF8B8] px-2 pb-3">
+        <div className="absolute right-0 top-full z-[70] mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-3 text-midnight shadow-xl">
+          <div className="border-b border-slate-200 px-2 pb-3">
             <p className="truncate text-sm font-bold">{user.name}</p>
             <p className="truncate text-xs text-slate-600">{user.email}</p>
           </div>

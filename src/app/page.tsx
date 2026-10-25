@@ -113,7 +113,7 @@ export default function HomePage() {
 
           <div className="relative mx-auto w-full max-w-[570px] lg:justify-self-end">
             <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-2xl bg-emerald sm:-inset-4" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-[#FFF8B8] bg-white p-2 shadow-[0_18px_48px_rgba(0,0,0,0.12)] sm:p-3">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-2 shadow-[0_18px_48px_rgba(31,41,51,0.12)] sm:p-3">
               <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
                 <img
                   src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
@@ -155,7 +155,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="absolute -bottom-5 -left-2 hidden items-center gap-2 rounded-xl border border-[#FFF8B8] bg-white px-4 py-3 text-sm font-semibold text-midnight shadow-lg sm:flex lg:-left-8">
+            <div className="absolute -bottom-5 -left-2 hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-midnight shadow-lg sm:flex lg:-left-8">
               <span className="grid h-7 w-7 place-items-center rounded-full bg-sunshine"><Check size={15} strokeWidth={3} aria-hidden="true" /></span>
               Small steps count.
             </div>
@@ -174,7 +174,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-[#FFF8B8] bg-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="journey-heading">
+      <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20" aria-labelledby="journey-heading">
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="eyebrow justify-center">No one-size-fits-all route</p>
@@ -190,7 +190,7 @@ export default function HomePage() {
             {journeySteps.map(({ number, icon: Icon, title, text, detail }, index) => (
               <Fragment key={number}>
                 <li className="flex-1">
-                  <article className="relative h-full rounded-2xl border border-[#FFF8B8] bg-white p-5 text-center shadow-[0_8px_26px_rgba(10,10,10,0.05)] transition-transform hover:-translate-y-1 sm:p-6 md:text-left">
+                  <article className="relative h-full rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-card transition-transform hover:-translate-y-1 sm:p-6 md:text-left">
                     <div className="flex items-center justify-center gap-4 md:justify-between">
                       <span className="text-xs font-extrabold tracking-[0.18em] text-midnight">STEP {number}</span>
                       <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-midnight">
@@ -232,7 +232,7 @@ export default function HomePage() {
 
         <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {audiences.map(({ icon: Icon, title, text }) => (
-            <article key={title} className="rounded-2xl border border-[#FFF8B8] bg-white p-5 shadow-[0_8px_26px_rgba(10,10,10,0.05)] sm:p-6">
+            <article key={title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-sunshine text-midnight">
                 <Icon size={21} strokeWidth={1.8} aria-hidden="true" />
               </span>
@@ -247,7 +247,7 @@ export default function HomePage() {
             This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Study pathways do not yet include verified courses or university deadlines. CV, interview, career-assessment, Skills Academy, and Money Skills tools are not active yet, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you, guarantee funding, or replace official application information. Always confirm details directly with the institution, employer, or funder.
           </p>
         </div>
-        <div className="mt-4 rounded-2xl border border-[#FFF8B8] bg-white p-5 sm:p-6">
+        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <h3 className="font-bold text-midnight">Your information stays yours</h3>
           <p className="mt-2 text-sm leading-6 text-midnight">
             The profile does not ask for your national ID or passport number, bank details, or photos. You can review the <Link href="/privacy" className="font-semibold underline underline-offset-2">privacy notice</Link> before creating an account. You choose what to add and can export or delete your data in Settings.

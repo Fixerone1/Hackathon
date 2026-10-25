@@ -49,16 +49,16 @@ export function HomeToolDirectory() {
         const isRelevant = focus !== 'all' && categories.includes(focus);
         const featured = isRelevant || (focus === 'all' && (index === 1 || index === 6));
         return (
-          <Link key={title} href={href} className={`group flex min-h-48 flex-col items-center rounded-3xl border p-4 text-center transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(10,10,10,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:items-start sm:p-5 sm:text-left ${featured ? 'border-sunshine bg-sunshine' : 'border-[#FFF8B8] bg-white'}`}>
-            <div className="flex w-full items-center justify-center gap-2 sm:justify-between">
-              <span className="text-[10px] font-bold tracking-[0.12em] text-midnight">{tag}</span>
+          <Link key={title} href={href} className={`group flex min-h-44 flex-col items-start rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-card focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:p-5 ${featured ? 'border-emerald-100 bg-emerald-50' : 'border-slate-200 bg-white'}`}>
+            <div className="flex w-full items-center justify-between gap-2">
+              <span className="text-[10px] font-bold tracking-[0.12em] text-slate-600">{tag}</span>
               <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${featured ? 'bg-white' : 'bg-sunshine'}`}>
                 <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
               </span>
             </div>
-            <h3 className="mt-4 text-base font-bold text-midnight">{title}</h3>
-            <p className="mt-1 flex-1 text-sm leading-5 text-midnight">{text}</p>
-            <span className="mt-4 inline-flex items-center justify-center gap-1 text-xs font-bold text-midnight group-hover:underline sm:justify-start">
+            <h3 className="mt-3 text-base font-bold text-midnight">{title}</h3>
+            <p className="mt-1 flex-1 text-sm leading-5 text-slate-600">{text}</p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-emerald-dark group-hover:underline">
               Explore tool <ArrowRight size={14} aria-hidden="true" />
             </span>
           </Link>

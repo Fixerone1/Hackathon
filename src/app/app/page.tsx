@@ -83,14 +83,14 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
   const todayCount = dueSaved.filter((action) => action.scheduled_apply_date === today).length;
 
   return (
-    <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-yellow bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-yellow-200 bg-black px-5 py-4 text-white sm:px-6">
+    <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4 text-slate-900 sm:px-6">
         <div>
-          <p className="text-xs font-bold uppercase text-yellow-300">Your saved opportunities</p>
-          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-white">Application calendar</h2>
-          <p className="mt-1 text-sm text-slate-300">Return dates and closing dates, in your local time.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Your saved opportunities</p>
+          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-slate-900">Application calendar</h2>
+          <p className="mt-1 text-sm text-slate-600">Return dates and closing dates, in your local time.</p>
         </div>
-        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white hover:border-yellow-300 hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
       </div>
 
       {saved.length === 0 && <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
@@ -291,7 +291,7 @@ export default function DashboardPage() {
 
       <DashboardApplicationCalendar actions={forge.actions} />
 
-      <section className="mb-8 border-t-2 border-yellow-300 pt-5" aria-labelledby="focus-tools-heading">
+      <section className="mb-8 border-t border-slate-200 pt-5" aria-labelledby="focus-tools-heading">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="eyebrow">Chosen for you</p>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mb-8 rounded-2xl border border-[#FFF8B8] border-t-4 border-t-yellow bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
+      <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div>
             <p className="eyebrow">Opportunity connector</p>
@@ -317,17 +317,17 @@ export default function DashboardPage() {
           </div>
           <Link href="/app/employment/opportunities" className="link text-sm">See all opportunities</Link>
         </div>
-        <div className="mt-6 border-t border-[#FFF8B8] pt-5">
+        <div className="mt-6 border-t border-slate-200 pt-5">
           <OpportunityFeed />
         </div>
       </section>
 
-      <div className="grid items-start gap-5 border-t-2 border-yellow-300 py-6 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
-        <section className="rounded-2xl border border-[#FFF8B8] border-t-4 border-t-yellow bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
+      <div className="grid items-start gap-5 border-t border-slate-200 py-6 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
+        <section className="rounded-2xl border border-slate-200 bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <h2 id="actions-heading" className="section-heading">Your starter plan</h2>
-              <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">Three small actions across your development goals.</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Three small actions across your development goals.</p>
             </div>
             <span className="text-sm font-semibold text-emerald-dark">{completed.length} of {starterActions.length} complete</span>
           </div>
@@ -354,16 +354,16 @@ export default function DashboardPage() {
           </ul>
         </section>
 
-        <aside className="divide-y divide-yellow-200 rounded-2xl border border-slate-200 border-t-4 border-t-yellow bg-white px-5 sm:px-6">
+        <aside className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5 sm:px-6">
           <section className="py-5 first:pt-5" aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
             <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Not calculated</h2>
-            <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
           </section>
           <section className="py-5" aria-labelledby="progress-heading">
             <p className="eyebrow">Starter plan progress</p>
             <h2 id="progress-heading" className="mt-2 text-3xl font-bold text-midnight">{progress}%</h2>
-            <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">Completion of the three checklist actions shown here.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Completion of the three checklist actions shown here.</p>
           </section>
           <section id="money-skills" className="py-5">
             <h2 className="font-semibold text-midnight">Money confidence</h2>
