@@ -55,13 +55,11 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
         <Link href="/app/profile" className="link text-sm">Manage in profile planner</Link>
       </div>
 
-      {saved.length === 0 ? (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
-          <p className="text-sm text-slate-600">Save an opportunity to plan when you want to return to it.</p>
-          <Link href="/app/employment/opportunities" className="btn-secondary min-h-10">Browse opportunities</Link>
-        </div>
-      ) : (
-        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)]">
+      {saved.length === 0 && <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+        <p className="text-sm text-slate-600">Save an opportunity to plan when you want to return to it.</p>
+        <Link href="/app/employment/opportunities" className="btn-secondary min-h-10">Browse opportunities</Link>
+      </div>}
+      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)]">
           <div>
             <div className="mb-3 flex items-center justify-between gap-2">
               <h3 className="flex items-center gap-2 font-semibold text-midnight"><CalendarDays size={17} aria-hidden="true" />{new Intl.DateTimeFormat('en-ZA', { month: 'long', year: 'numeric' }).format(month)}</h3>
@@ -105,8 +103,7 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
               </ul>
             </div>}
           </div>
-        </div>
-      )}
+      </div>
     </section>
   );
 }
