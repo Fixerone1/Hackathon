@@ -1,0 +1,22 @@
+export const taxTables2026_27 = {
+  taxYear: '2026/27',
+  taxYearLabel: '2027 tax year (1 March 2026 – 28 February 2027)',
+  lastVerified: '2026-10-25',
+  source: 'https://www.sars.gov.za/tax-rates/income-tax/rates-of-tax-for-individuals/',
+  brackets: [
+    { ceilingCents: 24_510_000, baseTaxCents: 0, marginalRate: 0.18 },
+    { ceilingCents: 38_310_000, baseTaxCents: 4_411_800, marginalRate: 0.26 },
+    { ceilingCents: 53_020_000, baseTaxCents: 7_999_800, marginalRate: 0.31 },
+    { ceilingCents: 69_580_000, baseTaxCents: 12_559_900, marginalRate: 0.36 },
+    { ceilingCents: 88_700_000, baseTaxCents: 18_521_500, marginalRate: 0.39 },
+    { ceilingCents: 187_860_000, baseTaxCents: 25_978_300, marginalRate: 0.41 },
+    { ceilingCents: Number.POSITIVE_INFINITY, baseTaxCents: 66_633_900, marginalRate: 0.45 },
+  ],
+  rebatesCents: { primary: 1_782_000, secondary: 976_500, tertiary: 324_900 },
+  annualThresholdCents: { under65: 9_900_000, age65to74: 15_325_000, age75plus: 17_130_000 },
+  retirementDeductionRate: 0.275,
+  retirementDeductionCapCents: 35_000_000,
+  medicalCreditsMonthlyCents: { main: 37_600, firstDependant: 37_600, eachAdditional: 25_400 },
+  uifMonthlyEarningsCeilingCents: 1_771_200,
+  uifRate: 0.01,
+} as const;
