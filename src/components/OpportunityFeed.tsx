@@ -461,11 +461,10 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 </div>
 
                 {mode === 'applications' && (
-                  opportunity.status === 'withdrawn'
-                  || (opportunity.closing_date && opportunity.closing_date < new Date().toISOString().slice(0, 10))
+                  (opportunity.closing_date && opportunity.closing_date < new Date().toISOString().slice(0, 10))
                   || opportunity.verified_at < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
                 ) && (
-                  <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or been withdrawn. Check its source before taking action.</p>
+                  <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or needs re-verification. Check its source before taking action.</p>
                 )}
                 <p className="mt-4 max-w-4xl text-center line-clamp-3 whitespace-pre-line text-sm leading-6 text-slate-700 sm:mt-5 sm:line-clamp-none sm:text-left sm:text-base sm:leading-7">{opportunity.summary}</p>
                 <p className="mt-4 hidden rounded-xl bg-sunshine-light px-4 py-3 text-sm font-medium leading-6 text-midnight sm:block">

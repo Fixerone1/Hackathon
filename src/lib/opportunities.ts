@@ -6,8 +6,15 @@ export const opportunityCategories = [
   { value: 'enterprise', label: 'Enterprise support' },
 ] as const;
 
+export const southAfricanProvinces = [
+  'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga',
+  'Northern Cape', 'North West', 'Western Cape',
+] as const;
+
+export const nqfLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+
 export type OpportunityCategory = (typeof opportunityCategories)[number]['value'];
-export type OpportunityStatus = 'draft' | 'published' | 'withdrawn';
+export type OpportunityStatus = 'draft' | 'published';
 export type LearnerOpportunityAction = 'saved' | 'applied';
 
 export type Opportunity = {
@@ -190,7 +197,7 @@ export function categoryLabel(category: OpportunityCategory): string {
 export function isValidWebUrl(value: string): boolean {
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' || url.protocol === 'http:';
+    return url.protocol === 'https:';
   } catch {
     return false;
   }

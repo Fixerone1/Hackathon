@@ -11,7 +11,6 @@ create policy "Learners can read current published opportunities"
   to authenticated
   using (
     status = 'published'
-    and withdrawn_at is null
     and (closing_date is null or closing_date >= current_date)
     and verified_at >= current_date - 30
   );

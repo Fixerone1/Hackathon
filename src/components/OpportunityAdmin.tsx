@@ -5,8 +5,10 @@ import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
   isValidWebUrl,
+  nqfLevels,
   normalizeOpportunity,
   opportunityCategories,
+  southAfricanProvinces,
   type Opportunity,
   type OpportunityCategory,
   type OpportunityStatus,
@@ -49,11 +51,6 @@ const emptyDraft: OpportunityDraft = {
   closing_date: '',
   status: 'draft',
 };
-
-const provinces = [
-  'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga',
-  'Northern Cape', 'North West', 'Western Cape',
-];
 
 function toDraft(opportunity: Opportunity): OpportunityDraft {
   return {
@@ -143,9 +140,9 @@ export function OpportunityAdmin() {
       return;
     }
     const selectedProvinces = draft.provinces_text.split(',').map((item) => item.trim()).filter(Boolean);
-    const invalidProvinces = selectedProvinces.filter((province) => !provinces.includes(province));
+    const invalidProvinces = selectedProvinces.filter((province) => !southAfricanProvinces.includes(province as (typeof southAfricanProvinces)[number]));
     if (invalidProvinces.length > 0) {
-      setError(`Use the official province names: ${provinces.join(', ')}.`);
+      setError(`Use the official province names: ${southAfricanProvinces.join(', ')}.`);
       setSaving(false);
       return;
     }
@@ -185,6 +182,7 @@ export function OpportunityAdmin() {
       closing_date: closingDate,
       verified_at: today,
       status: draft.status as OpportunityStatus,
+      withdrawn_at: null,
     };
 
     try {
@@ -299,7 +297,7 @@ export function OpportunityAdmin() {
             <label htmlFor="opportunity-minimum-nqf" className="label">Stated minimum NQF <span className="font-normal text-slate-500">(optional)</span></label>
             <select id="opportunity-minimum-nqf" className={inputClass} value={draft.minimum_nqf_level} onChange={(event) => update('minimum_nqf_level', event.target.value)}>
               <option value="">Not stated</option>
-              {Array.from({ length: 10 }, (_, index) => index + 1).map((level) => <option key={level} value={level}>NQF {level}</option>)}
+              {nqfLevels.map((level) => <option key={level} value={level}>NQF {level}</option>)}
             </select>
           </div>
           <div>

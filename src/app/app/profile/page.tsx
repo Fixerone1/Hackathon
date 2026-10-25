@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CalendarDays, ExternalLink } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
+import { southAfricanProvinces } from '@/lib/opportunities';
 
 type SubjectResult = { name: string; mark: number | null };
 type SkillRating = { name: string; level: number; source: 'self_reported'; evidence_note: string };
@@ -76,11 +77,6 @@ const qualificationOptions = [
   'Below Grade 9', 'Grade 9', 'Grade 10', 'Grade 11', 'Matric', 'N6 certificate',
   'Diploma', "Bachelor's degree", 'Honours degree', "Master's degree", 'Doctorate',
 ];
-const provinces = [
-  'Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga',
-  'Northern Cape', 'North West', 'Western Cape',
-];
-
 function toDraft(profile: ProfileApiResponse['profile']): ProfileDraft {
   return {
     ...emptyProfile,
@@ -427,7 +423,7 @@ export default function ProfilePage() {
               <div>
                 <label htmlFor="province" className="label">Province</label>
                 <select id="province" className={selectClass} value={profile.province} onChange={(event) => update('province', event.target.value)}>
-                  <option value="">Choose a province</option>{provinces.map((province) => <option key={province}>{province}</option>)}
+                  <option value="">Choose a province</option>{southAfricanProvinces.map((province) => <option key={province}>{province}</option>)}
                 </select>
               </div>
               <div>
