@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <PublicShell>
       <section className="mx-auto grid min-h-[65svh] max-w-6xl place-items-center px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-        <div className="w-full max-w-md rounded-2xl border border-[#e5e5e5] border-t-4 border-t-sunshine bg-white p-5 shadow-card sm:p-7">
+        <div className="auth-panel">
           <p className="eyebrow">Learner workspace</p>
           <h1 className="page-title mt-2">Welcome back</h1>
           <p className="page-description mb-6">Sign in to continue to your CareerForge workspace.</p>

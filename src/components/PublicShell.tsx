@@ -48,6 +48,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Work and career tools' : 'Your next step');
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
+  const authPage = pathname === '/login' || pathname === '/signup';
+  const primaryCta = pathname === '/login'
+    ? { href: '/signup', label: 'Create account' }
+    : pathname === '/signup'
+      ? { href: '/login', label: 'Sign in' }
+      : { href: '/signup', label: 'Get started' };
   const bannerImages: Record<string, string> = {
     '/about': 'careerforge-people.jpg',
     '/how-it-works': 'careerforge-students.jpg',
@@ -79,7 +85,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
-              {[
+              {signedIn && [
                 ['/how-it-works', 'How it works'],
                 ['/opportunities', 'Opportunities'],
                 ['/partners', 'For organizations'],
@@ -95,23 +101,26 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <AccountMenu compact />
             </div>
           )}
-          {variant === 'public' && <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
+          <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
             {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-          </button>}
+          </button>
         </div>
-        {variant === 'public' && mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+        {mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
           <div className="mx-auto grid max-w-6xl gap-1">
-            {[
+            {(variant === 'public' ? [
               ['/', 'Home'], ['/how-it-works', 'How it works'], ['/opportunities', 'Opportunities'],
               ['/partners', 'For organizations'], ['/about', 'About'], ['/login', 'Sign in'], ['/signup', 'Create account'],
-            ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
+            ] : [
+              ['/app', 'Dashboard'], ['/app/employment', 'Employment Hub'], ['/app/money', 'Money skills'],
+              ['/app/growth', 'Growth Studio'], ['/app/profile', 'My profile'], ['/app/settings', 'Settings'],
+            ]).map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
               {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
             </Link>)}
           </div>
         </nav>}
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
-      {pathname !== '/' && pathname !== '/login' && pathname !== '/signup' && (
+      {pathname !== '/' && (
         <section aria-label={`${bannerLabel} banner`} className={`relative isolate overflow-hidden bg-black text-white ${variant === 'workspace' ? 'min-h-48' : 'min-h-64 sm:min-h-72'}`}>
           <div className="mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
             <div className="relative z-10 max-w-2xl">
@@ -119,11 +128,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">{variant === 'workspace' ? 'Build your next move at your own pace, with your saved opportunities and progress close by.' : 'Practical support for work, money confidence, and the future you want to build.'}</p>
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-                <Link href={variant === 'workspace' ? '/app/profile' : '/signup'} className="btn-primary w-full sm:w-auto">{variant === 'workspace' ? 'Update your profile' : 'Get started'} <ArrowRight size={16} aria-hidden="true" /></Link>
+                <Link href={variant === 'workspace' ? '/app/profile' : primaryCta.href} className="btn-primary w-full sm:w-auto">{variant === 'workspace' ? 'Update your profile' : primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
                 <Link href={variant === 'workspace' ? '/app/employment/opportunities' : '/opportunities'} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">{variant === 'workspace' ? 'Browse opportunities' : 'Explore opportunities'}</Link>
               </div>
             </div>
-            <div className="relative hidden min-h-40 overflow-hidden rounded-2xl border border-white/10 bg-[#111827] lg:block">
+            <div className={`relative h-28 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-36 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
               <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
               <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>

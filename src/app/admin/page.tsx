@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OpportunityAdmin } from '@/components/OpportunityAdmin';
 import { getSupabase } from '@/lib/supabase';
+import { PublicShell } from '@/components/PublicShell';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -33,24 +33,20 @@ export default function AdminPage() {
   }, [router]);
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 py-8 md:py-12">
-      <header className="flex items-center justify-between border-b border-slate-200 pb-5">
-        <Link href="/" className="font-semibold text-midnight">CareerForge <span className="font-normal text-slate-500">/ Admin</span></Link>
-        <Link href="/app" className="text-sm font-medium text-emerald-dark hover:underline">Learner workspace</Link>
-      </header>
-      <section className="max-w-2xl py-10">
-        <div className="border-l-4 border-sunshine pl-4 sm:pl-5">
+    <PublicShell variant="workspace">
+      <main className="mx-auto min-h-screen max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
+        <section className="max-w-4xl">
           <p className="eyebrow">Separate administration area</p>
-          <h1 className="page-title mt-2">Admin console</h1>
-        </div>
-        {state === 'checking' && <p className="mt-4 text-sm text-slate-600" role="status">Checking access...</p>}
-        {state === 'denied' && <p className="mt-4 text-sm text-red-700" role="alert">Admin access is not enabled for this account.</p>}
-        {state === 'allowed' && <>
-          <p className="mt-3 text-sm text-slate-600">Signed in as {email}</p>
-          <OpportunityAdmin />
-          <p className="mt-5 text-xs leading-5 text-slate-500">Admin access is granted through the server-managed Supabase app_metadata role.</p>
-        </>}
-      </section>
-    </main>
+          <h2 className="page-title mt-2">Admin console</h2>
+          {state === 'checking' && <p className="mt-4 text-sm text-slate-600" role="status">Checking access...</p>}
+          {state === 'denied' && <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">Admin access is not enabled for this account.</p>}
+          {state === 'allowed' && <>
+            <p className="mt-3 text-sm text-slate-600">Signed in as {email}</p>
+            <OpportunityAdmin />
+            <p className="mt-5 text-xs leading-5 text-slate-500">Admin access is granted through the server-managed Supabase app_metadata role.</p>
+          </>}
+        </section>
+      </main>
+    </PublicShell>
   );
 }

@@ -22,7 +22,7 @@ const config: Config = {
         amber: { 50: '#ECFDF5', 100: '#D1FAE5', 200: '#A7F3D0', 300: '#6EE7B7', 800: '#065F46', 900: '#064E3B' },
       },
       fontFamily: { sans: ['IBM Plex Sans', 'sans-serif'] },
-      borderRadius: { card: '16px' },
+      borderRadius: { card: '16px', '3xl': '16px' },
       boxShadow: { card: '0 8px 28px rgba(10,10,10,0.07), 0 1px 3px rgba(10,10,10,0.04)' },
     },
   },
