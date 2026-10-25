@@ -244,7 +244,7 @@ export default function HomePage() {
               <h2 id="cta-heading" className="mt-2 text-2xl font-bold leading-tight tracking-tight text-midnight sm:text-3xl">Make today your starting point.</h2>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-black/70 sm:text-base md:mx-0">Create your learner profile and start turning what matters to you into a plan.</p>
             </div>
-            <Link href="/signup" className="btn min-h-12 w-full shrink-0 rounded-xl bg-sunshine px-5 text-black hover:bg-emerald-300 md:w-auto">
+            <Link href="/signup" className="btn-accent min-h-12 w-full shrink-0 rounded-xl px-5 md:w-auto">
               Get started <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>

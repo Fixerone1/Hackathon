@@ -124,11 +124,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         <section aria-label={`${bannerLabel} banner`} className={`relative isolate overflow-hidden bg-black text-white ${variant === 'workspace' ? 'min-h-48' : 'min-h-64 sm:min-h-72'}`}>
           <div className="mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
             <div className="relative z-10 max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-300">CareerForge · {variant === 'workspace' ? 'Your workspace' : 'Your next step'}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">CareerForge · {variant === 'workspace' ? 'Your workspace' : 'Your next step'}</p>
               <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">{variant === 'workspace' ? 'Build your next move at your own pace, with your saved opportunities and progress close by.' : 'Practical support for work, money confidence, and the future you want to build.'}</p>
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-                <Link href={variant === 'workspace' ? '/app/profile' : primaryCta.href} className="btn-primary w-full sm:w-auto">{variant === 'workspace' ? 'Update your profile' : primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
+                <Link href={variant === 'workspace' ? '/app/profile' : primaryCta.href} className="btn-accent w-full sm:w-auto">{variant === 'workspace' ? 'Update your profile' : primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
                 <Link href={variant === 'workspace' ? '/app/employment/opportunities' : '/opportunities'} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">{variant === 'workspace' ? 'Browse opportunities' : 'Explore opportunities'}</Link>
               </div>
             </div>
