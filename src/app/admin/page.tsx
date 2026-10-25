@@ -16,7 +16,7 @@ export default function AdminPage() {
     getSupabase().auth.getUser()
       .then(({ data, error }) => {
         if (error || !data.user) {
-          router.replace('/login');
+          router.replace('/login?next=%2Fadmin');
           return;
         }
         if (data.user.app_metadata?.role !== 'admin') {

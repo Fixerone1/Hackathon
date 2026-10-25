@@ -48,7 +48,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
         return;
       }
       const requestedPath = new URLSearchParams(window.location.search).get('next');
-      const destination = requestedPath === '/app' || requestedPath?.startsWith('/app/')
+      const destination = requestedPath === '/admin' || requestedPath === '/app' || requestedPath?.startsWith('/app/')
         ? requestedPath
         : isSignup ? '/app/profile' : '/app';
       router.replace(destination);
