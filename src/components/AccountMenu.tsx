@@ -74,7 +74,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
   if (!user) {
     return compact ? (
       <div className="flex items-center gap-1.5">
-        <Link href="/login" aria-label="Sign in" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#e5e5e5] hover:bg-sunshine-light">
+        <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#e5e5e5] hover:bg-sunshine-light">
           <UserRound size={19} aria-hidden="true" />
         </Link>
         <Link href="/signup" className="btn-primary min-h-10 px-3 py-2 text-xs sm:px-4 sm:text-sm">
