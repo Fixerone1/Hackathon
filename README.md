@@ -37,6 +37,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
    - [`supabase/migrations/20261026002000_opportunity_integrity.sql`](supabase/migrations/20261026002000_opportunity_integrity.sql)
    - [`supabase/migrations/20261026003000_opportunity_search_indexes.sql`](supabase/migrations/20261026003000_opportunity_search_indexes.sql)
    - [`supabase/migrations/20261026004000_profile_dropdown_constraints.sql`](supabase/migrations/20261026004000_profile_dropdown_constraints.sql)
+   - [`supabase/migrations/20261026005000_forge_preferences.sql`](supabase/migrations/20261026005000_forge_preferences.sql)
 5. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
 6. To grant admin access, set `app_metadata.role` to `admin` for each trusted team account through the Supabase dashboard or server-managed admin tooling. Never authorize based on user-editable `user_metadata`.
 7. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox. Visiting `/admin` redirects signed-out users to login and returns them to the admin console afterward; the account still needs the server-managed admin role.
@@ -67,6 +68,7 @@ erDiagram
    AUTH_USERS ||--o| LEARNER_PROGRESS : owns
    AUTH_USERS ||--o| EMAIL_PREFERENCES : owns
    AUTH_USERS ||--o| PRIVACY_CONSENTS : owns
+   AUTH_USERS ||--o| LEARNER_PREFERENCES : owns
    AUTH_USERS ||--o{ LEARNER_OPPORTUNITY_ACTIONS : owns
    AUTH_USERS o|--o{ OPPORTUNITIES : creates
    OPPORTUNITIES ||--o{ LEARNER_OPPORTUNITY_ACTIONS : receives
@@ -99,6 +101,13 @@ erDiagram
       uuid user_id PK,FK
       text policy_version
       timestamptz consented_at
+   }
+   LEARNER_PREFERENCES {
+      uuid user_id PK,FK
+      text forge_name
+      text tone
+      boolean data_light
+      boolean personalisation_paused
    }
    OPPORTUNITIES {
       uuid id PK

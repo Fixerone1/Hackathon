@@ -41,6 +41,7 @@
 | `public.learner_profiles` | Learner information: qualification/status/year/NQF, field, subjects, skills/ratings, experience, province/city, target role/income, availability/employment, languages, access/transport/relocation, work authorization, shifts, certificates, display name/pronouns/about/goal/interests, `updated_at`. | Profile form/save (`src/app/app/profile/page.tsx`); matching and application pack (`OpportunityFeed`, `DashboardNotifications`); dashboard greeting/goals; settings export. The CV and assessment routes are placeholders and currently read/write nothing. | `age_band` was explicitly dropped by migration and is not a current field. `updated_at` is system metadata. Personal profile columns added in `20261024003000` are used for dashboard/profile UI. JSON shapes and several dropdown domains need stronger constraints. |
 | `public.email_preferences` | Email toggles and consent timestamps for instant matches, weekly digest and closing reminders; frequency, quiet-hours start/end, pause, `updated_at`. | Settings form load/save (`src/app/app/settings/page.tsx`); data export. | Email delivery is not implemented. Device-local dashboard-alert, home-focus, and accessibility settings are not stored here. No channel, queue, delivery outcome, or consent-event history exists. |
 | `public.privacy_consents` | One current policy version and consent timestamp per user. FK cascades. Inserted by auth trigger from signup metadata; user can read own record. | Signup form posts privacy consent metadata (`AuthForm`); settings displays/export through export JSON; deletion cascades. | No UI to revoke or view version history; current single-row model is not an event ledger. The insert is trigger-only, consistent with current grants. |
+| `public.learner_preferences` | Per-user Forge name, tone, supported language, data-light choice, personalisation pause, optional streak setting and `updated_at`. FK cascades. | Added by `20261026005000_forge_preferences.sql`; intended for Forge context and settings. | New in this task; preference editor/context consumer is still being connected. |
 | `public.opportunities` | Verified listing identity/content, category, source, location/provinces/remote, minimum NQF, skills/shifts/salary, closing/verification dates, status, creator and timestamps. | Admin add/edit/publish (`OpportunityAdmin`); learner feed and dashboard notification matching; application tracker joins listing details. Public `/opportunities` is a sign-in prompt and does not query this table. | `id`, creator and timestamps are system fields; `verified_at` is set by admin code. `withdrawn` is allowed in SQL/type but not the admin visibility selector. HTTP is allowed by DB/UI. No duplicate hash/key or full-text search. |
 | `public.learner_opportunity_actions` | Per-user/per-opportunity `saved` or `applied` status and timestamps; `scheduled_apply_date` added in `20261025000000`. Both FKs cascade. | Opportunity feed and application tracker read/write status; profile planner reads/writes return date. | No applied timestamp/history, dismissed status/reason, follow-up state, or match explanation persisted. `created_at`/`updated_at` are system metadata. |
 
@@ -77,6 +78,12 @@
 6. `20261024002000_opportunity_match_details.sql` — opportunity shifts/salary columns/checks.
 7. `20261024003000_personal_learner_profiles.sql` — display and personal-goal columns.
 8. `20261025000000_opportunity_return_dates.sql` — scheduled application return date and index.
+9. `20261026000000_signed_in_opportunity_access.sql` — learner-only access to published opportunities and removes draft access through saved rows.
+10. `20261026001000_opportunity_creator_retention.sql` — safe creator account deletion behavior.
+11. `20261026002000_opportunity_integrity.sql` — listing status, HTTPS and category constraints.
+12. `20261026003000_opportunity_search_indexes.sql` — duplicate key and full-text/category/province indexes.
+13. `20261026004000_profile_dropdown_constraints.sql` — profile dropdown and numeric validation.
+14. `20261026005000_forge_preferences.sql` — personalisation/tone/data-light/streak preferences.
 
 No migration contains a rollback note. Most additive DDL is guarded, but trigger/policy creation is not re-runnable. There is no repository command to create a clean database from zero.
 
@@ -97,6 +104,7 @@ select jsonb_build_object(
   'progress', (select to_jsonb(p) from public.learner_progress p where p.user_id = auth.uid()),
   'email_preferences', (select to_jsonb(e) from public.email_preferences e where e.user_id = auth.uid()),
   'privacy_consents', coalesce((select jsonb_agg(to_jsonb(c)) from public.privacy_consents c where c.user_id = auth.uid()), '[]'::jsonb),
+  'learner_preferences', (select to_jsonb(p) from public.learner_preferences p where p.user_id = auth.uid()),
   'opportunity_actions', coalesce((
     select jsonb_agg(jsonb_build_object('action', to_jsonb(a), 'opportunity', to_jsonb(o)))
     from public.learner_opportunity_actions a
@@ -112,12 +120,14 @@ This query is for an authenticated user session, not an admin/service-role expor
 
 The following additive changes were made after the audit. The original findings above describe the pre-fix schema, as requested.
 
-- New ordered migrations `20261026000000` through `20261026004000` restrict opportunity SELECT to authenticated users, remove the saved-draft policy bypass, keep creator attribution nullable with `ON DELETE SET NULL`, archive legacy `withdrawn` records as drafts, enforce the requested draft/published and category values, require HTTPS source URLs, add duplicate detection/uniqueness and full-text/category/province indexes, and validate profile dropdown/range values.
+- New ordered migrations `20261026000000` through `20261026005000` restrict opportunity SELECT to authenticated users, remove the saved-draft policy bypass, keep creator attribution nullable with `ON DELETE SET NULL`, archive legacy `withdrawn` records as drafts, enforce the requested draft/published and category values, require HTTPS source URLs, add duplicate detection/uniqueness and full-text/category/province indexes, validate profile dropdown/range values, and create a private Forge preferences table.
 - `src/lib/opportunities.ts` is now the shared source for category labels, NQF levels, and the nine provinces. The admin form uses HTTPS validation and the draft/published type.
 - Settings export now includes the learner's saved/applied opportunity actions and scheduled return dates.
-- `supabase/tests/database/rls.sql` contains 24 pgTAP checks for user isolation, learner write restrictions, app-metadata admin access, anonymous opportunity access, draft visibility and RLS enablement.
+- `supabase/tests/database/rls.sql` contains 27 pgTAP checks for user isolation, learner write restrictions, app-metadata admin access, anonymous opportunity access, draft visibility, Forge preference isolation and RLS enablement.
 - `supabase/config.toml`, `npm run db:reset`, and `npm run db:test` provide local setup commands. README has the full schema diagram and ordered migration list.
 
-**Not verified here:** `npm run db:reset` could not complete in the dev container. Supabase CLI startup timed out while initializing its local services; direct use of the resulting Postgres container lacked Supabase's `auth.jwt()` helper, so that attempt stopped at the original opportunity policy. Do not treat the pgTAP suite or migration chain as passing until run through a functioning Supabase local stack. A local reset is expected to discard only the local test database.
+**Verified:** all fourteen migrations applied in lexical order to a fresh disposable Supabase Postgres 15 database, the new migrations reapplied successfully, and all 27 pgTAP RLS assertions passed. The database was created from the Supabase Postgres image with its built-in Auth schema and helpers.
+
+**CLI caveat:** `npm run db:reset` could not complete in this dev container: Supabase CLI startup hung while initializing services, before migration execution. The direct fresh-database run verified SQL and RLS independently, but the exact CLI orchestration command still needs verification on a working local Supabase CLI host. A local reset is expected to discard only the local test database.
 
 **Still missing and intentionally not claimed as implemented:** stored match score/tier/breakdown/reasons/gaps, pathways, a richer application follow-up/status history, notification channels/due-send queue/delivery audit, CV/assessment persistence, and a server-assembled/cached Forge `UserContext`. The current application computes matches in the client, tracks saved/applied plus a scheduled date, and has no email delivery. These require feature code and RLS policies in addition to schema; no unused stand-in tables were added.

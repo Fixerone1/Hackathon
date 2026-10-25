@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
 import { PageIntro } from '@/components/PageIntro';
@@ -21,6 +22,15 @@ type AccessibilityPreferences = {
   largerText: boolean;
 };
 
+type ForgePreferences = {
+  forge_name: string;
+  tone: 'chill' | 'straight_up' | 'coach';
+  language: 'en-ZA';
+  data_light: boolean;
+  personalisation_paused: boolean;
+  streak_enabled: boolean;
+};
+
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
 
 type ConsentDates = {
@@ -39,9 +49,19 @@ const defaults: Preferences = {
   paused: false,
 };
 
+const forgeDefaults: ForgePreferences = {
+  forge_name: 'Forge',
+  tone: 'straight_up',
+  language: 'en-ZA',
+  data_light: false,
+  personalisation_paused: false,
+  streak_enabled: false,
+};
+
 export default function SettingsPage() {
   const router = useRouter();
   const [preferences, setPreferences] = useState(defaults);
+  const [forgePreferences, setForgePreferences] = useState(forgeDefaults);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -64,14 +84,19 @@ export default function SettingsPage() {
         const supabase = getSupabase();
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError || !authData.user) throw new Error('Sign in again to load your settings.');
-        const { data, error } = await supabase.from('email_preferences').select('*').maybeSingle();
-        if (error) throw error;
+        const [emailResult, forgeResult] = await Promise.all([
+          supabase.from('email_preferences').select('*').maybeSingle(),
+          supabase.from('learner_preferences').select('*').maybeSingle(),
+        ]);
+        if (emailResult.error) throw emailResult.error;
         if (!active) return;
-        setPreferences({ ...defaults, ...data });
+        setPreferences({ ...defaults, ...emailResult.data });
+        if (forgeResult.error) throw forgeResult.error;
+        setForgePreferences({ ...forgeDefaults, ...forgeResult.data });
         setConsentDates({
-          instant_matches_consented_at: data?.instant_matches_consented_at || null,
-          weekly_digest_consented_at: data?.weekly_digest_consented_at || null,
-          closing_reminders_consented_at: data?.closing_reminders_consented_at || null,
+          instant_matches_consented_at: emailResult.data?.instant_matches_consented_at || null,
+          weekly_digest_consented_at: emailResult.data?.weekly_digest_consented_at || null,
+          closing_reminders_consented_at: emailResult.data?.closing_reminders_consented_at || null,
         });
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : 'Settings could not be loaded.');
@@ -142,6 +167,11 @@ export default function SettingsPage() {
         ...updatedConsentDates,
       }, { onConflict: 'user_id' });
       if (error) throw error;
+      const { error: forgeError } = await supabase.from('learner_preferences').upsert({
+        user_id: authData.user.id,
+        ...forgePreferences,
+      }, { onConflict: 'user_id' });
+      if (forgeError) throw forgeError;
       setConsentDates(updatedConsentDates);
       setMessage('Your notification preferences and email consent choices were saved.');
     } catch (caught) {
@@ -295,6 +325,42 @@ export default function SettingsPage() {
             </label>
           ))}
         </div>
+      </section>
+      <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="forge-preferences-heading">
+        <h2 id="forge-preferences-heading" className="font-semibold text-midnight">Your Forge preferences</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Choose how your personal workspace speaks and what it remembers. Personalisation pause stops tailored suggestions; it does not delete your saved profile.</p>
+        <div className="mt-4 grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="forge-name" className="label">Copilot name</label>
+            <input id="forge-name" className="input" maxLength={40} value={forgePreferences.forge_name} onChange={(event) => setForgePreferences((current) => ({ ...current, forge_name: event.target.value }))} />
+          </div>
+          <div>
+            <label htmlFor="forge-tone" className="label">Voice</label>
+            <select id="forge-tone" className="input" value={forgePreferences.tone} onChange={(event) => setForgePreferences((current) => ({ ...current, tone: event.target.value as ForgePreferences['tone'] }))}>
+              <option value="chill">Chill</option><option value="straight_up">Straight-up</option><option value="coach">Coach</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="forge-language" className="label">Language</label>
+            <select id="forge-language" className="input" value={forgePreferences.language} onChange={(event) => setForgePreferences((current) => ({ ...current, language: event.target.value as ForgePreferences['language'] }))}>
+              <option value="en-ZA">English (South Africa)</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-4 divide-y divide-slate-200 border-y border-slate-200">
+          {([
+            ['data_light', 'Use fewer images and lighter pages'],
+            ['personalisation_paused', 'Pause personalisation'],
+            ['streak_enabled', 'Show an optional, forgiving activity streak'],
+          ] as const).map(([key, label]) => (
+            <label key={key} className="flex min-h-12 items-center gap-3 py-2 text-sm text-slate-700">
+              <input type="checkbox" className={toggleClass} checked={forgePreferences[key]} onChange={(event) => setForgePreferences((current) => ({ ...current, [key]: event.target.checked }))} />
+              {label}
+            </label>
+          ))}
+        </div>
+        <p className="mt-4 text-xs leading-5 text-slate-500">Forge’s tone and personalization controls will apply as contextual suggestions are enabled. Streaks start off and never punish missed days.</p>
+        <Link href="/app/forge" className="link mt-4 inline-flex text-sm">What Forge knows about me</Link>
       </section>
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="privacy-heading">
         <h2 id="privacy-heading" className="font-semibold text-midnight">Privacy and data</h2>
