@@ -304,7 +304,7 @@ export default function ProfilePage() {
           <h1 className="page-title mt-2">Build your learner profile</h1>
           <p className="page-description">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="w-full rounded-xl bg-slate-50 p-3 sm:w-48 sm:shrink-0">
+        <div className="w-full rounded-xl bg-sunshine-light p-3 sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
             <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />

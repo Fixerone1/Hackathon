@@ -4,28 +4,28 @@
 
 :root {
   color-scheme: light;
-  --color-black: #1F2933;
-  --color-yellow: #F4C84A;
-  --color-yellow-soft: #FFF6D8;
-  --color-yellow-dark: #795E12;
-  --color-emerald: #397A5A;
+  --color-black: #0A0A0A;
+  --color-yellow: #FFE500;
+  --color-yellow-soft: #FFF8B8;
+  --color-yellow-dark: #0A0A0A;
+  --color-emerald: var(--color-yellow);
   --color-white: #FFFFFF;
-  --color-canvas: #F7F8FA;
-  --color-text: #1F2933;
-  --color-muted: #5B6875;
-  --color-line: #DDE3E8;
-  --color-emerald-soft: #EAF3ED;
+  --color-canvas: #FFFFFF;
+  --color-text: #0A0A0A;
+  --color-muted: #0A0A0A;
+  --color-line: #D1D5DB;
+  --color-emerald-soft: var(--color-yellow-soft);
   --page-background: var(--color-canvas);
   --surface: var(--color-white);
-  --surface-muted: #F1F4F6;
+  --surface-muted: #FFF8B8;
   --ink-primary: var(--color-text);
   --ink-muted: var(--color-muted);
   --line: var(--color-line);
   --accent: var(--color-yellow);
-  --accent-action: #315D49;
+  --accent-action: var(--color-black);
   --support: var(--color-yellow-soft);
   --radius-card: 16px;
-  --shadow-soft: 0 8px 24px rgba(31, 41, 51, 0.06), 0 1px 3px rgba(31, 41, 51, 0.04);
+  --shadow-soft: 0 8px 28px rgba(10, 10, 10, 0.07), 0 1px 3px rgba(10, 10, 10, 0.04);
   --content-width: 72rem;
   --font-ui: 'IBM Plex Sans', sans-serif;
 }
@@ -42,8 +42,8 @@ html {
 }
 
 ::placeholder {
-  color: #84909B;
-  opacity: 1;
+  color: var(--color-black);
+  opacity: 0.5;
 }
 
 body {
@@ -72,11 +72,11 @@ body {
     background-color: var(--accent-action);
   }
   .btn-primary:hover {
-    background-color: #274C3A;
-    box-shadow: 0 5px 16px rgba(39, 76, 58, 0.16);
+      background-color: #0A0A0A;
+      box-shadow: 0 5px 16px rgba(10, 10, 10, 0.18);
   }
   .btn-secondary {
-    @apply btn border border-slate-300 bg-white text-ink hover:border-slate-400 hover:bg-slate-50;
+    @apply btn border border-slate-300 bg-white text-ink hover:border-black hover:bg-sunshine-light;
   }
   .btn-accent {
     @apply btn text-black;
@@ -86,7 +86,7 @@ body {
     background-color: #FFF8B8;
   }
   .input {
-    @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-100;
+    @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-black;
@@ -134,7 +134,7 @@ body {
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
-  outline: 2px solid var(--accent-action);
+  outline: 2px solid #0A0A0A;
   outline-offset: 2px;
 }
 
@@ -148,14 +148,14 @@ body {
 }
 
 footer.site-footer {
-  background: #24352E;
+  background: var(--color-black);
   color: var(--color-white);
 }
 
 footer.site-footer .text-midnight,
 footer.site-footer .text-slate-600,
 footer.site-footer .text-slate-500 {
-  color: #E7ECE8;
+  color: #FFFFFF;
 }
 
 footer.site-footer a:hover {
@@ -215,6 +215,36 @@ html.reduce-motion *::after {
 
 html.larger-text body {
   font-size: 112.5%;
+}
+
+[class*="border-slate-"],
+[class*="border-yellow-"],
+[class*="border-sunshine"],
+[class*="border-amber-"],
+[class*="border-red-"],
+[class*="border"][class*="FFF8B8"],
+[class*="border"][class*="FFE500"],
+[class*="border-t-yellow"],
+[class*="border-b-yellow"],
+[class*="border-l-yellow"],
+[class*="border-r-yellow"],
+[class*="border-x-yellow"],
+[class*="border-y-yellow"],
+[class*="border-t-sunshine"],
+[class*="border-b-sunshine"],
+[class*="border-l-sunshine"],
+[class*="border-r-sunshine"],
+[class*="border-x-sunshine"],
+[class*="border-y-sunshine"] {
+  border-color: var(--color-line);
+}
+
+[class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-yellow-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-sunshine"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-amber-"] > :not([hidden]) ~ :not([hidden]),
+[class*="divide-red-"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--color-line);
 }
 
 /* Print: CV preview only */

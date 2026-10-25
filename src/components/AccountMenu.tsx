@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
-import { LayoutDashboard, LogOut, Settings, UserRound } from 'lucide-react';
+import { LogOut, Settings, UserRound } from 'lucide-react';
 
 type AccountUser = { name: string; email: string };
 
@@ -95,7 +95,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
     <div className="relative">
       <button type="button" aria-label={`Open account menu for ${user.name}`} aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className={`flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 text-midnight transition hover:border-slate-300 hover:bg-slate-50 ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
+        className={`flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 text-midnight transition hover:border-slate-300 hover:bg-sunshine-light ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
         <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-xs font-bold text-midnight">{initials || <UserRound size={17} aria-hidden="true" />}</span>
         {!compact && <span className="hidden max-w-28 truncate pr-2 text-sm font-semibold sm:block">{user.name}</span>}
       </button>
@@ -105,13 +105,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
             <p className="truncate text-sm font-bold">{user.name}</p>
             <p className="truncate text-xs text-slate-600">{user.email}</p>
           </div>
-          <Link href="/app" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
-            <LayoutDashboard size={17} aria-hidden="true" /> Dashboard
-          </Link>
-          <Link href="/app/profile" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
-            <UserRound size={17} aria-hidden="true" /> My profile
-          </Link>
-          <Link href="/app/settings" onClick={() => setOpen(false)} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
+          <Link href="/app/settings" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
             <Settings size={17} aria-hidden="true" /> Settings
           </Link>
           <button type="button" onClick={() => void signOut()} disabled={signingOut}

@@ -84,13 +84,13 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
 
   return (
     <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4 text-slate-900 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-black px-5 py-4 text-white sm:px-6">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Your saved opportunities</p>
-          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-slate-900">Application calendar</h2>
-          <p className="mt-1 text-sm text-slate-600">Return dates and closing dates, in your local time.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-sunshine">Your saved opportunities</p>
+          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-white">Application calendar</h2>
+          <p className="mt-1 text-sm text-slate-200">Return dates and closing dates, in your local time.</p>
         </div>
-        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white transition hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
       </div>
 
       {saved.length === 0 && <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
@@ -232,9 +232,8 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <div className="mb-4 flex items-center justify-end gap-2">
-          <DashboardNotifications userId={user.id} />
-          <Link href="/app/profile" className="btn-secondary min-h-10">Edit profile</Link>
+      <div className="mb-4 flex items-center justify-end">
+        <DashboardNotifications userId={user.id} />
       </div>
 
       <section className="relative mb-7 overflow-hidden rounded-2xl border-t-4 border-yellow bg-black p-4 text-white shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">

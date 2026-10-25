@@ -113,7 +113,7 @@ export default function HomePage() {
 
           <div className="relative mx-auto w-full max-w-[570px] lg:justify-self-end">
             <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-2xl bg-emerald sm:-inset-4" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-2 shadow-[0_18px_48px_rgba(31,41,51,0.12)] sm:p-3">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-2 shadow-[0_18px_48px_rgba(10,10,10,0.12)] sm:p-3">
               <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
                 <img
                   src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}

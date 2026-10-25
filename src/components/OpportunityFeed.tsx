@@ -526,7 +526,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         <ul className="divide-y divide-slate-200 border-y border-slate-200">
           {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
-              <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(31,41,51,0.04)] transition-shadow hover:shadow-[0_8px_20px_rgba(31,41,51,0.08)]">
+              <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(10,10,10,0.04)] transition-shadow hover:shadow-[0_8px_20px_rgba(10,10,10,0.08)]">
                 <div className="relative h-36 overflow-hidden bg-sunshine-light sm:h-44">
                   <div className="absolute inset-0 grid place-items-center text-midnight/60" aria-hidden="true"><Image size={30} strokeWidth={1.5} /></div>
                   {opportunity.banner_image_url && <img src={opportunity.banner_image_url} alt={`${opportunity.organization} opportunity banner`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
@@ -643,18 +643,18 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                       aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
                       title={action === 'saved' ? 'Remove from saved' : 'Like and save'}
                       onClick={() => void setAction(opportunity.id, action === 'saved' ? null : 'saved')}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-slate-50 disabled:opacity-50">
+                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light disabled:opacity-50">
                       <Heart size={19} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" />
                     </button>
                     <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(opportunity.source_url)}`}
                       target="_blank" rel="noopener noreferrer" aria-label="Share this opportunity on LinkedIn" title="Share on LinkedIn"
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-slate-50">
+                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light">
                       <Linkedin size={19} aria-hidden="true" />
                     </a>
                     <button type="button" aria-label={openNoteId === opportunity.id ? 'Close private note' : 'Add a private note'}
                       aria-expanded={openNoteId === opportunity.id} title="Add a private note"
                       onClick={() => setOpenNoteId((current) => current === opportunity.id ? '' : opportunity.id)}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-slate-50">
+                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light">
                       <MessageCircle size={19} aria-hidden="true" />
                     </button>
                   </div>
