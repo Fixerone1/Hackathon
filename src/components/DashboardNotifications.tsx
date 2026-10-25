@@ -129,9 +129,9 @@ export function DashboardNotifications({ userId }: { userId: string }) {
     <div className="relative">
       <button type="button" onClick={toggleInbox} aria-label={`Opportunity notifications${unreadCount ? `, ${unreadCount} new` : ''}`}
         aria-expanded={open} aria-controls="dashboard-notification-inbox"
-        className="relative inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
+        title="Notifications"
+        className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
         <Bell size={20} aria-hidden="true" />
-        <span>Notifications</span>
         {unreadCount > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-sunshine px-1 text-[10px] font-bold text-midnight">{unreadCount > 9 ? '9+' : unreadCount}</span>}
       </button>
       {open && (

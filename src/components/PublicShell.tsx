@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
+import { BrandLogo } from '@/components/BrandLogo';
+import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 import { normalizePathname } from '@/lib/normalizePathname';
 
@@ -20,26 +22,31 @@ function LinkedInMark() {
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
   const pathname = normalizePathname(usePathname() || '/');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [workspaceUserId, setWorkspaceUserId] = useState<string | null>(null);
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
+  const handleUserChange = useCallback((_signedIn: boolean, userId?: string) => {
+    setWorkspaceUserId(userId || null);
+  }, []);
 
   return (
     <>
       <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href={variant === 'workspace' ? '/app' : '/'} className="flex shrink-0 items-center gap-2.5 rounded-xl font-bold text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:gap-3" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
-            <span className="grid h-10 w-12 place-items-center overflow-hidden rounded-xl bg-black p-1 sm:h-11 sm:w-14">
-              <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/logo.webp`} alt="" aria-hidden="true" className="h-full w-full object-contain" />
+            <span className="grid h-10 w-12 place-items-center overflow-hidden rounded-xl bg-white p-1 sm:h-11 sm:w-14">
+              <BrandLogo className="h-full w-full object-contain" />
             </span>
             <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
           {variant === 'public' ? (
             <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
-              <AccountMenu compact />
+              <AccountMenu compact onUserChange={handleUserChange} />
             </nav>
           ) : (
             <div className="flex items-center gap-2">
               <span className="hidden text-sm font-medium text-slate-600 sm:inline">Learner workspace</span>
-              <AccountMenu compact />
+              {workspaceUserId && <DashboardNotifications userId={workspaceUserId} />}
+              <AccountMenu compact onUserChange={handleUserChange} />
             </div>
           )}
           {variant === 'public' && (
@@ -67,8 +74,8 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">
               <Link href={variant === 'workspace' ? '/app' : '/'} className="inline-flex items-center gap-3 rounded-sm font-bold text-midnight" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
-                <span className="grid h-11 w-14 place-items-center overflow-hidden rounded-xl bg-black p-1">
-                  <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/logo.webp`} alt="" aria-hidden="true" className="h-full w-full object-contain" />
+                <span className="grid h-11 w-14 place-items-center overflow-hidden rounded-xl bg-white p-1">
+                <BrandLogo className="h-full w-full object-contain" />
                 </span>
                 <span className="text-lg">Ukukhanya</span>
               </Link>

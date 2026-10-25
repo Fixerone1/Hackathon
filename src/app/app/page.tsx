@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OpportunityFeed } from '@/components/OpportunityFeed';
-import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { getSupabase } from '@/lib/supabase';
 import { useForge } from '@/components/ForgeContext';
@@ -232,10 +231,6 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <div className="mb-4 flex items-center justify-end">
-        <DashboardNotifications userId={user.id} />
-      </div>
-
       <section className="relative mb-7 overflow-hidden rounded-2xl border border-slate-200 bg-sunshine p-4 text-black shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
         <div className="relative grid items-center gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-8">
           <div>
