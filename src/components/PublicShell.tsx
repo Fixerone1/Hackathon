@@ -68,9 +68,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b-4 border-sunshine bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
+      <header className={`sticky top-0 z-30 border-b-4 shadow-[0_2px_12px_rgba(34,34,34,0.06)] ${variant === 'workspace' ? 'border-[#10B981] bg-[#0D1B2A] text-white' : 'border-sunshine bg-white text-midnight'}`}>
         <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
+          <Link href="/" className={`flex shrink-0 items-center gap-2.5 font-bold sm:gap-3 ${variant === 'workspace' ? 'text-white' : 'text-midnight'}`} aria-label="CareerForge home">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
               <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
             </span>
@@ -96,14 +96,14 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             </nav>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="hidden text-sm font-medium text-midnight sm:inline">Learner workspace</span>
+              <span className="hidden text-sm font-medium text-white/80 sm:inline">Learner workspace</span>
               <AccountMenu compact />
             </div>
           )}
         </div>
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
-      {!(variant === 'public' && pathname === '/') && (
+      {variant === 'public' && pathname !== '/' && (
         <section
           aria-label={`${bannerLabel} banner`}
           className="relative isolate h-36 overflow-hidden border-y border-[#e5e5e5] bg-white sm:h-44 lg:h-52"
@@ -129,8 +129,8 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
           </div>
         </section>
       )}
-      <main id="main-content" className="bg-white">{children}</main>
-      <footer className={`border-t-4 border-sunshine bg-white text-midnight ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+      <main id="main-content" className={variant === 'workspace' ? 'bg-[#F8FAFC] md:ml-60' : 'bg-white'}>{children}</main>
+      <footer className={`border-t-4 border-sunshine bg-white text-midnight ${variant === 'workspace' ? 'ml-0 pb-20 md:ml-60 md:pb-0' : ''}`}>
         <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">

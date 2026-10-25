@@ -28,7 +28,6 @@ alter table public.opportunities
     setweight(to_tsvector('simple'::regconfig, coalesce(title, '')), 'A')
     || setweight(to_tsvector('simple'::regconfig, coalesce(organization, '')), 'B')
     || setweight(to_tsvector('simple'::regconfig, coalesce(summary, '')), 'C')
-    || setweight(to_tsvector('simple'::regconfig, coalesce(array_to_string(required_skills, ' '), '')), 'B')
   ) stored;
 
 create index if not exists opportunities_search_document_gin_idx
