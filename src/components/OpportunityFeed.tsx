@@ -431,19 +431,22 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         <ul className="divide-y divide-slate-200 border-y border-slate-200">
           {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
-              <article className="py-4 sm:py-5">
-                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-medium text-slate-500">Opportunity {(page - 1) * pageSize + index + 1} of {matches.length}</span>
-                  {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
-                </div>
-                <div>
+              <article className="overflow-hidden rounded-xl border border-[#e5e5e5] bg-white shadow-[0_2px_10px_rgba(13,27,42,0.04)] transition-shadow hover:shadow-[0_8px_20px_rgba(13,27,42,0.08)]">
+                <header className="flex items-center gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#0D1B2A] text-sm font-bold text-sunshine" aria-hidden="true">
+                    {opportunity.organization.trim().charAt(0).toUpperCase() || 'O'}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-midnight">{opportunity.organization}</p>
+                    <p className="truncate text-xs text-slate-500">{categoryLabel(opportunity.category)} · {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}</p>
+                  </div>
+                  <span className="shrink-0 text-[11px] font-medium text-slate-500">{(page - 1) * pageSize + index + 1}/{matches.length}</span>
+                </header>
+                <div className="p-4 sm:p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <h2 className="text-lg font-semibold leading-snug text-midnight">{opportunity.title}</h2>
-                      <span className="text-xs font-medium text-slate-500">{categoryLabel(opportunity.category)}</span>
-                    </div>
-                    <p className="mt-1 text-sm font-medium text-slate-700">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
+                    <h2 className="text-xl font-semibold leading-snug text-midnight">{opportunity.title}</h2>
+                    {opportunity.location && <p className="mt-1 text-sm text-slate-600">{opportunity.location}</p>}
                   </div>
                   <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:justify-end">
                     {score === null
@@ -453,6 +456,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     <p className="text-xs text-slate-600">Closes {formatDate(opportunity.closing_date)}</p>
                   </div>
                 </div>
+                <p className="mt-3 line-clamp-2 max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
 
                 {mode === 'applications' && (
                   (opportunity.closing_date && opportunity.closing_date < new Date().toISOString().slice(0, 10))
@@ -461,7 +465,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or needs re-verification. Check its source before taking action.</p>
                 )}
                 <details className="mt-3 min-w-0">
-                  <summary className="min-h-9 cursor-pointer py-1 text-sm font-semibold text-midnight marker:text-emerald-dark">More details and application prep</summary>
+                  <summary className="min-h-10 cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-midnight marker:text-emerald-dark hover:bg-slate-50">View requirements and plan a return date</summary>
                   <div className="mt-3 border-l-2 border-sunshine-dark pl-4">
                     <p className="max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
                     {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
@@ -481,6 +485,24 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     {cautions.length > 0 && <p className="mt-2 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
                     <p className="mt-3 text-xs leading-5 text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Apply on the employer&apos;s site; CareerForge does not submit applications.</p>
                   </div>
+                  {action === 'saved' ? (
+                    <div className="mt-4 flex flex-col gap-2 rounded-lg bg-sunshine-light/60 p-3 sm:flex-row sm:items-end">
+                      <label className="flex-1 text-xs font-semibold text-midnight" htmlFor={`return-date-${opportunity.id}`}>
+                        Set a day to come back
+                        <input id={`return-date-${opportunity.id}`} type="date" className="input mt-1 min-h-10 bg-white" value={reminders[opportunity.id] || ''} onChange={(event) => setReminders((current) => ({ ...current, [opportunity.id]: event.target.value }))} />
+                      </label>
+                      <button type="button" className="btn-secondary min-h-10 w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void saveReminder(opportunity.id, reminders[opportunity.id] || '')}>
+                        {busyId === opportunity.id ? 'Saving...' : 'Save reminder'}
+                      </button>
+                      <p className="text-xs leading-5 text-slate-600 sm:max-w-44">The bell will show it when the date is due.</p>
+                    </div>
+                  ) : action === 'applied' ? (
+                    <p className="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-900">Applied · marked complete in your list.</p>
+                  ) : (
+                    <button type="button" className="btn-secondary mt-4 min-h-10 w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
+                      <Heart size={16} aria-hidden="true" /> Save this opportunity to plan a return date
+                    </button>
+                  )}
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     Review your saved details, then copy this application pack and paste it into the employer&apos;s form. Nothing is sent to the employer automatically.
                   </p>
@@ -516,10 +538,11 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
-                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full sm:w-auto">
+                <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
+                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10 w-full sm:w-auto">
                     View &amp; apply <span aria-hidden="true">→</span>
                   </a>
+                  {action === 'saved' && <span className="text-xs font-medium text-emerald-800">Saved to your plan</span>}
                   <div role="group" aria-label="Opportunity social actions" className="flex items-center justify-center gap-2 sm:justify-start">
                     <button type="button" aria-label={action === 'saved' ? 'Unlike and remove from saved opportunities' : 'Like and save this opportunity'}
                       aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
@@ -547,12 +570,6 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                     </>
                   ) : action === 'saved' ? (
                     <>
-                      <span className="text-sm font-medium text-slate-600">Saved</span>
-                      <label className="flex w-full flex-col gap-1 text-left text-xs font-medium text-slate-600 sm:w-auto" htmlFor={`return-date-${opportunity.id}`}>
-                        Come back to apply
-                        <input id={`return-date-${opportunity.id}`} type="date" className="input min-h-10" value={reminders[opportunity.id] || ''} onChange={(event) => setReminders((current) => ({ ...current, [opportunity.id]: event.target.value }))} />
-                      </label>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void saveReminder(opportunity.id, reminders[opportunity.id] || '')}>Save return date</button>
                       <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
                     </>
                   ) : (

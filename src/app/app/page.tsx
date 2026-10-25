@@ -7,8 +7,9 @@ import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { getSupabase } from '@/lib/supabase';
 import { PageIntro } from '@/components/PageIntro';
+import { useForge } from '@/components/ForgeContext';
 
-type CurrentUser = { id: string; name: string; email: string; personalGoal: string; interests: string[] };
+type CurrentUser = { id: string };
 
 const starterActions = [
   { id: 'profile', label: 'Add your skills and experience' },
@@ -18,12 +19,15 @@ const starterActions = [
 
 export default function DashboardPage() {
   const router = useRouter();
+  const forge = useForge();
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [completed, setCompleted] = useState<string[]>([]);
   const [storageWarning, setStorageWarning] = useState('');
   const [authUnavailable, setAuthUnavailable] = useState(false);
   const progress = Math.round((completed.length / starterActions.length) * 100);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   useEffect(() => {
     let active = true;
@@ -36,34 +40,14 @@ export default function DashboardPage() {
           return;
         }
         if (active) {
-          setUser({
-            id: authData.user.id,
-            name: authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'Learner',
-            email: authData.user.email || '',
-            personalGoal: '',
-            interests: [],
-          });
+          setUser({ id: authData.user.id });
         }
-        const [progressResult, profileResult] = await Promise.all([
-          supabase.from('learner_progress').select('checklist').maybeSingle(),
-          supabase.from('learner_profiles').select('display_name,personal_goal,interests').maybeSingle(),
-        ]);
+        const progressResult = await supabase.from('learner_progress').select('checklist').maybeSingle();
         if (progressResult.error) {
           if (active) setStorageWarning('Your progress could not be loaded. Check that the Supabase migrations are applied.');
         } else if (active) {
           const checklist = Array.isArray(progressResult.data?.checklist) ? progressResult.data.checklist as string[] : [];
           setCompleted(checklist.filter((id) => starterActions.some((action) => action.id === id)));
-        }
-        if (profileResult.error) {
-          if (active) setStorageWarning('Your profile could not be loaded. Check that the profile migrations are applied.');
-        } else if (active && authData.user) {
-          const profile = profileResult.data;
-          setUser((current) => current ? {
-            ...current,
-            name: profile?.display_name?.trim() || current.name,
-            personalGoal: profile?.personal_goal || '',
-            interests: Array.isArray(profile?.interests) ? profile.interests.filter((item: unknown): item is string => typeof item === 'string') : [],
-          } : current);
         }
       } catch {
         if (active) setAuthUnavailable(true);
@@ -97,13 +81,37 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <PageIntro
         eyebrow="Your learner workspace"
-        title={`Welcome, ${user.name}`}
-        description="Choose a practical next step and keep your progress moving."
+        title={`${greeting}, ${forge.firstName || 'there'}`}
+        description={`${forge.stage}. One useful next step is enough for today.`}
         actions={<>
           <DashboardNotifications userId={user.id} />
           <Link href="/app/profile" className="btn-secondary min-h-10 w-full sm:w-auto">Edit profile</Link>
         </>}
       />
+
+      <section className="mb-7 border-y border-slate-200 bg-sunshine-light/40 px-4 py-5 sm:px-6" aria-labelledby="next-action-heading">
+        <p className="eyebrow">Your next step · {forge.stage}</p>
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h2 id="next-action-heading" className="text-xl font-semibold text-midnight">
+              {forge.preferences.personalisation_paused ? 'Choose a small step for today' : forge.nextAction?.label || 'Pick one step that feels useful today'}
+            </h2>
+            <details className="mt-2 text-sm text-slate-600">
+              <summary className="min-h-8 cursor-pointer font-medium text-midnight underline underline-offset-2">Why am I seeing this?</summary>
+              <p className="mt-1 max-w-2xl leading-6">
+                {forge.preferences.personalisation_paused
+                  ? 'Personalisation is paused, so this suggestion is not based on your profile or activity.'
+                  : forge.nextAction?.reason || 'No open action is recorded, so this page leaves the choice with you.'}
+              </p>
+            </details>
+          </div>
+          <Link href={forge.preferences.personalisation_paused ? '/app/employment/opportunities' : forge.nextAction?.href || '/app/employment/opportunities'} className="btn-primary w-full shrink-0 sm:w-auto">
+            {forge.preferences.personalisation_paused ? 'Explore opportunities' : 'Take this step'} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
+
+      {forge.recentWin && <p className="mb-6 text-sm text-emerald-dark" role="status">Latest recorded win: {forge.recentWin}</p>}
 
       <section className="mb-8 rounded-2xl border border-[#e5e5e5] bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
