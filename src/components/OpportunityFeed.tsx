@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { Heart, Linkedin, MessageCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Linkedin, MessageCircle } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
@@ -15,8 +15,9 @@ import {
 } from '@/lib/opportunities';
 
 type OpportunityFeedProps = { mode?: 'matches' | 'applications' };
-type ActionRow = { opportunity_id: string; status: LearnerOpportunityAction };
+type ActionRow = { opportunity_id: string; status: LearnerOpportunityAction; scheduled_apply_date: string | null };
 type AccountDetails = { name: string; email: string };
+const pageSize = 5;
 
 function formatDate(value: string | null): string {
   if (!value) return 'No closing date listed';
@@ -129,7 +130,9 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [profile, setProfile] = useState<OpportunityProfile>({});
   const [account, setAccount] = useState<AccountDetails>({ name: '', email: '' });
   const [actions, setActions] = useState<Record<string, LearnerOpportunityAction>>({});
+  const [reminders, setReminders] = useState<Record<string, string>>({});
   const [category, setCategory] = useState('all');
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState('');
   const [copiedOpportunityId, setCopiedOpportunityId] = useState('');
@@ -160,7 +163,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
         const [profileResult, actionResult] = await Promise.all([
           supabase.from('learner_profiles').select('target_role,highest_qualification,qualification_status,qualification_year,field_of_study,subjects,skills,skill_ratings,experience_months,experience_by_area,province,city,nqf_level,languages,certifications,work_authorization,availability_start_date,shift_preferences,hours_available_per_week,target_income_monthly,target_income_monthly_max,employment_status,drivers_license,own_transport,willing_to_relocate,remote_ok,computer_or_data_access').maybeSingle(),
-          supabase.from('learner_opportunity_actions').select('opportunity_id,status'),
+          supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date'),
         ]);
         if (!active) return;
         const supportingErrors: string[] = [];
@@ -174,7 +177,9 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           supportingErrors.push(`Saving status unavailable: ${errorMessage(actionResult.error, 'saved listings query failed')}`);
           console.error('Could not load saved opportunity actions:', actionResult.error);
         } else {
-          setActions(Object.fromEntries(((actionResult.data || []) as ActionRow[]).map((action) => [action.opportunity_id, action.status])));
+          const loadedActions = (actionResult.data || []) as ActionRow[];
+          setActions(Object.fromEntries(loadedActions.map((action) => [action.opportunity_id, action.status])));
+          setReminders(Object.fromEntries(loadedActions.flatMap((action) => action.scheduled_apply_date ? [[action.opportunity_id, action.scheduled_apply_date]] : [])));
         }
         if (supportingErrors.length) {
           setError(`Listings loaded, but ${supportingErrors.join('; ')}.`);
@@ -218,6 +223,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       .sort((left, right) => (right.score ?? -1) - (left.score ?? -1));
   }, [actions, category, mode, opportunities, profile]);
 
+  const pageCount = Math.max(1, Math.ceil(matches.length / pageSize));
+  const pageMatches = matches.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [category, mode]);
+
   async function setAction(opportunityId: string, status: LearnerOpportunityAction | null) {
     setBusyId(opportunityId);
     setError('');
@@ -244,6 +256,34 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       });
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Your opportunity list could not be updated.');
+    } finally {
+      setBusyId('');
+    }
+  }
+
+  async function saveReminder(opportunityId: string, date: string) {
+    setBusyId(opportunityId);
+    setError('');
+    try {
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to save your application reminder.');
+      const { error: saveError } = await supabase.from('learner_opportunity_actions').upsert({
+        user_id: authData.user.id,
+        opportunity_id: opportunityId,
+        status: actions[opportunityId] || 'saved',
+        scheduled_apply_date: date || null,
+      }, { onConflict: 'user_id,opportunity_id' });
+      if (saveError) throw saveError;
+      setReminders((current) => {
+        const updated = { ...current };
+        if (date) updated[opportunityId] = date;
+        else delete updated[opportunityId];
+        return updated;
+      });
+      setActions((current) => current[opportunityId] ? current : { ...current, [opportunityId]: 'saved' });
+    } catch (caught) {
+      setError(errorMessage(caught, 'Your application reminder could not be saved.'));
     } finally {
       setBusyId('');
     }
@@ -364,6 +404,17 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         </div>
       </div>
 
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-y border-slate-200 py-3 text-sm" aria-live="polite">
+        <p className="font-medium text-midnight">
+          {matches.length === 0 ? '0 opportunities' : `Showing ${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, matches.length)} of ${matches.length} opportunities`}
+        </p>
+        {pageCount > 1 && <nav className="flex items-center gap-2" aria-label="Opportunity pages">
+          <button type="button" className="btn-secondary min-h-9 px-3" aria-label="Previous opportunities" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}><ChevronLeft size={16} aria-hidden="true" /></button>
+          <span className="min-w-20 text-center text-xs text-slate-600">Page {page} of {pageCount}</span>
+          <button type="button" className="btn-secondary min-h-9 px-3" aria-label="Next opportunities" disabled={page === pageCount} onClick={() => setPage((current) => Math.min(pageCount, current + 1))}><ChevronRight size={16} aria-hidden="true" /></button>
+        </nav>}
+      </div>
+
       {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
 
       {matches.length === 0 && !error ? (
@@ -378,11 +429,11 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         </div>
       ) : matches.length > 0 ? (
         <ul className="grid gap-4">
-          {matches.map(({ opportunity, score, reasons, cautions, action }) => (
+          {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
               <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
-                <div className="hidden flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:flex sm:px-6">
-                  <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Your next opportunity could start here</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:px-6">
+                  <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Opportunity {(page - 1) * pageSize + index + 1} of {matches.length}</span>
                   {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
                 </div>
                 <div className="p-5 sm:p-6">
@@ -509,6 +560,11 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   ) : action === 'saved' ? (
                     <>
                       <span className="text-sm font-medium text-slate-600">Saved</span>
+                      <label className="flex w-full flex-col gap-1 text-left text-xs font-medium text-slate-600 sm:w-auto" htmlFor={`return-date-${opportunity.id}`}>
+                        Come back to apply
+                        <input id={`return-date-${opportunity.id}`} type="date" className="input min-h-10" value={reminders[opportunity.id] || ''} onChange={(event) => setReminders((current) => ({ ...current, [opportunity.id]: event.target.value }))} />
+                      </label>
+                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void saveReminder(opportunity.id, reminders[opportunity.id] || '')}>Save return date</button>
                       <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
                     </>
                   ) : (

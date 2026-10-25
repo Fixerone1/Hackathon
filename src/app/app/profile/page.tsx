@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CalendarDays, ExternalLink } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
 
 type SubjectResult = { name: string; mark: number | null };
 type SkillRating = { name: string; level: number; source: 'self_reported'; evidence_note: string };
 type ExperienceEntry = { area: string; months: number };
+type PlannedOpportunity = {
+  opportunity_id: string;
+  status: 'saved' | 'applied';
+  scheduled_apply_date: string | null;
+  opportunities: { id: string; title: string; organization: string; source_url: string; closing_date: string | null };
+};
 type ProfileDraft = {
   display_name: string;
   pronouns: string;
@@ -133,18 +140,33 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [plannedOpportunities, setPlannedOpportunities] = useState<PlannedOpportunity[]>([]);
+  const [plannerDates, setPlannerDates] = useState<Record<string, string>>({});
+  const [plannerBusyId, setPlannerBusyId] = useState('');
+  const [plannerError, setPlannerError] = useState('');
 
   useEffect(() => {
     let active = true;
     async function loadProfile() {
       try {
-        const { data, error } = await getSupabase().from('learner_profiles').select('*').maybeSingle();
+        const supabase = getSupabase();
+        const [{ data, error }, plannerResult] = await Promise.all([
+          supabase.from('learner_profiles').select('*').maybeSingle(),
+          supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date,opportunities!inner(id,title,organization,source_url,closing_date)').eq('status', 'saved'),
+        ]);
         if (error) throw error;
         const savedProfile = (data || {}) as ProfileApiResponse['profile'];
         if (!active) return;
         setProfile(toDraft(savedProfile));
         setStrength(profileStrength(savedProfile));
         setNextStep(profileNextStep(savedProfile));
+        if (plannerResult.error) {
+          setPlannerError(plannerResult.error.message);
+        } else {
+          const savedActions = (plannerResult.data || []) as unknown as PlannedOpportunity[];
+          setPlannedOpportunities(savedActions);
+          setPlannerDates(Object.fromEntries(savedActions.map((action) => [action.opportunity_id, action.scheduled_apply_date || ''])));
+        }
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : 'Profile could not be loaded.');
       } finally {
@@ -217,6 +239,29 @@ export default function ProfilePage() {
       setError(caught instanceof Error ? caught.message : 'Profile could not be saved.');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function savePlannerDate(opportunityId: string) {
+    setPlannerBusyId(opportunityId);
+    setError('');
+    setMessage('');
+    try {
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData.user) throw new Error('Sign in again to update your application planner.');
+      const { error: saveError } = await supabase.from('learner_opportunity_actions').update({
+        scheduled_apply_date: plannerDates[opportunityId] || null,
+      }).eq('user_id', authData.user.id).eq('opportunity_id', opportunityId);
+      if (saveError) throw saveError;
+      setPlannedOpportunities((current) => current.map((item) => item.opportunity_id === opportunityId
+        ? { ...item, scheduled_apply_date: plannerDates[opportunityId] || null }
+        : item));
+      setMessage('Your application reminder was saved.');
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Your application reminder could not be saved.');
+    } finally {
+      setPlannerBusyId('');
     }
   }
 
@@ -444,6 +489,45 @@ export default function ProfilePage() {
           <p className="mt-4 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">Never store an ID/passport number here. Keep required documents ready to upload directly to an employer. Add references only when a specific application asks; do not store another person’s contact details here.</p>
         </aside>
       </div>
+
+      <section className="mt-8 border-t border-slate-200 pt-7" aria-labelledby="application-planner-heading">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="eyebrow">Your next steps</p>
+            <h2 id="application-planner-heading" className="mt-2 text-2xl font-semibold text-midnight">Application planner</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Pick a day to come back to a saved opportunity. Your dates are private to your account.</p>
+          </div>
+          <Link href="/app/employment/applications" className="link text-sm">View all saved applications</Link>
+        </div>
+        {plannerError ? (
+          <p className="mt-4 border-y border-amber-300 py-4 text-sm leading-6 text-amber-900" role="alert">Your planner could not be loaded: {plannerError} Apply the latest Supabase migrations, then reload this page.</p>
+        ) : plannedOpportunities.length === 0 ? (
+          <div className="mt-4 border-y border-slate-200 py-5">
+            <p className="font-medium text-midnight">Nothing in your planner yet</p>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Save an opportunity from your matches, then choose a date to return and apply.</p>
+            <Link href="/app/employment/opportunities" className="link mt-3 inline-flex text-sm">Browse opportunities</Link>
+          </div>
+        ) : (
+          <ul className="mt-4 divide-y divide-slate-200 border-y border-slate-200">
+            {plannedOpportunities.map((item) => (
+              <li key={item.opportunity_id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-midnight">{item.opportunities.title}</h3>
+                  <p className="mt-1 text-sm text-slate-600">{item.opportunities.organization}{item.opportunities.closing_date ? ` · Closes ${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${item.opportunities.closing_date}T00:00:00Z`))}` : ''}</p>
+                </div>
+                <div className="flex flex-wrap items-end gap-2">
+                  <label className="text-xs font-medium text-slate-600" htmlFor={`planner-date-${item.opportunity_id}`}>
+                    <span className="mb-1 flex items-center gap-1"><CalendarDays size={14} aria-hidden="true" />Come back on</span>
+                    <input id={`planner-date-${item.opportunity_id}`} type="date" className="input min-h-10" value={plannerDates[item.opportunity_id] || ''} onChange={(event) => setPlannerDates((current) => ({ ...current, [item.opportunity_id]: event.target.value }))} />
+                  </label>
+                  <button type="button" className="btn-secondary min-h-10" disabled={plannerBusyId === item.opportunity_id} onClick={() => void savePlannerDate(item.opportunity_id)}>{plannerBusyId === item.opportunity_id ? 'Saving...' : 'Save date'}</button>
+                  <a href={item.opportunities.source_url} target="_blank" rel="noopener noreferrer" className="btn-secondary min-h-10" aria-label={`Open ${item.opportunities.title} application in a new tab`}><ExternalLink size={16} aria-hidden="true" /></a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
