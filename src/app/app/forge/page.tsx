@@ -120,10 +120,10 @@ export default function ForgeMemoryPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <Link href="/app/settings" className="link text-sm">Settings</Link>
-      <header className="mt-3 border-b border-slate-200 pb-5">
-        <p className="eyebrow">Your data, your call</p>
-        <h1 className="page-title mt-2">What Forge knows about me</h1>
-        <p className="page-description">Only details you added or actions you took in Ukukhanya appear here. Nothing inferred is used.</p>
+      <header className="mt-3 rounded-2xl border border-slate-200 bg-sunshine p-5 sm:p-6">
+        <p className="eyebrow text-black">Your data, your call</p>
+        <h1 className="page-title mt-2 text-black">What Forge knows about me</h1>
+        <p className="page-description text-black/75">Only details you added or actions you took in Ukukhanya appear here. Nothing inferred is used.</p>
       </header>
       {loading && <p className="py-6 text-sm text-slate-600" role="status">Loading your facts...</p>}
       {error && <p className="mt-5 text-sm text-red-700" role="alert">{error}</p>}

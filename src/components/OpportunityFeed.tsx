@@ -423,7 +423,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
   return (
     <section aria-label={mode === 'applications' ? 'Saved opportunities and applications' : 'Personalized opportunities'}>
-      <div className="mb-5">
+      <div className="mb-5 rounded-2xl border border-slate-200 bg-sunshine-light p-4 sm:p-5">
         <p className="mb-4 text-sm leading-6 text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Search current listings from verified sources. Matches use the details in your profile; check each original advert before applying.'}</p>
         <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,0.55fr)]">
           <div>

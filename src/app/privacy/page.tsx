@@ -10,6 +10,7 @@ export default function PrivacyPage() {
           title="Your information, used for your goals."
           description="We aim to make it clear what information is used, why it is needed, and what choices you have."
           className="max-w-3xl"
+          tone="plain"
         />
         <div className="space-y-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7">
           <section>

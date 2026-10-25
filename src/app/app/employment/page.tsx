@@ -57,22 +57,24 @@ export default function EmploymentPage() {
             <li key={href}>
               <Link
                 href={href}
-                className={`group flex h-full flex-col rounded-2xl border p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:p-6 ${
-                  featured ? 'border-sunshine bg-sunshine-light' : 'border-slate-200 bg-surface'
+                className={`group flex h-full flex-col overflow-hidden rounded-2xl border shadow-card transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 ${
+                  featured ? 'border-slate-200 bg-sunshine-light' : 'border-slate-200 bg-surface'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="metadata-label">Step {number}</span>
-                  <span className={`grid h-10 w-10 place-items-center rounded-full ${featured ? 'bg-sunshine text-midnight' : 'bg-white text-midnight'}`}>
+                <div className={`flex items-center justify-between px-5 py-3 sm:px-6 ${featured ? 'bg-sunshine' : 'border-b border-slate-200 bg-slate-50'}`}>
+                  <span className="text-xs font-bold uppercase tracking-wide text-black">Step {number}</span>
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight">
                     <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
                   </span>
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-midnight">{title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{description}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-midnight">
-                  {action}
-                  <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                </span>
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <h3 className="text-lg font-semibold text-midnight">{title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-midnight">
+                    {action}
+                    <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </span>
+                </div>
               </Link>
             </li>
           ))}

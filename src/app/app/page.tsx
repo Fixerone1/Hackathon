@@ -84,13 +84,13 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
 
   return (
     <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-black px-5 py-4 text-white sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-sunshine px-5 py-4 text-black sm:px-6">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-sunshine">Your saved opportunities</p>
-          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-white">Application calendar</h2>
-          <p className="mt-1 text-sm text-slate-200">Return dates and closing dates, in your local time.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-black">Your saved opportunities</p>
+          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-black">Application calendar</h2>
+          <p className="mt-1 text-sm text-black/75">Return dates and closing dates, in your local time.</p>
         </div>
-        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white transition hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-black/20 bg-white/60 px-3 text-sm font-semibold text-black transition hover:bg-white">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
       </div>
 
       {saved.length === 0 && <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
