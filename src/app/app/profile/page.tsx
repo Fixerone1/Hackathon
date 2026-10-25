@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CalendarDays, ExternalLink } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
 import { southAfricanProvinces } from '@/lib/opportunities';
@@ -16,6 +16,14 @@ type PlannedOpportunity = {
   scheduled_apply_date: string | null;
   opportunities: { id: string; title: string; organization: string; source_url: string; closing_date: string | null };
 };
+
+function localDateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function dateFromKey(value: string): Date {
+  return new Date(`${value}T12:00:00`);
+}
 type ProfileDraft = {
   display_name: string;
   pronouns: string;
@@ -140,6 +148,8 @@ export default function ProfilePage() {
   const [plannerDates, setPlannerDates] = useState<Record<string, string>>({});
   const [plannerBusyId, setPlannerBusyId] = useState('');
   const [plannerError, setPlannerError] = useState('');
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState(() => localDateKey(new Date()));
 
   useEffect(() => {
     let active = true;
@@ -148,7 +158,7 @@ export default function ProfilePage() {
         const supabase = getSupabase();
         const [{ data, error }, plannerResult] = await Promise.all([
           supabase.from('learner_profiles').select('*').maybeSingle(),
-          supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date,opportunities!inner(id,title,organization,source_url,closing_date)').eq('status', 'saved'),
+          supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date,opportunities!inner(id,title,organization,source_url,closing_date)'),
         ]);
         if (error) throw error;
         const savedProfile = (data || {}) as ProfileApiResponse['profile'];
@@ -260,6 +270,25 @@ export default function ProfilePage() {
       setPlannerBusyId('');
     }
   }
+
+  const todayKey = localDateKey(new Date());
+  const savedPlans = plannedOpportunities.filter((item) => item.status === 'saved');
+  const overduePlans = savedPlans.filter((item) => item.scheduled_apply_date && item.scheduled_apply_date < todayKey);
+  const dueTodayPlans = savedPlans.filter((item) => item.scheduled_apply_date === todayKey);
+  const upcomingPlans = savedPlans.filter((item) => item.scheduled_apply_date && item.scheduled_apply_date > todayKey);
+  const calendarEvents = plannedOpportunities.flatMap((item) => {
+    const events: Array<{ id: string; date: string; title: string; kind: 'return' | 'closing' }> = [];
+    if (item.status === 'saved' && item.scheduled_apply_date) {
+      events.push({ id: `${item.opportunity_id}-return`, date: item.scheduled_apply_date, title: item.opportunities.title, kind: 'return' });
+    }
+    if (item.status === 'saved' && item.opportunities.closing_date) {
+      events.push({ id: `${item.opportunity_id}-closing`, date: item.opportunities.closing_date, title: item.opportunities.title, kind: 'closing' });
+    }
+    return events;
+  });
+  const daysInMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0).getDate();
+  const monthOffset = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1).getDay();
+  const selectedDayEvents = calendarEvents.filter((event) => event.date === selectedCalendarDay);
 
   const inputClass = 'input';
   const selectClass = 'input';
@@ -491,7 +520,7 @@ export default function ProfilePage() {
           <div>
             <p className="eyebrow">Your next steps</p>
             <h2 id="application-planner-heading" className="mt-2 text-2xl font-semibold text-midnight">Application planner</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Pick a day to come back to a saved opportunity. Your dates are private to your account.</p>
+            <p className="mt-1 text-sm leading-6 text-slate-600">See your return dates, closing dates, and what needs attention. Nothing is hidden when a date passes.</p>
           </div>
           <Link href="/app/employment/applications" className="link text-sm">View all saved applications</Link>
         </div>
@@ -504,24 +533,88 @@ export default function ProfilePage() {
             <Link href="/app/employment/opportunities" className="link mt-3 inline-flex text-sm">Browse opportunities</Link>
           </div>
         ) : (
-          <ul className="mt-4 divide-y divide-slate-200 border-y border-slate-200">
-            {plannedOpportunities.map((item) => (
-              <li key={item.opportunity_id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-midnight">{item.opportunities.title}</h3>
-                  <p className="mt-1 text-sm text-slate-600">{item.opportunities.organization}{item.opportunities.closing_date ? ` · Closes ${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${item.opportunities.closing_date}T00:00:00Z`))}` : ''}</p>
+          <>
+            <dl className="mt-5 grid grid-cols-2 border-y border-slate-200 sm:grid-cols-4">
+              {[
+                ['Overdue', overduePlans.length, 'text-red-800'],
+                ['Due today', dueTodayPlans.length, 'text-amber-800'],
+                ['Coming up', upcomingPlans.length, 'text-midnight'],
+                ['Applied', plannedOpportunities.filter((item) => item.status === 'applied').length, 'text-emerald-800'],
+              ].map(([label, count, color]) => (
+                <div key={label} className="border-b border-r border-slate-200 px-3 py-3 last:border-r-0 sm:border-b-0">
+                  <dt className="text-xs text-slate-500">{label}</dt><dd className={`mt-1 text-lg font-semibold ${color}`}>{count}</dd>
                 </div>
-                <div className="flex flex-wrap items-end gap-2">
-                  <label className="text-xs font-medium text-slate-600" htmlFor={`planner-date-${item.opportunity_id}`}>
-                    <span className="mb-1 flex items-center gap-1"><CalendarDays size={14} aria-hidden="true" />Come back on</span>
-                    <input id={`planner-date-${item.opportunity_id}`} type="date" className="input min-h-10" value={plannerDates[item.opportunity_id] || ''} onChange={(event) => setPlannerDates((current) => ({ ...current, [item.opportunity_id]: event.target.value }))} />
-                  </label>
-                  <button type="button" className="btn-secondary min-h-10" disabled={plannerBusyId === item.opportunity_id} onClick={() => void savePlannerDate(item.opportunity_id)}>{plannerBusyId === item.opportunity_id ? 'Saving...' : 'Save date'}</button>
-                  <a href={item.opportunities.source_url} target="_blank" rel="noopener noreferrer" className="btn-secondary min-h-10" aria-label={`Open ${item.opportunities.title} application in a new tab`}><ExternalLink size={16} aria-hidden="true" /></a>
+              ))}
+            </dl>
+
+            <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(16rem,0.9fr)]">
+              <section className="min-w-0" aria-label="Application calendar">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <h3 className="flex items-center gap-2 font-semibold text-midnight"><CalendarDays size={17} aria-hidden="true" />{new Intl.DateTimeFormat('en-ZA', { month: 'long', year: 'numeric' }).format(calendarMonth)}</h3>
+                  <div className="flex gap-1">
+                    <button type="button" className="btn-secondary min-h-9 px-2" aria-label="Previous month" onClick={() => setCalendarMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}><ChevronLeft size={17} aria-hidden="true" /></button>
+                    <button type="button" className="btn-secondary min-h-9 px-2" aria-label="Next month" onClick={() => setCalendarMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}><ChevronRight size={17} aria-hidden="true" /></button>
+                  </div>
                 </div>
-              </li>
-            ))}
-          </ul>
+                <div className="grid grid-cols-7 border-l border-t border-slate-200" role="grid" aria-label="Application dates">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => <div key={day} className="border-b border-r border-slate-200 bg-slate-50 py-2 text-center text-[10px] font-semibold text-slate-500 sm:text-xs" role="columnheader">{day}</div>)}
+                  {Array.from({ length: monthOffset }, (_, index) => <div key={`blank-${index}`} className="min-h-12 border-b border-r border-slate-200 bg-slate-50/50 sm:min-h-16" aria-hidden="true" />)}
+                  {Array.from({ length: daysInMonth }, (_, index) => {
+                    const date = localDateKey(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), index + 1));
+                    const events = calendarEvents.filter((event) => event.date === date);
+                    const selected = selectedCalendarDay === date;
+                    return (
+                      <button key={date} type="button" role="gridcell" aria-pressed={selected} aria-label={`${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'full' }).format(dateFromKey(date))}${events.length ? `, ${events.length} planned items` : ''}`} onClick={() => setSelectedCalendarDay(date)}
+                        className={`min-h-12 border-b border-r border-slate-200 p-1 text-left transition-colors sm:min-h-16 sm:p-2 ${selected ? 'bg-sunshine-light' : 'bg-white hover:bg-slate-50'}`}>
+                        <span className={`grid h-6 w-6 place-items-center rounded-full text-xs ${date === todayKey ? 'bg-[#0D1B2A] font-bold text-white' : 'text-slate-700'}`}>{index + 1}</span>
+                        {events.length > 0 && <span className="mt-1 block truncate text-[9px] font-semibold text-emerald-800 sm:text-[10px]">{events.length} item{events.length === 1 ? '' : 's'}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-slate-600"><span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-sunshine-dark" />Return date</span><span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-700" />Closing date</span></div>
+              </section>
+
+              <section className="min-w-0 border-t border-slate-200 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0" aria-live="polite">
+                <h3 className="font-semibold text-midnight">{new Intl.DateTimeFormat('en-ZA', { dateStyle: 'full' }).format(dateFromKey(selectedCalendarDay))}</h3>
+                {selectedDayEvents.length === 0 ? <p className="mt-3 text-sm leading-6 text-slate-600">No saved return or closing dates on this day.</p> : (
+                  <ul className="mt-2 divide-y divide-slate-200">
+                    {selectedDayEvents.map((event) => <li key={event.id} className="py-3"><p className="text-[11px] font-semibold uppercase text-slate-500">{event.kind === 'return' ? 'Come back to apply' : 'Advert closes'}</p><p className="mt-1 text-sm font-medium text-midnight">{event.title}</p></li>)}
+                  </ul>
+                )}
+              </section>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="mb-2 text-sm font-semibold text-midnight">Your saved opportunities</h3>
+              <ul className="divide-y divide-slate-200 border-y border-slate-200">
+                {plannedOpportunities.map((item) => {
+                  const overdue = item.status === 'saved' && Boolean(item.scheduled_apply_date && item.scheduled_apply_date < todayKey);
+                  const dueToday = item.status === 'saved' && item.scheduled_apply_date === todayKey;
+                  const statusLabel = item.status === 'applied' ? 'Applied' : overdue ? 'Overdue' : dueToday ? 'Due today' : item.scheduled_apply_date ? 'Upcoming' : 'No return date';
+                  const statusStyle = item.status === 'applied' ? 'bg-emerald-50 text-emerald-800' : overdue ? 'bg-red-50 text-red-800' : dueToday ? 'bg-amber-50 text-amber-800' : 'bg-slate-100 text-slate-700';
+                  return (
+                    <li key={item.opportunity_id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2"><h4 className="font-semibold text-midnight">{item.opportunities.title}</h4><span className={`rounded-full px-2 py-1 text-[10px] font-bold ${statusStyle}`}>{statusLabel}</span></div>
+                        <p className="mt-1 text-sm text-slate-600">{item.opportunities.organization}{item.scheduled_apply_date ? ` · Return ${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${item.scheduled_apply_date}T00:00:00Z`))}` : ''}{item.opportunities.closing_date ? ` · Closes ${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${item.opportunities.closing_date}T00:00:00Z`))}` : ''}</p>
+                      </div>
+                      <div className="flex flex-wrap items-end gap-2">
+                        {item.status === 'saved' && <>
+                          <label className="text-xs font-medium text-slate-600" htmlFor={`planner-date-${item.opportunity_id}`}>
+                            <span className="mb-1 block">Come back on</span>
+                            <input id={`planner-date-${item.opportunity_id}`} type="date" className="input min-h-10" value={plannerDates[item.opportunity_id] || ''} onChange={(event) => setPlannerDates((current) => ({ ...current, [item.opportunity_id]: event.target.value }))} />
+                          </label>
+                          <button type="button" className="btn-secondary min-h-10" disabled={plannerBusyId === item.opportunity_id} onClick={() => void savePlannerDate(item.opportunity_id)}>{plannerBusyId === item.opportunity_id ? 'Saving...' : 'Save date'}</button>
+                        </>}
+                        <a href={item.opportunities.source_url} target="_blank" rel="noopener noreferrer" className="btn-secondary min-h-10" aria-label={`Open ${item.opportunities.title} application in a new tab`}><ExternalLink size={16} aria-hidden="true" /></a>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </>
         )}
       </section>
     </div>
