@@ -5,8 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getSupabase, isMissingAuthSession } from '@/lib/supabase';
 
 function requiresAuthentication(pathname: string): boolean {
-  return pathname === '/admin' || pathname.startsWith('/admin/')
-    || pathname === '/app' || pathname.startsWith('/app/');
+  return pathname === '/admin' || pathname.startsWith('/admin/');
 }
 
 export function PageAccessGuard({ children }: { children: ReactNode }) {

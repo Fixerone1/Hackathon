@@ -5,12 +5,12 @@ import { ForgeProvider } from '@/components/ForgeContext';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <WorkspaceGuard>
-      <ForgeProvider>
-        <PublicShell variant="workspace">
-          <div className="pb-20 md:pb-0">{children}</div>
-        </PublicShell>
-      </ForgeProvider>
-    </WorkspaceGuard>
+    <PublicShell variant="workspace">
+      <div className="pb-20 md:pb-0">
+        <WorkspaceGuard>
+          <ForgeProvider>{children}</ForgeProvider>
+        </WorkspaceGuard>
+      </div>
+    </PublicShell>
   );
 }
