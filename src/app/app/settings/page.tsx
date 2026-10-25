@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
 import { PageIntro } from '@/components/PageIntro';
+import { GoogleCalendarConnection } from '@/components/GoogleCalendarConnection';
 
 type Preferences = {
   instant_matches: boolean;
   weekly_digest: boolean;
   closing_reminders: boolean;
+  application_reminders: boolean;
   frequency: 'weekly' | 'instant';
   quiet_hours_start: string;
   quiet_hours_end: string;
@@ -37,12 +39,14 @@ type ConsentDates = {
   instant_matches_consented_at: string | null;
   weekly_digest_consented_at: string | null;
   closing_reminders_consented_at: string | null;
+  application_reminders_consented_at: string | null;
 };
 
 const defaults: Preferences = {
   instant_matches: false,
   weekly_digest: false,
   closing_reminders: false,
+  application_reminders: false,
   frequency: 'weekly',
   quiet_hours_start: '20:00',
   quiet_hours_end: '08:00',
@@ -75,6 +79,7 @@ export default function SettingsPage() {
     instant_matches_consented_at: null,
     weekly_digest_consented_at: null,
     closing_reminders_consented_at: null,
+    application_reminders_consented_at: null,
   });
 
   useEffect(() => {
@@ -97,6 +102,7 @@ export default function SettingsPage() {
           instant_matches_consented_at: emailResult.data?.instant_matches_consented_at || null,
           weekly_digest_consented_at: emailResult.data?.weekly_digest_consented_at || null,
           closing_reminders_consented_at: emailResult.data?.closing_reminders_consented_at || null,
+          application_reminders_consented_at: emailResult.data?.application_reminders_consented_at || null,
         });
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : 'Settings could not be loaded.');
@@ -160,6 +166,7 @@ export default function SettingsPage() {
         instant_matches_consented_at: preferences.instant_matches ? consentDates.instant_matches_consented_at || now : null,
         weekly_digest_consented_at: preferences.weekly_digest ? consentDates.weekly_digest_consented_at || now : null,
         closing_reminders_consented_at: preferences.closing_reminders ? consentDates.closing_reminders_consented_at || now : null,
+        application_reminders_consented_at: preferences.application_reminders ? consentDates.application_reminders_consented_at || now : null,
       };
       const { error } = await supabase.from('email_preferences').upsert({
         user_id: authData.user.id,
@@ -259,17 +266,18 @@ export default function SettingsPage() {
       <PageIntro eyebrow="Account" title="Settings" description="Choose what you agree to receive. All email categories are off until you opt in." />
       <section className="max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7" aria-labelledby="notification-heading">
         <h2 id="notification-heading" className="section-heading">Notification preferences</h2>
-        <p className="mt-2 text-sm text-slate-600">Choose which opportunity updates you want. Dashboard alerts are checked against your profile when you open the dashboard; email delivery is not enabled yet.</p>
+        <p className="mt-2 text-sm text-slate-600">Dashboard alerts are checked against your profile when you open the dashboard. Email is sent only when you opt in and the site email service is configured. Planned application-date emails are active; the other email categories are saved for future alert delivery.</p>
         <label className="mt-4 flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-midnight">
           <input type="checkbox" className={toggleClass} checked={dashboardAlerts} onChange={(event) => setDashboardAlerts(event.target.checked)} />
           Show new matching opportunities in my dashboard inbox
         </label>
-        <p className="mt-2 text-xs text-slate-600">This dashboard alert preference is saved on this device. Email choices below are saved to your account, but email sending is not active.</p>
+        <p className="mt-2 text-xs text-slate-600">This dashboard alert preference is saved on this device. Email choices below are saved to your account.</p>
         <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
           {([
             ['instant_matches', 'New opportunity alerts'],
             ['weekly_digest', 'Weekly opportunity digest'],
             ['closing_reminders', 'Closing-date reminders'],
+            ['application_reminders', 'Email me when I set or change a planned application date'],
           ] as const).map(([key, label]) => (
             <label key={key} className="flex min-h-14 items-center gap-3 py-3 text-sm text-slate-700">
               <input type="checkbox" className={toggleClass} checked={preferences[key]} onChange={(event) => update(key, event.target.checked)} />
@@ -301,6 +309,7 @@ export default function SettingsPage() {
         {message && <p role="status" className="mt-4 text-sm text-emerald-dark">{message}</p>}
         <button type="button" className="btn-primary mt-5" onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save preferences'}</button>
       </section>
+      <GoogleCalendarConnection />
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="accessibility-heading">
         <h2 id="accessibility-heading" className="font-semibold text-midnight">Make Ukukhanya work for you</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">Choose a focus and we’ll bring the most relevant tools to the top of your homepage. You can change it any time.</p>

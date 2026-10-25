@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, Image, Linkedin, MessageCircle } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
+import { sendApplicationReminder, syncGoogleCalendar } from '@/lib/integrations';
 import {
   categoryLabel,
   matchOpportunity,
@@ -163,6 +164,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [aiErrors, setAiErrors] = useState<Record<string, string>>({});
   const [copiedPlanId, setCopiedPlanId] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [openNoteId, setOpenNoteId] = useState('');
 
@@ -265,6 +267,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   async function setAction(opportunityId: string, status: LearnerOpportunityAction | null) {
     setBusyId(opportunityId);
     setError('');
+    setMessage('');
     try {
       const supabase = getSupabase();
       const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -286,6 +289,11 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         else delete updated[opportunityId];
         return updated;
       });
+      try {
+        await syncGoogleCalendar();
+      } catch (caught) {
+        setError(`Your opportunity list was updated, but Google Calendar could not be synced: ${errorMessage(caught, 'please try again later.')}`);
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Your opportunity list could not be updated.');
     } finally {
@@ -296,7 +304,9 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   async function saveReminder(opportunityId: string, date: string) {
     setBusyId(opportunityId);
     setError('');
+    setMessage('');
     try {
+      const changedDate = (reminders[opportunityId] || '') !== date;
       const supabase = getSupabase();
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData.user) throw new Error('Sign in again to save your application reminder.');
@@ -314,6 +324,22 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         return updated;
       });
       setActions((current) => current[opportunityId] ? current : { ...current, [opportunityId]: 'saved' });
+      const warnings: string[] = [];
+      try {
+        await syncGoogleCalendar();
+      } catch (caught) {
+        warnings.push(`Google Calendar could not be synced: ${errorMessage(caught, 'please try again later.')}`);
+      }
+      let emailSent = false;
+      if (date && changedDate) {
+        try {
+          emailSent = (await sendApplicationReminder(opportunityId)).sent === true;
+        } catch (caught) {
+          warnings.push(errorMessage(caught, 'The email alert could not be sent.'));
+        }
+      }
+      if (warnings.length > 0) setError(`Your reminder was saved. ${warnings.join(' ')}`);
+      setMessage(emailSent ? 'Your application reminder was saved and emailed.' : 'Your application reminder was saved.');
     } catch (caught) {
       setError(errorMessage(caught, 'Your application reminder could not be saved.'));
     } finally {
@@ -461,6 +487,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       </div>
 
       {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
+      {message && <p className="mb-5 text-sm text-emerald-dark" role="status">{message}</p>}
 
       {matches.length === 0 && !error ? (
         <div className="space-y-6">

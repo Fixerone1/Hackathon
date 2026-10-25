@@ -15,11 +15,11 @@ export default function PrivacyPage() {
         <div className="space-y-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7">
           <section>
             <h2 className="section-heading">How your information is used</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-700">Ukukhanya stores your name and email for account access, and profile, checklist, and notification settings to provide the learner workspace. Your data is stored in Supabase and protected by user-specific row-level security.</p>
+            <p className="mt-2 text-sm leading-7 text-slate-700">Ukukhanya stores your name and email for account access, and profile, checklist, and notification settings to provide the learner workspace. Your data is stored in Supabase and protected by user-specific row-level security. Profile photos you add are stored privately. If you connect Google Calendar, encrypted authorization credentials are stored by the service so it can maintain the application and closing-date reminders you asked it to create.</p>
           </section>
           <section>
             <h2 className="section-heading">What we do not ask for</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-700">This profile does not request your national ID or passport number, bank details, reference contact details, or demographic/disability information. Email notifications are optional, off by default, and are not being sent by this preview.</p>
+            <p className="mt-2 text-sm leading-7 text-slate-700">This profile does not request your national ID or passport number, bank details, reference contact details, or demographic/disability information. Google sign-in is optional. Calendar access is used only to add or update Ukukhanya application and closing-date reminders in your primary calendar. Email alerts are optional and off by default; opted-in application-date confirmations are sent through the site email provider when configured.</p>
           </section>
           <section>
             <h2 className="section-heading">Optional AI application plans</h2>

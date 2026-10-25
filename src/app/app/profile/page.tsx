@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
+import { sendApplicationReminder, syncGoogleCalendar } from '@/lib/integrations';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
 import { southAfricanProvinces } from '@/lib/opportunities';
 
@@ -253,6 +254,9 @@ export default function ProfilePage() {
     setError('');
     setMessage('');
     try {
+      const nextDate = plannerDates[opportunityId] || '';
+      const currentDate = plannedOpportunities.find((item) => item.opportunity_id === opportunityId)?.scheduled_apply_date || '';
+      const changedDate = currentDate !== nextDate;
       const supabase = getSupabase();
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData.user) throw new Error('Sign in again to update your application planner.');
@@ -261,9 +265,24 @@ export default function ProfilePage() {
       }).eq('user_id', authData.user.id).eq('opportunity_id', opportunityId);
       if (saveError) throw saveError;
       setPlannedOpportunities((current) => current.map((item) => item.opportunity_id === opportunityId
-        ? { ...item, scheduled_apply_date: plannerDates[opportunityId] || null }
+        ? { ...item, scheduled_apply_date: nextDate || null }
         : item));
-      setMessage('Your application reminder was saved.');
+      const warnings: string[] = [];
+      try {
+        await syncGoogleCalendar();
+      } catch (caught) {
+        warnings.push(caught instanceof Error ? `Google Calendar could not be synced: ${caught.message}` : 'Google Calendar could not be synced.');
+      }
+      let emailSent = false;
+      if (nextDate && changedDate) {
+        try {
+          emailSent = (await sendApplicationReminder(opportunityId)).sent === true;
+        } catch (caught) {
+          warnings.push(caught instanceof Error ? caught.message : 'The email alert could not be sent.');
+        }
+      }
+      if (warnings.length > 0) setError(`Your reminder was saved. ${warnings.join(' ')}`);
+      setMessage(emailSent ? 'Your application reminder was saved and emailed.' : 'Your application reminder was saved.');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Your application reminder could not be saved.');
     } finally {

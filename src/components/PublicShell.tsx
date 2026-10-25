@@ -8,6 +8,7 @@ import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { BrandLogo } from '@/components/BrandLogo';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
+import { GooglePrivacyConsentBridge } from '@/components/GooglePrivacyConsentBridge';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 import { normalizePathname } from '@/lib/normalizePathname';
 
@@ -30,6 +31,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
 
   return (
     <>
+      {variant === 'workspace' && <GooglePrivacyConsentBridge />}
       <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
           <Link href={variant === 'workspace' ? '/app' : '/'} className="flex shrink-0 items-center gap-2.5 rounded-xl font-bold text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:gap-3" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>

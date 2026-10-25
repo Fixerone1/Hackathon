@@ -10,8 +10,35 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const isSignup = mode === 'signup';
   const configurationError = supabaseConfigurationError();
+
+  async function handleGoogleSignIn() {
+    setError('');
+    setNotice('');
+    if (!privacyAgreed) {
+      setError('Please agree to the privacy notice before continuing with Google.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      localStorage.setItem('careerforge-google-privacy-consent', 'true');
+      const { error: authError } = await getSupabase().auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/app`, window.location.origin).toString(),
+          scopes: 'openid email profile',
+          queryParams: { prompt: 'select_account' },
+        },
+      });
+      if (authError) throw authError;
+    } catch (caught) {
+      localStorage.removeItem('careerforge-google-privacy-consent');
+      setError(caught instanceof Error ? caught.message : 'Google sign-in is unavailable. Please try again.');
+      setSubmitting(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,7 +58,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
             options: {
               data: {
                 name: String(form.get('name') || '').trim(),
-                privacy_consent: form.get('privacy_consent') === 'on',
+                privacy_consent: privacyAgreed,
                 privacy_notice_version: 'prototype-1',
               },
               emailRedirectTo: new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/login`, window.location.origin).toString(),
@@ -88,12 +115,29 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       </div>
       {isSignup && (
         <label className="flex items-start gap-3 text-sm leading-6 text-slate-600">
-          <input name="privacy_consent" type="checkbox" required className="mt-1 h-4 w-4 accent-sunshine-dark" />
+          <input name="privacy_consent" type="checkbox" checked={privacyAgreed} onChange={(event) => setPrivacyAgreed(event.target.checked)} required className="mt-1 h-4 w-4 accent-sunshine-dark" />
           <span>I agree to the <Link href="/privacy" className="link">privacy notice</Link> and understand my profile information will be stored to provide this service.</span>
+        </label>
+      )}
+      {!isSignup && (
+        <label className="flex items-start gap-3 text-sm leading-6 text-slate-600">
+          <input type="checkbox" checked={privacyAgreed} onChange={(event) => setPrivacyAgreed(event.target.checked)} className="mt-1 h-4 w-4 accent-sunshine-dark" />
+          <span>I agree to the <Link href="/privacy" className="link">privacy notice</Link> for Google sign-in and optional calendar reminders.</span>
         </label>
       )}
       <button type="submit" disabled={submitting || Boolean(configurationError)} className="btn-primary w-full">
         {submitting ? 'Please wait...' : isSignup ? 'Create account' : 'Sign in'}
+      </button>
+      <div className="relative py-1 text-center">
+        <span className="bg-white px-3 text-xs font-medium text-slate-500">or</span>
+        <span className="absolute inset-x-0 top-1/2 -z-10 border-t border-slate-200" aria-hidden="true" />
+      </div>
+      {isSignup && <input type="hidden" name="privacy_consent_google" value={privacyAgreed ? 'true' : 'false'} />}
+      {isSignup && !privacyAgreed && <p className="-mt-2 text-xs text-slate-500">Agree to the privacy notice above to continue with Google.</p>}
+      <button type="button" onClick={() => void handleGoogleSignIn()} disabled={submitting || Boolean(configurationError)}
+        className="flex min-h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-midnight transition hover:bg-slate-50 disabled:opacity-60">
+        <span aria-hidden="true" className="font-bold">G</span>
+        {submitting ? 'Connecting...' : 'Continue with Google'}
       </button>
       {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
       {notice && <p role="status" className="rounded-lg border border-emerald/30 bg-emerald-light p-3 text-sm text-midnight">{notice}</p>}
