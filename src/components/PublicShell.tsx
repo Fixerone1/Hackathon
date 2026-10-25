@@ -29,6 +29,15 @@ const bannerLabels: Record<string, string> = {
   '/admin': 'Manage opportunities',
 };
 
+const workspaceBannerPaths = new Set([
+  '/app',
+  '/app/employment',
+  '/app/money',
+  '/app/growth',
+  '/app/profile',
+  '/app/settings',
+]);
+
 function LinkedInMark() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
@@ -63,6 +72,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
     '/app/growth': 'careerforge-founders.jpg',
   };
   const bannerImage = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/${bannerImages[pathname] || 'careerforge-people.jpg'}`;
+  const showBanner = variant === 'public'
+    ? pathname !== '/'
+    : workspaceBannerPaths.has(pathname);
 
   return (
     <>
@@ -102,21 +114,27 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
         </nav>}
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
-      {variant === 'public' && pathname !== '/' && (
+      {showBanner && (
         <section aria-label={`${bannerLabel} banner`} className="relative isolate overflow-hidden bg-black text-white min-h-64 sm:min-h-72">
           <img src={bannerImage} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-55" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" aria-hidden="true" />
           <div className="relative z-10 mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
             <div className="relative z-10 max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">Ukukhanya · Your next step</p>
-              <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
+              {variant === 'public' ? (
+                <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
+              ) : (
+                <p className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</p>
+              )}
               <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Practical support for work, money confidence, and the future you want to build.</p>
-              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-                <Link href={primaryCta.href} className="btn-accent w-full sm:w-auto">{primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
-                <Link href="/#learner-paths" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">Explore learner paths</Link>
-              </div>
+              {variant === 'public' && (
+                <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                  <Link href={primaryCta.href} className="btn-accent w-full sm:w-auto">{primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
+                  <Link href="/#learner-paths" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">Explore learner paths</Link>
+                </div>
+              )}
             </div>
-            <div className={`relative h-28 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-36 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
+            <div className={`relative h-28 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-36 lg:h-40 ${variant === 'public' && authPage ? 'lg:hidden' : ''}`}>
               <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
               <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>
