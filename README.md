@@ -39,6 +39,7 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
    - [`supabase/migrations/20261026004000_profile_dropdown_constraints.sql`](supabase/migrations/20261026004000_profile_dropdown_constraints.sql)
    - [`supabase/migrations/20261026005000_forge_preferences.sql`](supabase/migrations/20261026005000_forge_preferences.sql)
    - [`supabase/migrations/20261026006000_opportunity_banner_image.sql`](supabase/migrations/20261026006000_opportunity_banner_image.sql)
+   - [`supabase/migrations/20261026007000_site_content.sql`](supabase/migrations/20261026007000_site_content.sql)
 5. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
 6. To grant admin access, set `app_metadata.role` to `admin` for each trusted team account through the Supabase dashboard or server-managed admin tooling. Never authorize based on user-editable `user_metadata`.
 7. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox. Visiting `/admin` redirects signed-out users to login and returns them to the admin console afterward; the account still needs the server-managed admin role.
@@ -53,7 +54,7 @@ The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.en
 - Public pages: `/`, `/how-it-works`, `/opportunities`, `/partners`, `/about`, `/privacy`, `/login`, `/signup`.
 - `/signup` and `/login` use Supabase Auth through the Supabase JavaScript client.
 - `/app` is a protected dashboard with a progressive profile, checklist, notification preferences, and a personalized verified-opportunity feed.
-- `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase. Admins can verify and publish opportunities with their original source link, stated requirements, location, and closing date.
+- `/admin` is separate from learner navigation and requires `app_metadata.role = admin` in Supabase. Admins can verify and publish opportunities, and manage announcements, learning resources, FAQs, homepage features, and Employment Hub, Money Skills, and Growth Studio content. Drafts and archived records stay hidden from learners; existing layouts and navigation remain app-managed.
 - `/api/ai` is an optional server route for AI application plans. Configure the Azure OpenAI values in `.env.example` on a server-capable host to enable it.
 
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
@@ -136,6 +137,8 @@ Listings are admin-curated rather than scraped. Check the live original advert a
 The learner feed can search by role, organisation, location, source, or listing details and filter by opportunity type. If no current listing matches, it links to SAYouth, DPSA, and NSFAS directly; these are source directories, not live listings imported or verified by Ukukhanya.
 
 Apply the opportunity migration, grant `app_metadata.role = admin` to a trusted account, sign in, and add a verified listing at `/admin` before learners will see entries. Automated source ingestion is not enabled: the Adzuna API requires registration credentials, and South African coverage must be confirmed before relying on it. Email alerts are also not enabled; this release uses the on-site feed only.
+
+Apply `20261026007000_site_content.sql` to enable the Site content tab in `/admin`. Choose a content type to route an announcement to the learner dashboard, a resource to the appropriate workspace, or a FAQ/feature to the public homepage. Entries support drafts, publishing, archiving, optional HTTPS links and images, and manual display ordering. Page layouts, routes, and navigation remain code-managed.
 
 `prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. Keep every user table protected by RLS and configure a strict Content Security Policy before production use.
 

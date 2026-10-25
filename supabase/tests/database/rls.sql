@@ -1,6 +1,6 @@
 begin;
 
-select plan(27);
+select plan(32);
 
 insert into auth.users (
   id, aud, role, email, encrypted_password, confirmed_at,
@@ -48,6 +48,14 @@ insert into public.opportunities (
   ('20000000-0000-0000-0000-000000000002', 'Draft learner test listing', 'Test Org', 'job', 'A draft test listing for RLS checks.', 'Test source', 'https://example.test/draft', 'draft', '10000000-0000-0000-0000-000000000003')
 on conflict (id) do nothing;
 
+insert into public.site_content (
+  id, content_type, title, body, status, published_at, created_by
+) values
+  ('30000000-0000-0000-0000-000000000001', 'homepage_feature', 'Published homepage feature', 'A public site content fixture for RLS checks.', 'published', now(), '10000000-0000-0000-0000-000000000003'),
+  ('30000000-0000-0000-0000-000000000002', 'announcement', 'Published learner announcement', 'A published learner update fixture for RLS checks.', 'published', now(), '10000000-0000-0000-0000-000000000003'),
+  ('30000000-0000-0000-0000-000000000003', 'faq', 'Draft question fixture', 'An unpublished question fixture for RLS checks.', 'draft', null, '10000000-0000-0000-0000-000000000003')
+on conflict (id) do nothing;
+
 insert into public.learner_opportunity_actions (user_id, opportunity_id, status)
 values
   ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'saved'),
@@ -77,6 +85,12 @@ select is((select count(*)::int from public.learner_opportunity_actions where us
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000001'), 1, 'signed-in learner reads a published listing');
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'user_metadata role cannot expose a draft');
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'saving a draft cannot bypass admin-only draft access');
+select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000002'), 1, 'learner reads published workspace content');
+select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000003'), 0, 'learner cannot read draft site content');
+select throws_ok(
+  $$insert into public.site_content (content_type, title, body, created_by) values ('announcement', 'Learner attempted content', 'Learners cannot publish site content.', '10000000-0000-0000-0000-000000000001')$$,
+  '42501', null, 'learner cannot create site content'
+);
 update public.opportunities set status = 'published'
 where id = '20000000-0000-0000-0000-000000000002';
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002' and status = 'published'), 0, 'learner cannot publish an opportunity');
@@ -88,6 +102,8 @@ select throws_ok(
 reset role;
 set local role anon;
 select throws_ok('select * from public.opportunities', '42501', null, 'anonymous role cannot read opportunity listings');
+select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000001'), 1, 'visitor reads published homepage content');
+select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000002'), 0, 'visitor cannot read learner-only workspace content');
 
 reset role;
 set local role authenticated;

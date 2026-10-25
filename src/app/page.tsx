@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { PublicShell } from '@/components/PublicShell';
 import { HomeToolDirectory } from '@/components/HomeToolDirectory';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
 const journeySteps = [
   {
@@ -256,6 +257,21 @@ export default function HomePage() {
           <Link href="/signup" className="btn-primary">Start with your learner profile <ArrowRight size={16} aria-hidden="true" /></Link>
         </div>
       </section>
+
+      <PublishedSiteContent
+        contentType="homepage_feature"
+        heading="More from Ukukhanya"
+        eyebrow="Featured"
+        className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"
+      />
+
+      <PublishedSiteContent
+        contentType="faq"
+        heading="Questions, answered"
+        eyebrow="Frequently asked"
+        display="list"
+        className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"
+      />
 
       <section className="px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20" aria-labelledby="cta-heading">
         <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[1.75rem] bg-sunshine px-6 py-9 sm:px-10 sm:py-12 lg:px-14">

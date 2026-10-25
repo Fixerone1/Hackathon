@@ -1,5 +1,6 @@
 import { PhaseOneStatus } from '@/components/PhaseOneStatus';
 import { PageIntro } from '@/components/PageIntro';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
 export default function MoneySkillsPage() {
   return (
@@ -9,6 +10,7 @@ export default function MoneySkillsPage() {
         <PhaseOneStatus title="Salary planner">The salary planner implementation was not included in the uploaded source. It is not currently calculating take-home pay.</PhaseOneStatus>
         <PhaseOneStatus title="Savings goals">Goal tracking and lesson content are not connected in this Phase 1 build.</PhaseOneStatus>
       </div>
+      <PublishedSiteContent contentType="money_skill" heading="Money Skills resources" eyebrow="Learn at your own pace" />
     </div>
   );
 }

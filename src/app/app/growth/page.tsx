@@ -1,5 +1,6 @@
 import { PhaseOneStatus } from '@/components/PhaseOneStatus';
 import { PageIntro } from '@/components/PageIntro';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
 export default function GrowthStudioPage() {
   return (
@@ -9,6 +10,7 @@ export default function GrowthStudioPage() {
         <PhaseOneStatus title="Idea validation">The original idea-validator implementation was not included in the uploaded source.</PhaseOneStatus>
         <PhaseOneStatus title="Funding and support">No verified small-business funding or support listings are connected. No funding matches are shown.</PhaseOneStatus>
       </div>
+      <PublishedSiteContent contentType="growth_resource" heading="Growth Studio resources" eyebrow="Explore and build" />
     </div>
   );
 }

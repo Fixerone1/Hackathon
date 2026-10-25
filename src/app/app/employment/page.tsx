@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, BriefcaseBusiness, ClipboardCheck, UserRound } from 'lucide-react';
 import { EmploymentNav } from '@/components/EmploymentNav';
 import { PageIntro } from '@/components/PageIntro';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
 const nextSteps = [
   {
@@ -81,6 +82,11 @@ export default function EmploymentPage() {
       <p className="mt-6 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600">
         You stay in control: applications open on the original provider’s site, and you submit them yourself.
       </p>
+      <PublishedSiteContent
+        contentType={['learning_resource', 'employment_resource']}
+        heading="Learning and employment resources"
+        eyebrow="Explore more"
+      />
     </div>
   );
 }

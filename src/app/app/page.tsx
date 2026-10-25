@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { getSupabase } from '@/lib/supabase';
 import { useForge } from '@/components/ForgeContext';
 import { ArrowRight, Banknote, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, ClipboardCheck, Compass, FileText, GraduationCap, Lightbulb, Route, Sparkles, type LucideIcon } from 'lucide-react';
@@ -285,6 +286,8 @@ export default function DashboardPage() {
       </section>
 
       {forge.recentWin && <p className="mb-6 text-sm text-emerald-dark" role="status">Latest recorded win: {forge.recentWin}</p>}
+
+      <PublishedSiteContent contentType="announcement" heading="Updates and announcements" eyebrow="From Ukukhanya" display="list" className="mx-auto max-w-6xl" />
 
       <DashboardApplicationCalendar actions={forge.actions} />
 
