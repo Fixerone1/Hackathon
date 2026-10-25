@@ -2,14 +2,22 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 let client: SupabaseClient | null = null;
 
+export function supabaseConfigurationError(): string | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey || url.includes('YOUR-PROJECT') || anonKey.includes('YOUR-')) {
+    return 'Login is unavailable because Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env, then restart the app.';
+  }
+  return null;
+}
+
 export function getSupabase(): SupabaseClient {
   if (client) return client;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anonKey || url.includes('YOUR-PROJECT') || anonKey.includes('YOUR-')) {
-    throw new Error('Supabase is not configured. Add the project URL and anon key to the environment.');
-  }
+  const configurationError = supabaseConfigurationError();
+  if (configurationError || !url || !anonKey) throw new Error(configurationError || 'Supabase is not configured.');
 
   client = createClient(url, anonKey, {
     auth: {

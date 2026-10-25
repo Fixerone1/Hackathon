@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getSupabase } from '@/lib/supabase';
+import { getSupabase, supabaseConfigurationError } from '@/lib/supabase';
 
 export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const router = useRouter();
@@ -11,6 +11,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
   const [notice, setNotice] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const isSignup = mode === 'signup';
+  const configurationError = supabaseConfigurationError();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,6 +62,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {configurationError && <p role="alert" className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-900">{configurationError}</p>}
       {isSignup && (
         <div>
           <label htmlFor="full-name" className="label">Full name</label>
@@ -90,7 +92,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
           <span>I agree to the <Link href="/privacy" className="link">privacy notice</Link> and understand my profile information will be stored to provide this service.</span>
         </label>
       )}
-      <button type="submit" disabled={submitting} className="btn-primary w-full">
+      <button type="submit" disabled={submitting || Boolean(configurationError)} className="btn-primary w-full">
         {submitting ? 'Please wait...' : isSignup ? 'Create account' : 'Sign in'}
       </button>
       {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
