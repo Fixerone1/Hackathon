@@ -25,6 +25,7 @@ export type Opportunity = {
   summary: string;
   source_name: string;
   source_url: string;
+  banner_image_url: string | null;
   location: string;
   provinces: string[];
   remote_ok: boolean;

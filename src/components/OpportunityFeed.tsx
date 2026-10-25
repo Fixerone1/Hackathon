@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Heart, Linkedin, MessageCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Image, Linkedin, MessageCircle } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
@@ -432,10 +432,12 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
               <article className="overflow-hidden rounded-xl border border-[#e5e5e5] bg-white shadow-[0_2px_10px_rgba(13,27,42,0.04)] transition-shadow hover:shadow-[0_8px_20px_rgba(13,27,42,0.08)]">
+                <div className="relative h-36 overflow-hidden bg-sunshine-light sm:h-44">
+                  <div className="absolute inset-0 grid place-items-center text-midnight/60" aria-hidden="true"><Image size={30} strokeWidth={1.5} /></div>
+                  {opportunity.banner_image_url && <img src={opportunity.banner_image_url} alt={`${opportunity.organization} opportunity banner`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
+                  <span className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-midnight shadow-sm">{categoryLabel(opportunity.category)}</span>
+                </div>
                 <header className="flex items-center gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#0D1B2A] text-sm font-bold text-sunshine" aria-hidden="true">
-                    {opportunity.organization.trim().charAt(0).toUpperCase() || 'O'}
-                  </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-midnight">{opportunity.organization}</p>
                     <p className="truncate text-xs text-slate-500">{categoryLabel(opportunity.category)} · {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}</p>

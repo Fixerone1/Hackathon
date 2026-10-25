@@ -21,6 +21,7 @@ type OpportunityDraft = {
   summary: string;
   source_name: string;
   source_url: string;
+  banner_image_url: string;
   location: string;
   provinces_text: string;
   remote_ok: boolean;
@@ -40,6 +41,7 @@ const emptyDraft: OpportunityDraft = {
   summary: '',
   source_name: '',
   source_url: '',
+  banner_image_url: '',
   location: '',
   provinces_text: '',
   remote_ok: false,
@@ -60,6 +62,7 @@ function toDraft(opportunity: Opportunity): OpportunityDraft {
     summary: opportunity.summary,
     source_name: opportunity.source_name,
     source_url: opportunity.source_url,
+    banner_image_url: opportunity.banner_image_url || '',
     location: opportunity.location,
     provinces_text: opportunity.provinces.join(', '),
     remote_ok: opportunity.remote_ok,
@@ -128,7 +131,12 @@ export function OpportunityAdmin() {
     setMessage('');
 
     if (!isValidWebUrl(draft.source_url)) {
-      setError('Enter a valid original source URL beginning with http:// or https://.');
+      setError('Enter a valid original source URL beginning with https://.');
+      setSaving(false);
+      return;
+    }
+    if (draft.banner_image_url.trim() && !isValidWebUrl(draft.banner_image_url.trim())) {
+      setError('The banner image URL must begin with https://.');
       setSaving(false);
       return;
     }
@@ -171,6 +179,7 @@ export function OpportunityAdmin() {
       summary: draft.summary.trim(),
       source_name: draft.source_name.trim(),
       source_url: draft.source_url.trim(),
+      banner_image_url: draft.banner_image_url.trim() || null,
       location: draft.location.trim(),
       provinces: selectedProvinces,
       remote_ok: draft.remote_ok,
@@ -279,6 +288,12 @@ export function OpportunityAdmin() {
           <div className="sm:col-span-2">
             <label htmlFor="opportunity-source-url" className="label">Original advert or application URL</label>
             <input id="opportunity-source-url" className={inputClass} type="url" required placeholder="https://" value={draft.source_url} onChange={(event) => update('source_url', event.target.value)} />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="opportunity-banner-image" className="label">Opportunity banner image URL <span className="font-normal text-slate-500">(optional)</span></label>
+            <input id="opportunity-banner-image" className={inputClass} type="url" placeholder="https://source.example/image.jpg" value={draft.banner_image_url} onChange={(event) => update('banner_image_url', event.target.value)} />
+            <p className="mt-1 text-xs text-slate-500">Use an image you have permission to display. Must be hosted over HTTPS; leave blank to show the site placeholder.</p>
+            {draft.banner_image_url && isValidWebUrl(draft.banner_image_url) && <img src={draft.banner_image_url} alt="Opportunity banner preview" className="mt-3 h-32 w-full rounded-lg border border-slate-200 object-cover sm:max-w-md" />}
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="opportunity-summary" className="label">Plain-language summary</label>
