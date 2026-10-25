@@ -54,6 +54,23 @@ const emptyDraft: OpportunityDraft = {
   status: 'draft',
 };
 
+function opportunitySaveError(error: unknown): string {
+  const details = error && typeof error === 'object'
+    ? error as { message?: unknown; code?: unknown }
+    : null;
+  const message = typeof details?.message === 'string' ? details.message : '';
+  const code = typeof details?.code === 'string' ? details.code : '';
+
+  if ((code === 'PGRST204' || code === '42703') && message.includes('banner_image_url')) {
+    return `The banner image column is not available yet. Apply migration 20261026006000_opportunity_banner_image.sql, then reload the Supabase API schema cache. Details: ${message}`;
+  }
+  if ((code === 'PGRST204' || code === '42703') && message.includes('withdrawn_at')) {
+    return `The opportunity visibility migration is missing. Apply migration 20261026002000_opportunity_integrity.sql, then reload the Supabase API schema cache. Details: ${message}`;
+  }
+  if (message) return message;
+  return error instanceof Error ? error.message : 'The opportunity could not be saved. Check the listing fields and Supabase migrations, then try again.';
+}
+
 function toDraft(opportunity: Opportunity): OpportunityDraft {
   return {
     title: opportunity.title,
@@ -209,7 +226,8 @@ export function OpportunityAdmin() {
       setMessage(editingId ? 'Opportunity updated.' : 'Opportunity added to the review queue.');
       resetForm();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'The opportunity could not be saved.');
+      console.error('Could not save opportunity:', caught);
+      setError(opportunitySaveError(caught));
     } finally {
       setSaving(false);
     }
