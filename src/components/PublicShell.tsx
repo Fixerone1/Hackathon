@@ -167,7 +167,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="CareerForge on LinkedIn (opens in a new tab)"
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-sunshine px-4 text-sm font-semibold text-black transition hover:bg-[#f0d600] focus-visible:outline-white"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald px-4 text-sm font-semibold text-black transition hover:bg-emerald-300 focus-visible:outline-white"
                   >
                     <LinkedInMark />
                     LinkedIn
