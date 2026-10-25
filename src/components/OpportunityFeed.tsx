@@ -428,36 +428,30 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
           {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
         </div>
       ) : matches.length > 0 ? (
-        <ul className="grid gap-4">
+        <ul className="divide-y divide-slate-200 border-y border-slate-200">
           {pageMatches.map(({ opportunity, score, reasons, cautions, action }, index) => (
             <li key={opportunity.id}>
-              <article className="overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white shadow-[0_8px_24px_rgba(34,34,34,0.06)] transition-shadow hover:shadow-[0_14px_34px_rgba(34,34,34,0.11)]">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e5e5e5] bg-slate-50 px-5 py-3 sm:px-6">
-                  <span className="text-xs font-bold uppercase tracking-[0.12em] text-midnight">Opportunity {(page - 1) * pageSize + index + 1} of {matches.length}</span>
+              <article className="py-4 sm:py-5">
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-slate-500">Opportunity {(page - 1) * pageSize + index + 1} of {matches.length}</span>
                   {action && <span className="rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{action === 'applied' ? 'Applied' : 'Saved for later'}</span>}
                 </div>
-                <div className="p-5 sm:p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 text-center sm:text-left">
-                    <span className="inline-flex rounded-full bg-sunshine px-3 py-1 text-xs font-bold text-midnight">{categoryLabel(opportunity.category)}</span>
-                    <h2 className="mt-3 text-xl font-bold leading-snug text-midnight sm:text-2xl">{opportunity.title}</h2>
-                    <p className="mt-1 font-semibold text-midnight">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
+                <div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <h2 className="text-lg font-semibold leading-snug text-midnight">{opportunity.title}</h2>
+                      <span className="text-xs font-medium text-slate-500">{categoryLabel(opportunity.category)}</span>
+                    </div>
+                    <p className="mt-1 text-sm font-medium text-slate-700">{opportunity.organization}{opportunity.location ? ` · ${opportunity.location}` : ''}</p>
                   </div>
-                  <div className="hidden w-full rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3 sm:block sm:w-44 sm:shrink-0 sm:text-right">
+                  <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:justify-end">
                     {score === null
                       ? <p className="text-xs leading-5 text-slate-600">Fit guidance</p>
-                      : <p className="text-sm font-bold text-midnight"><span className="rounded-full bg-sunshine px-2 py-1">{score}%</span> fit signals</p>}
-                    {score === null && <Link href="/app/profile" className="text-xs font-semibold text-midnight underline underline-offset-2">Complete your profile</Link>}
-                    <p className="metadata-label mt-2">Closing date</p>
-                    <p className="text-sm font-medium text-midnight">{formatDate(opportunity.closing_date)}</p>
+                      : <p className="font-semibold text-midnight"><span className="rounded-full bg-sunshine-light px-2 py-1">{score}% fit</span></p>}
+                    {score === null && <Link href="/app/profile" className="text-xs font-semibold text-midnight underline underline-offset-2">Improve your match</Link>}
+                    <p className="text-xs text-slate-600">Closes {formatDate(opportunity.closing_date)}</p>
                   </div>
-                </div>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-xs font-medium text-slate-600 sm:hidden">
-                  <span className="rounded-full bg-sunshine px-2.5 py-1 font-bold text-midnight">{categoryLabel(opportunity.category)}</span>
-                  {opportunity.location && <span>{opportunity.location}</span>}
-                  <span>Closes {formatDate(opportunity.closing_date)}</span>
-                  {score !== null && <span className="font-bold text-midnight">{score}% fit</span>}
-                  {score === null && <Link href="/app/profile" className="font-semibold underline underline-offset-2">Improve your match</Link>}
                 </div>
 
                 {mode === 'applications' && (
@@ -466,32 +460,27 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 ) && (
                   <p className="mt-3 text-xs font-medium text-amber-800">This listing may have closed or needs re-verification. Check its source before taking action.</p>
                 )}
-                <p className="mt-4 max-w-4xl text-center line-clamp-3 whitespace-pre-line text-sm leading-6 text-slate-700 sm:mt-5 sm:line-clamp-none sm:text-left sm:text-base sm:leading-7">{opportunity.summary}</p>
-                <p className="mt-4 hidden rounded-xl bg-sunshine-light px-4 py-3 text-sm font-medium leading-6 text-midnight sm:block">
-                  Take a look, see how it fits your goals, and use your profile to get application-ready.
-                </p>
-
-                {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
-                  <div className="mt-4 hidden rounded-lg border border-slate-200 bg-slate-50/80 p-4 sm:block">
-                    <p className="metadata-label mb-2">At a glance · check the original advert for full details</p>
-                    <div className="flex flex-wrap gap-2 text-sm text-slate-700">
-                      {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
-                      {opportunity.required_skills.length > 0 && <span className="chip">Skills: {opportunity.required_skills.join(', ')}</span>}
-                      {opportunity.provinces.length > 0 && <span className="chip">Location: {opportunity.provinces.join(', ')}</span>}
-                      {opportunity.remote_ok && <span className="chip">Remote option</span>}
-                      {opportunity.shift_types.length > 0 && <span className="chip">Shifts: {opportunity.shift_types.join(', ')}</span>}
-                      {(opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
-                        <span className="chip">Monthly pay: R {opportunity.salary_min_monthly ?? '—'} to {opportunity.salary_max_monthly ?? '—'}</span>
-                      )}
-                    </div>
+                <details className="mt-3 min-w-0">
+                  <summary className="min-h-9 cursor-pointer py-1 text-sm font-semibold text-midnight marker:text-emerald-dark">More details and application prep</summary>
+                  <div className="mt-3 border-l-2 border-sunshine-dark pl-4">
+                    <p className="max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
+                    {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
+                      <div className="mt-3">
+                        <p className="metadata-label mb-2">Listing details · confirm against the original advert</p>
+                        <div className="flex flex-wrap gap-2 text-sm text-slate-700">
+                          {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
+                          {opportunity.required_skills.length > 0 && <span className="chip">Skills: {opportunity.required_skills.join(', ')}</span>}
+                          {opportunity.provinces.length > 0 && <span className="chip">Province: {opportunity.provinces.join(', ')}</span>}
+                          {opportunity.remote_ok && <span className="chip">Remote option</span>}
+                          {opportunity.shift_types.length > 0 && <span className="chip">Shifts: {opportunity.shift_types.join(', ')}</span>}
+                          {(opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && <span className="chip">Monthly pay: R {opportunity.salary_min_monthly ?? '—'} to {opportunity.salary_max_monthly ?? '—'}</span>}
+                        </div>
+                      </div>
+                    )}
+                    {reasons.length > 0 && <p className="mt-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
+                    {cautions.length > 0 && <p className="mt-2 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
+                    <p className="mt-3 text-xs leading-5 text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Apply on the employer&apos;s site; CareerForge does not submit applications.</p>
                   </div>
-                )}
-
-                {reasons.length > 0 && <p className="mt-4 hidden rounded-lg bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900 sm:block"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
-                {cautions.length > 0 && <p className="mt-3 hidden rounded-lg bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900 sm:block"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
-
-                <details className="mt-5 min-w-0 rounded-lg border border-slate-200 bg-white p-4 open:bg-slate-50/50 sm:p-5">
-                  <summary className="min-h-8 cursor-pointer py-1 text-base font-semibold text-midnight marker:text-emerald-dark">Prepare your application</summary>
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     Review your saved details, then copy this application pack and paste it into the employer&apos;s form. Nothing is sent to the employer automatically.
                   </p>
@@ -527,7 +516,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-5 flex flex-col items-center gap-2 border-t border-slate-200 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
                   <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary w-full sm:w-auto">
                     View &amp; apply <span aria-hidden="true">→</span>
                   </a>
@@ -583,7 +572,6 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 )}
 
-                <p className="mt-3 text-xs text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Application opens in a new tab and is completed on the employer&apos;s site; CareerForge does not submit it. Fit signals use only listed requirements and profile details; they are not an eligibility decision.</p>
                 </div>
               </article>
             </li>
