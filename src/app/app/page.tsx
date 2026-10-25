@@ -236,11 +236,18 @@ export default function DashboardPage() {
           <Link href="/app/profile" className="btn-secondary min-h-10 w-full sm:w-auto">Edit profile</Link>
       </div>
 
-      <section className="relative mb-7 overflow-hidden rounded-2xl bg-black p-5 text-white shadow-card sm:p-7 lg:p-8" aria-labelledby="dashboard-heading">
-        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.8fr)] lg:gap-10">
+      <section className="relative mb-7 overflow-hidden rounded-2xl bg-black p-4 text-white shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
+        <img
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[60%_center] opacity-45"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/55" aria-hidden="true" />
+        <div className="relative grid items-center gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-8">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-yellow-300"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} · {forge.stage}</p>
-            <h1 id="dashboard-heading" className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
+            <h1 id="dashboard-heading" className="mt-3 text-2xl font-bold leading-tight text-white sm:mt-4 sm:text-3xl lg:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">{focusDetail.message}</p>
             <p className="mt-2 text-sm font-medium text-yellow-300">{progress}% of your starter plan complete</p>
             <div className="mt-4" role="group" aria-label="Choose what you want to focus on">
@@ -248,7 +255,7 @@ export default function DashboardPage() {
               <div className="flex flex-wrap gap-2">
                 {([
                   ['all', 'All'], ['study', 'Study'], ['work', 'Work'], ['business', 'Business'], ['money', 'Money'],
-                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`min-h-9 rounded-full border px-3 text-xs font-semibold transition ${homeFocus === focus ? 'border-yellow bg-yellow text-black' : 'border-white/25 bg-white/5 text-white hover:border-yellow/70 hover:bg-white/10'}`}>{label}</button>)}
+                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`min-h-10 rounded-full border px-3 text-xs font-semibold transition ${homeFocus === focus ? 'border-yellow bg-yellow text-black' : 'border-white/25 bg-white/5 text-white hover:border-yellow/70 hover:bg-white/10'}`}>{label}</button>)}
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
