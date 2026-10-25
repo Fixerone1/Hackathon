@@ -1,6 +1,6 @@
 begin;
 
-select plan(32);
+select plan(36);
 
 insert into auth.users (
   id, aud, role, email, encrypted_password, confirmed_at,
@@ -110,6 +110,40 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"10000000-0000-0000-0000-000000000003","role":"authenticated","app_metadata":{"provider":"email","role":"admin"},"user_metadata":{}}', true);
 select set_config('request.jwt.claim.sub', '10000000-0000-0000-0000-000000000003', true);
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 1, 'server-managed app_metadata admin can read drafts');
+select isnt(public.save_opportunity(jsonb_build_object(
+  'title', 'Atomic Upsert Test Listing',
+  'organization', 'Test Upsert Org',
+  'category', 'job',
+  'summary', 'The first version of this test opportunity.',
+  'source_name', 'Test source',
+  'source_url', 'https://example.test/atomic-upsert',
+  'location', '',
+  'provinces', '[]'::jsonb,
+  'remote_ok', false,
+  'required_skills', '[]'::jsonb,
+  'shift_types', '[]'::jsonb,
+  'verified_at', current_date,
+  'status', 'draft',
+  'withdrawn_at', null
+)), null::uuid, 'admin can create an opportunity');
+select isnt(public.save_opportunity(jsonb_build_object(
+  'title', ' atomic   upsert test listing ',
+  'organization', ' test upsert org ',
+  'category', 'job',
+  'summary', 'The updated version of this test opportunity.',
+  'source_name', 'Updated test source',
+  'source_url', 'https://example.test/atomic-upsert',
+  'location', '',
+  'provinces', '[]'::jsonb,
+  'remote_ok', false,
+  'required_skills', '[]'::jsonb,
+  'shift_types', '[]'::jsonb,
+  'verified_at', current_date,
+  'status', 'draft',
+  'withdrawn_at', null
+)), null::uuid, 'duplicate listing save returns the existing opportunity');
+select is((select count(*)::int from public.opportunities where source_url = 'https://example.test/atomic-upsert'), 1, 'duplicate listing save does not create a second opportunity');
+select is((select summary from public.opportunities where source_url = 'https://example.test/atomic-upsert'), 'The updated version of this test opportunity.', 'duplicate listing save updates the existing opportunity');
 
 reset role;
 select ok((select relrowsecurity from pg_class where oid = 'public.learner_profiles'::regclass), 'learner_profiles has RLS enabled');

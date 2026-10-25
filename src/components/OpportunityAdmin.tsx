@@ -66,11 +66,15 @@ const bannerTypes = {
 
 function opportunitySaveError(error: unknown): string {
   const details = error && typeof error === 'object'
-    ? error as { message?: unknown; code?: unknown }
+    ? error as { message?: unknown; code?: unknown; constraint?: unknown }
     : null;
   const message = typeof details?.message === 'string' ? details.message : '';
   const code = typeof details?.code === 'string' ? details.code : '';
+  const constraint = typeof details?.constraint === 'string' ? details.constraint : '';
 
+  if (code === '23505' && (constraint === 'opportunities_normalized_listing_uidx' || message.includes('opportunities_normalized_listing_uidx'))) {
+    return 'This opportunity already exists with the same title, organization, and source URL. Edit the existing listing in the review queue instead.';
+  }
   if ((code === 'PGRST204' || code === '42703') && message.includes('banner_image_url')) {
     return `The banner image column is not available yet. Apply migration 20261026006000_opportunity_banner_image.sql, then reload the Supabase API schema cache. Details: ${message}`;
   }
@@ -292,12 +296,12 @@ export function OpportunityAdmin() {
       } else {
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError || !authData.user) throw new Error('Sign in again before publishing an opportunity.');
-        const { error: saveError } = await supabase.from('opportunities').insert({ ...payload, created_by: authData.user.id });
+        const { error: saveError } = await supabase.rpc('save_opportunity', { p_payload: payload });
         if (saveError) throw saveError;
       }
       listingSaved = true;
       await loadListings();
-      setMessage(editingId ? 'Opportunity updated.' : 'Opportunity added to the review queue.');
+      setMessage(editingId ? 'Opportunity updated.' : 'Opportunity saved to the review queue.');
       resetForm();
     } catch (caught) {
       console.error('Could not save opportunity:', caught);
