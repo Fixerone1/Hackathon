@@ -236,44 +236,37 @@ export default function DashboardPage() {
         <DashboardNotifications userId={user.id} />
       </div>
 
-      <section className="relative mb-7 overflow-hidden rounded-2xl border-t-4 border-yellow bg-black p-4 text-white shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
-        <img
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[60%_center] opacity-50"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/70 to-black/45" aria-hidden="true" />
+      <section className="relative mb-7 overflow-hidden rounded-2xl border border-slate-200 bg-sunshine p-4 text-black shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
         <div className="relative grid items-center gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-8">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-yellow-300"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} · {forge.stage}</p>
-            <h1 id="dashboard-heading" className="mt-3 text-2xl font-bold leading-tight text-white sm:mt-4 sm:text-3xl lg:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">{focusDetail.message}</p>
-            <p className="mt-2 text-sm font-medium text-yellow-300">{progress}% of your starter plan complete</p>
+            <p className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/40 px-3 py-1.5 text-xs font-semibold text-black"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} · {forge.stage}</p>
+            <h1 id="dashboard-heading" className="mt-3 text-2xl font-bold leading-tight text-black sm:mt-4 sm:text-3xl lg:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-black/80 sm:text-base">{focusDetail.message}</p>
+            <p className="mt-2 text-sm font-medium text-black">{progress}% of your starter plan complete</p>
             <div className="mt-4" role="group" aria-label="Choose what you want to focus on">
-              <p className="mb-2 text-xs font-semibold text-slate-300">What matters to you right now?</p>
+              <p className="mb-2 text-xs font-semibold text-black/80">What matters to you right now?</p>
               <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                 {([
                   ['all', 'All'], ['study', 'Study'], ['work', 'Work'], ['business', 'Business'], ['money', 'Money'],
-                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`flex min-h-11 w-full min-w-0 items-center justify-center rounded-xl border px-1 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow sm:min-h-12 sm:px-2 sm:text-sm ${homeFocus === focus ? 'border-yellow bg-yellow text-black shadow-[0_3px_12px_rgba(255,229,0,0.24)]' : 'border-white/40 bg-white/10 text-white hover:border-yellow hover:bg-white/15'}`}>{label}</button>)}
+                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`flex min-h-11 w-full min-w-0 items-center justify-center rounded-xl border px-1 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:min-h-12 sm:px-2 sm:text-sm ${homeFocus === focus ? 'border-black bg-black text-white shadow-[0_3px_12px_rgba(10,10,10,0.18)]' : 'border-black/20 bg-white/35 text-black hover:border-black/50 hover:bg-white/60'}`}>{label}</button>)}
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-              <Link href={forge.preferences.personalisation_paused && homeFocus === 'all' ? '/app/employment/opportunities' : focusAction.href} className="btn-accent w-full sm:w-auto">
+              <Link href={forge.preferences.personalisation_paused && homeFocus === 'all' ? '/app/employment/opportunities' : focusAction.href} className="btn-primary w-full sm:w-auto">
                 {forge.preferences.personalisation_paused && homeFocus === 'all' ? 'Explore opportunities' : focusAction.label} <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
           </div>
-          <aside className="rounded-xl border border-white/15 bg-white/[0.08] p-4 sm:p-5">
+          <aside className="rounded-xl border border-black/10 bg-white/70 p-4 sm:p-5">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-xs font-bold uppercase text-yellow-300">One useful action</p>
+              <p className="text-xs font-bold uppercase text-black">One useful action</p>
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-yellow text-black"><Sparkles size={17} aria-hidden="true" /></span>
             </div>
-            <h2 className="mt-3 text-lg font-semibold text-white">
+            <h2 className="mt-3 text-lg font-semibold text-black">
               {forge.preferences.personalisation_paused ? 'Pick a small step that suits you' : forge.nextAction?.label || 'Pick a small step that suits you'}
             </h2>
-            <details className="mt-3 text-sm text-slate-300">
-              <summary className="min-h-8 cursor-pointer font-medium text-white underline underline-offset-2">Why this suggestion?</summary>
+            <details className="mt-3 text-sm text-black/75">
+              <summary className="min-h-8 cursor-pointer font-medium text-black underline underline-offset-2">Why this suggestion?</summary>
               <p className="mt-2 leading-6">
                 {forge.preferences.personalisation_paused
                   ? 'Personalisation is paused, so this suggestion is not based on your profile or saved activity.'
