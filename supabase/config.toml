@@ -15,6 +15,21 @@ major_version = 15
 [studio]
 enabled = false
 
+[realtime]
+enabled = false
+
+[storage]
+enabled = false
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false
+
+[imgproxy]
+enabled = false
+
 [auth]
 enabled = true
 site_url = "http://localhost:3000"

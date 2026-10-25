@@ -1,6 +1,6 @@
 begin;
 
-select plan(23);
+select plan(24);
 
 insert into auth.users (
   id, aud, role, email, encrypted_password, email_confirmed_at,
@@ -45,6 +45,7 @@ on conflict (id) do nothing;
 insert into public.learner_opportunity_actions (user_id, opportunity_id, status)
 values
   ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'saved'),
+  ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000002', 'saved'),
   ('10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000001', 'applied')
 on conflict (user_id, opportunity_id) do nothing;
 
@@ -64,10 +65,11 @@ select is((select count(*)::int from public.email_preferences), 1, 'learner read
 select is((select count(*)::int from public.email_preferences where user_id = '10000000-0000-0000-0000-000000000002'), 0, 'learner cannot read another preferences row');
 select is((select count(*)::int from public.privacy_consents), 1, 'learner reads only their own consent');
 select is((select count(*)::int from public.privacy_consents where user_id = '10000000-0000-0000-0000-000000000002'), 0, 'learner cannot read another consent');
-select is((select count(*)::int from public.learner_opportunity_actions), 1, 'learner reads only their own opportunity actions');
+select is((select count(*)::int from public.learner_opportunity_actions), 2, 'learner reads only their own opportunity actions');
 select is((select count(*)::int from public.learner_opportunity_actions where user_id = '10000000-0000-0000-0000-000000000002'), 0, 'learner cannot read another opportunity action');
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000001'), 1, 'signed-in learner reads a published listing');
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'user_metadata role cannot expose a draft');
+select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'saving a draft cannot bypass admin-only draft access');
 select is((with changed as (
   update public.opportunities set status = 'published'
   where id = '20000000-0000-0000-0000-000000000002'

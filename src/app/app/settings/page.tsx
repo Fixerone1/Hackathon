@@ -158,13 +158,14 @@ export default function SettingsPage() {
       const supabase = getSupabase();
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData.user) throw new Error('Sign in again to export your data.');
-      const [profile, progress, emailPreferences, privacyConsent] = await Promise.all([
+      const [profile, progress, emailPreferences, privacyConsent, opportunityActions] = await Promise.all([
         supabase.from('learner_profiles').select('*').maybeSingle(),
         supabase.from('learner_progress').select('*').maybeSingle(),
         supabase.from('email_preferences').select('*').maybeSingle(),
         supabase.from('privacy_consents').select('*').maybeSingle(),
+        supabase.from('learner_opportunity_actions').select('*'),
       ]);
-      const queryError = profile.error || progress.error || emailPreferences.error || privacyConsent.error;
+      const queryError = profile.error || progress.error || emailPreferences.error || privacyConsent.error || opportunityActions.error;
       if (queryError) throw queryError;
       const file = new Blob([JSON.stringify({
         account: { id: authData.user.id, email: authData.user.email, name: authData.user.user_metadata?.name || '' },
@@ -172,6 +173,7 @@ export default function SettingsPage() {
         progress: progress.data,
         email_preferences: emailPreferences.data,
         privacy_consents: privacyConsent.data,
+        opportunity_actions: opportunityActions.data,
         local_preferences: {
           dashboard_alerts: localStorage.getItem('careerforge-dashboard-alerts') !== 'false',
           homepage_focus: localStorage.getItem('careerforge-home-focus') || 'all',

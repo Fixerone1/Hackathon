@@ -9,7 +9,8 @@ where status = 'withdrawn';
 alter table public.opportunities
   drop constraint if exists opportunities_category_check,
   drop constraint if exists opportunities_status_check,
-  drop constraint if exists opportunities_source_url_check;
+  drop constraint if exists opportunities_source_url_check,
+  drop constraint if exists opportunities_source_url_https_check;
 
 alter table public.opportunities
   add constraint opportunities_category_check
