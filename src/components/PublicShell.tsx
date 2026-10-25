@@ -30,6 +30,15 @@ const bannerLabels: Record<string, string> = {
   '/admin': 'Manage opportunities',
 };
 
+const workspaceBannerDescriptions: Record<string, string> = {
+  '/app': 'Your progress, opportunities, and next steps in one place.',
+  '/app/employment': 'Prepare for work and explore opportunities that fit your goals.',
+  '/app/money': 'Build confidence with everyday money decisions.',
+  '/app/growth': 'Turn an idea into a practical next step.',
+  '/app/profile': 'Keep your skills, experience, and goals up to date.',
+  '/app/settings': 'Manage your account and workspace preferences.',
+};
+
 const workspaceBannerPaths = new Set([
   '/app',
   '/app/employment',
@@ -76,6 +85,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
   const showBanner = variant === 'public'
     ? pathname !== '/'
     : workspaceBannerPaths.has(pathname);
+  const bannerDescription = variant === 'workspace'
+    ? workspaceBannerDescriptions[pathname]
+    : 'Practical support for work, money confidence, and the future you want to build.';
+  const bannerHeight = variant === 'workspace'
+    ? 'min-h-[180px] sm:min-h-[220px] lg:min-h-[250px]'
+    : 'min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]';
 
   return (
     <>
@@ -116,18 +131,18 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
       {showBanner && (
-        <section aria-label={`${bannerLabel} banner`} className="relative isolate min-h-[220px] overflow-hidden bg-black text-white sm:min-h-[260px] lg:min-h-[300px]">
+        <section aria-label={`${bannerLabel} banner`} className={`relative isolate overflow-hidden bg-black text-white ${bannerHeight}`}>
           <img src={bannerImage} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-55" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" aria-hidden="true" />
-          <div className="relative z-10 mx-auto grid min-h-[inherit] w-full max-w-6xl grid-cols-1 items-center gap-5 px-4 py-7 sm:gap-6 sm:px-6 sm:py-9 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8 lg:py-10">
+          <div className={`absolute inset-0 ${variant === 'workspace' ? 'bg-gradient-to-r from-black/80 via-black/55 to-black/30' : 'bg-gradient-to-r from-black/75 via-black/55 to-black/35'}`} aria-hidden="true" />
+          <div className={`relative z-10 mx-auto grid min-h-[inherit] w-full max-w-6xl grid-cols-1 items-center gap-5 px-4 py-7 sm:gap-6 sm:px-6 sm:py-9 lg:gap-10 lg:px-8 lg:py-10 ${variant === 'public' ? 'lg:grid-cols-[1fr_0.8fr]' : ''}`}>
             <div className="relative z-10 max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">Ukukhanya · Your next step</p>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-sunshine">{variant === 'workspace' ? 'Your workspace' : 'Ukukhanya · Your next step'}</p>
               {variant === 'public' ? (
                 <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
               ) : (
                 <p className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</p>
               )}
-              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Practical support for work, money confidence, and the future you want to build.</p>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-200 sm:text-base">{bannerDescription}</p>
               {variant === 'public' && (
                 <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                   <Link href={primaryCta.href} className="btn-accent w-full sm:w-auto">{primaryCta.label} <ArrowRight size={16} aria-hidden="true" /></Link>
@@ -135,11 +150,13 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
                 </div>
               )}
             </div>
-            <div className={`relative h-24 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-32 lg:h-40 ${variant === 'public' && authPage ? 'lg:hidden' : ''}`}>
-              <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
-              <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>
-            </div>
+            {variant === 'public' && (
+              <div className={`relative h-24 overflow-hidden rounded-xl border border-white/10 bg-[#111827] sm:h-32 lg:h-40 ${authPage ? 'lg:hidden' : ''}`}>
+                <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
+                <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>
+              </div>
+            )}
           </div>
           <span aria-hidden="true" className="absolute -bottom-16 right-[12%] h-48 w-48 rounded-full border-[24px] border-emerald/20" />
         </section>

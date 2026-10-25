@@ -82,19 +82,17 @@ function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof 
   const todayCount = dueSaved.filter((action) => action.scheduled_apply_date === today).length;
 
   return (
-    <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="relative isolate flex flex-wrap items-center justify-between gap-3 overflow-hidden bg-black px-5 py-4 text-white sm:px-6">
-        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-45" />
-        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-        <div className="relative z-10">
+    <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-yellow bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-yellow-200 bg-black px-5 py-4 text-white sm:px-6">
+        <div>
           <p className="text-xs font-bold uppercase text-yellow-300">Your saved opportunities</p>
           <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-white">Application calendar</h2>
           <p className="mt-1 text-sm text-slate-300">Return dates and closing dates, in your local time.</p>
         </div>
-        <Link href="/app/profile" className="relative z-10 inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white hover:border-yellow-300 hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 px-3 text-sm font-semibold text-white hover:border-yellow-300 hover:bg-white/10">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
       </div>
 
-      {saved.length === 0 && <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+      {saved.length === 0 && <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
         <p className="text-sm text-slate-600">Save an opportunity to plan when you want to return to it.</p>
         <Link href="/app/employment/opportunities" className="btn-secondary min-h-10">Browse opportunities</Link>
       </div>}
@@ -233,12 +231,12 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <div className="mb-4 flex justify-end gap-2">
+      <div className="mb-4 flex items-center justify-end gap-2">
           <DashboardNotifications userId={user.id} />
-          <Link href="/app/profile" className="btn-secondary min-h-10 w-full sm:w-auto">Edit profile</Link>
+          <Link href="/app/profile" className="btn-secondary min-h-10">Edit profile</Link>
       </div>
 
-      <section className="relative mb-7 overflow-hidden rounded-2xl bg-black p-4 text-white shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
+      <section className="relative mb-7 overflow-hidden rounded-2xl border-t-4 border-yellow bg-black p-4 text-white shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
         <img
           src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
           alt=""
@@ -254,10 +252,10 @@ export default function DashboardPage() {
             <p className="mt-2 text-sm font-medium text-yellow-300">{progress}% of your starter plan complete</p>
             <div className="mt-4" role="group" aria-label="Choose what you want to focus on">
               <p className="mb-2 text-xs font-semibold text-slate-300">What matters to you right now?</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                 {([
                   ['all', 'All'], ['study', 'Study'], ['work', 'Work'], ['business', 'Business'], ['money', 'Money'],
-                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`min-h-10 rounded-full border px-3 text-xs font-semibold transition ${homeFocus === focus ? 'border-yellow bg-yellow text-black' : 'border-white/25 bg-white/5 text-white hover:border-yellow/70 hover:bg-white/10'}`}>{label}</button>)}
+                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`flex min-h-11 w-full min-w-0 items-center justify-center rounded-xl border px-1 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow sm:min-h-12 sm:px-2 sm:text-sm ${homeFocus === focus ? 'border-yellow bg-yellow text-black shadow-[0_3px_12px_rgba(255,229,0,0.24)]' : 'border-white/40 bg-white/10 text-white hover:border-yellow hover:bg-white/15'}`}>{label}</button>)}
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
@@ -290,7 +288,7 @@ export default function DashboardPage() {
 
       <DashboardApplicationCalendar actions={forge.actions} />
 
-      <section className="mb-8" aria-labelledby="focus-tools-heading">
+      <section className="mb-8 border-t-2 border-yellow-300 pt-5" aria-labelledby="focus-tools-heading">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="eyebrow">Chosen for you</p>
@@ -307,7 +305,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mb-8 rounded-2xl border border-[#e5e5e5] bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
+      <section className="mb-8 rounded-2xl border border-[#e5e5e5] border-t-4 border-t-yellow bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div>
             <p className="eyebrow">Opportunity connector</p>
@@ -322,7 +320,7 @@ export default function DashboardPage() {
       </section>
 
       <div className="grid items-start gap-5 py-5 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
-        <section className="rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
+        <section className="rounded-2xl border border-[#e5e5e5] border-t-4 border-t-yellow bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <h2 id="actions-heading" className="section-heading">Your starter plan</h2>
