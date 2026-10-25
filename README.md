@@ -22,16 +22,24 @@ The profile uses these example South African NQF mappings: Grade 9 = 1, Grade 10
 
 1. Create a Supabase project.
 2. Copy its Project URL and anon/public key into local `.env` as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Never use the service-role key. Do not commit `.env`.
-3. In the Supabase SQL Editor, run these files in filename order:
+3. To build the local schema from zero, run `npm run db:reset` (Docker and the Supabase CLI are required). This resets the local database. Run the RLS checks with `npm run db:test`.
+4. To apply changes to a hosted project, run these files in filename order using the Supabase CLI, or apply the migrations through the dashboard:
    - [`supabase/migrations/20261023000000_learner_progress.sql`](supabase/migrations/20261023000000_learner_progress.sql)
    - [`supabase/migrations/20261023001000_learner_profiles.sql`](supabase/migrations/20261023001000_learner_profiles.sql)
    - [`supabase/migrations/20261023002000_account_privacy.sql`](supabase/migrations/20261023002000_account_privacy.sql)
    - [`supabase/migrations/20261024000000_verified_opportunities.sql`](supabase/migrations/20261024000000_verified_opportunities.sql)
    - [`supabase/migrations/20261024001000_application_profile_details.sql`](supabase/migrations/20261024001000_application_profile_details.sql)
    - [`supabase/migrations/20261024002000_opportunity_match_details.sql`](supabase/migrations/20261024002000_opportunity_match_details.sql)
-4. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
-5. To grant admin access, set `app_metadata.role` to `admin` for the account in Supabase. Do not use user-editable metadata for authorization.
-6. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox.
+   - [`supabase/migrations/20261024003000_personal_learner_profiles.sql`](supabase/migrations/20261024003000_personal_learner_profiles.sql)
+   - [`supabase/migrations/20261025000000_opportunity_return_dates.sql`](supabase/migrations/20261025000000_opportunity_return_dates.sql)
+   - [`supabase/migrations/20261026000000_signed_in_opportunity_access.sql`](supabase/migrations/20261026000000_signed_in_opportunity_access.sql)
+   - [`supabase/migrations/20261026001000_opportunity_creator_retention.sql`](supabase/migrations/20261026001000_opportunity_creator_retention.sql)
+   - [`supabase/migrations/20261026002000_opportunity_integrity.sql`](supabase/migrations/20261026002000_opportunity_integrity.sql)
+   - [`supabase/migrations/20261026003000_opportunity_search_indexes.sql`](supabase/migrations/20261026003000_opportunity_search_indexes.sql)
+   - [`supabase/migrations/20261026004000_profile_dropdown_constraints.sql`](supabase/migrations/20261026004000_profile_dropdown_constraints.sql)
+5. Set the Supabase Auth Site URL to `http://localhost:3000` and allow that redirect URL. For GitHub Pages, also allow `https://fixerone1.github.io/Hackathon/login`.
+6. To grant admin access, set `app_metadata.role` to `admin` for each trusted team account through the Supabase dashboard or server-managed admin tooling. Never authorize based on user-editable `user_metadata`.
+7. Run `npm run dev`, open `http://localhost:3000/signup`, create an account, confirm your email if prompted, and sign in. Signup requires an explicit privacy-notice checkbox. Visiting `/admin` redirects signed-out users to login and returns them to the admin console afterward; the account still needs the server-managed admin role.
 
 For GitHub Pages, add repository Actions secrets named `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The anon key is public by design; RLS must protect every table. Never add a service-role key.
 
@@ -47,6 +55,65 @@ The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.en
 - `/api/ai` is an optional server route for AI application plans. Configure the Azure OpenAI values in `.env.example` on a server-capable host to enable it.
 
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
+
+For the current schema-to-feature inventory, known mismatches, rollback notes, and the authenticated-user export query, see [`docs/sql-audit.md`](docs/sql-audit.md).
+
+### Schema map
+
+```mermaid
+erDiagram
+   AUTH_USERS ||--o| LEARNER_PROFILES : owns
+   AUTH_USERS ||--o| LEARNER_PROGRESS : owns
+   AUTH_USERS ||--o| EMAIL_PREFERENCES : owns
+   AUTH_USERS ||--o| PRIVACY_CONSENTS : owns
+   AUTH_USERS ||--o{ LEARNER_OPPORTUNITY_ACTIONS : owns
+   AUTH_USERS o|--o{ OPPORTUNITIES : creates
+   OPPORTUNITIES ||--o{ LEARNER_OPPORTUNITY_ACTIONS : receives
+
+   AUTH_USERS {
+      uuid id PK
+      text email
+      jsonb app_metadata
+      jsonb user_metadata
+   }
+   LEARNER_PROFILES {
+      uuid user_id PK,FK
+      text highest_qualification
+      smallint nqf_level
+      text province
+      text target_role
+      jsonb skills
+   }
+   LEARNER_PROGRESS {
+      uuid user_id PK,FK
+      jsonb checklist
+   }
+   EMAIL_PREFERENCES {
+      uuid user_id PK,FK
+      boolean instant_matches
+      boolean weekly_digest
+      boolean closing_reminders
+   }
+   PRIVACY_CONSENTS {
+      uuid user_id PK,FK
+      text policy_version
+      timestamptz consented_at
+   }
+   OPPORTUNITIES {
+      uuid id PK
+      text category
+      text status
+      date closing_date
+      text source_url
+      tsvector search_document
+   }
+   LEARNER_OPPORTUNITY_ACTIONS {
+      uuid user_id PK,FK
+      uuid opportunity_id PK,FK
+      text status
+      date scheduled_apply_date
+   }
+```
 
 ### Verified opportunity feed
 
