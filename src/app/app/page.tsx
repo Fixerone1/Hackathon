@@ -305,7 +305,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mb-8 rounded-2xl border border-[#e5e5e5] border-t-4 border-t-yellow bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
+      <section className="mb-8 rounded-2xl border border-[#FFF8B8] border-t-4 border-t-yellow bg-white p-4 sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div>
             <p className="eyebrow">Opportunity connector</p>
@@ -314,17 +314,17 @@ export default function DashboardPage() {
           </div>
           <Link href="/app/employment/opportunities" className="link text-sm">See all opportunities</Link>
         </div>
-        <div className="mt-6 border-t border-[#e5e5e5] pt-5">
+        <div className="mt-6 border-t border-[#FFF8B8] pt-5">
           <OpportunityFeed />
         </div>
       </section>
 
       <div className="grid items-start gap-5 border-t-2 border-yellow-300 py-6 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
-        <section className="rounded-2xl border border-[#e5e5e5] border-t-4 border-t-yellow bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
+        <section className="rounded-2xl border border-[#FFF8B8] border-t-4 border-t-yellow bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
           <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
             <div>
               <h2 id="actions-heading" className="section-heading">Your starter plan</h2>
-              <p className="mt-2 text-sm leading-6 text-[#555555]">Three small actions across your development goals.</p>
+              <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">Three small actions across your development goals.</p>
             </div>
             <span className="text-sm font-semibold text-emerald-dark">{completed.length} of {starterActions.length} complete</span>
           </div>
@@ -355,12 +355,12 @@ export default function DashboardPage() {
           <section className="py-5 first:pt-5" aria-labelledby="mobility-score-heading">
             <p className="eyebrow">Economic Mobility Score</p>
             <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Not calculated</h2>
-            <p className="mt-2 text-sm leading-6 text-[#555555]">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
+            <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">The score needs the employment, money, and growth tools, which are not included in this source upload.</p>
           </section>
           <section className="py-5" aria-labelledby="progress-heading">
             <p className="eyebrow">Starter plan progress</p>
             <h2 id="progress-heading" className="mt-2 text-3xl font-bold text-midnight">{progress}%</h2>
-            <p className="mt-2 text-sm leading-6 text-[#555555]">Completion of the three checklist actions shown here.</p>
+            <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">Completion of the three checklist actions shown here.</p>
           </section>
           <section id="money-skills" className="py-5">
             <h2 className="font-semibold text-midnight">Money confidence</h2>

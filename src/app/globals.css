@@ -7,17 +7,17 @@
   --color-black: #0A0A0A;
   --color-yellow: #FFE500;
   --color-yellow-soft: #FFF8B8;
-  --color-yellow-dark: #806E00;
+  --color-yellow-dark: #0A0A0A;
   --color-emerald: var(--color-yellow);
   --color-white: #FFFFFF;
-  --color-canvas: #F8FAFC;
-  --color-text: #111827;
-  --color-muted: #4B5563;
-  --color-line: #E5E7EB;
+  --color-canvas: #FFFFFF;
+  --color-text: #0A0A0A;
+  --color-muted: #0A0A0A;
+  --color-line: #FFF8B8;
   --color-emerald-soft: var(--color-yellow-soft);
   --page-background: var(--color-canvas);
   --surface: var(--color-white);
-  --surface-muted: #F1F5F9;
+  --surface-muted: #FFF8B8;
   --ink-primary: var(--color-text);
   --ink-muted: var(--color-muted);
   --line: var(--color-line);
@@ -32,6 +32,18 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+  border-color: var(--color-line);
+  --tw-ring-color: var(--color-black);
+}
+
+::placeholder {
+  color: var(--color-black);
+  opacity: 0.5;
 }
 
 body {
@@ -60,24 +72,24 @@ body {
     background-color: var(--accent-action);
   }
   .btn-primary:hover {
-    background-color: #262626;
+    background-color: #0A0A0A;
     box-shadow: 0 5px 16px rgba(10, 10, 10, 0.18);
   }
   .btn-secondary {
-    @apply btn border border-slate-300 bg-white text-ink hover:border-black hover:bg-slate-50;
+    @apply btn border border-slate-300 bg-white text-ink hover:border-black hover:bg-sunshine-light;
   }
   .btn-accent {
     @apply btn text-black;
     background-color: var(--color-yellow);
   }
   .btn-accent:hover {
-    background-color: #E6CF00;
+    background-color: #FFF8B8;
   }
   .input {
     @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
   }
   .label {
-    @apply mb-1 block text-sm font-medium text-slate-700;
+    @apply mb-1 block text-sm font-medium text-black;
   }
   .chip {
     @apply inline-flex items-center rounded-full border border-slate-200 bg-surface px-3 py-1 text-xs font-medium text-slate-700;
@@ -122,7 +134,7 @@ body {
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
-  outline: 2px solid #806E00;
+  outline: 2px solid #0A0A0A;
   outline-offset: 2px;
 }
 
@@ -143,7 +155,7 @@ footer.site-footer {
 footer.site-footer .text-midnight,
 footer.site-footer .text-slate-600,
 footer.site-footer .text-slate-500 {
-  color: #E5E7EB;
+  color: #FFFFFF;
 }
 
 footer.site-footer a:hover {
@@ -184,7 +196,7 @@ html.hc .card {
 html.hc .text-slate-400,
 html.hc .text-slate-500,
 html.hc .text-slate-600 {
-  color: #111 !important;
+  color: #0A0A0A !important;
 }
 html.hc .btn-secondary {
   border: 2px solid #000;

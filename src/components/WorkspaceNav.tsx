@@ -26,7 +26,7 @@ export function WorkspaceNav() {
 
   return (
     <>
-      <nav aria-label="Workspace sections" className="sticky top-[68px] z-20 hidden border-b border-[#e5e5e5] bg-white shadow-[0_2px_8px_rgba(34,34,34,0.05)] md:block">
+      <nav aria-label="Workspace sections" className="sticky top-[68px] z-20 hidden border-b border-[#FFF8B8] bg-white shadow-[0_2px_8px_rgba(10,10,10,0.05)] md:block">
         <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2">
           {items.map(({ href, label, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
@@ -39,7 +39,7 @@ export function WorkspaceNav() {
           })}
         </div>
       </nav>
-      <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-50 border-t-2 border-t-sunshine border-[#e5e5e5] bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(34,34,34,0.08)] md:hidden">
+      <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-50 border-t-2 border-t-sunshine border-[#FFF8B8] bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(10,10,10,0.08)] md:hidden">
         <div className="mx-auto flex max-w-xl">
           {items.map(({ href, label, shortLabel, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);

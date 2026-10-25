@@ -49,7 +49,7 @@ export function HomeToolDirectory() {
         const isRelevant = focus !== 'all' && categories.includes(focus);
         const featured = isRelevant || (focus === 'all' && (index === 1 || index === 6));
         return (
-          <Link key={title} href={href} className={`group flex min-h-48 flex-col items-center rounded-3xl border p-4 text-center transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(34,34,34,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:items-start sm:p-5 sm:text-left ${featured ? 'border-sunshine bg-sunshine' : 'border-[#e5e5e5] bg-white'}`}>
+          <Link key={title} href={href} className={`group flex min-h-48 flex-col items-center rounded-3xl border p-4 text-center transition hover:-translate-y-1 hover:border-sunshine-dark hover:shadow-[0_10px_28px_rgba(10,10,10,0.1)] focus-visible:ring-2 focus-visible:ring-sunshine-dark sm:items-start sm:p-5 sm:text-left ${featured ? 'border-sunshine bg-sunshine' : 'border-[#FFF8B8] bg-white'}`}>
             <div className="flex w-full items-center justify-center gap-2 sm:justify-between">
               <span className="text-[10px] font-bold tracking-[0.12em] text-midnight">{tag}</span>
               <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${featured ? 'bg-white' : 'bg-sunshine'}`}>

@@ -74,7 +74,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
   if (!user) {
     return compact ? (
       <div className="flex items-center gap-1.5">
-        <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#e5e5e5] hover:bg-sunshine-light">
+        <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#FFF8B8] hover:bg-sunshine-light">
           <UserRound size={19} aria-hidden="true" />
         </Link>
         <Link href="/signup" className="btn-primary min-h-10 px-3 py-2 text-xs sm:px-4 sm:text-sm">
@@ -95,13 +95,13 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
     <div className="relative">
       <button type="button" aria-label={`Open account menu for ${user.name}`} aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className={`flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-white p-1.5 text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
+        className={`flex items-center gap-2 rounded-full border border-[#FFF8B8] bg-white p-1.5 text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
         <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-xs font-bold text-midnight">{initials || <UserRound size={17} aria-hidden="true" />}</span>
         {!compact && <span className="hidden max-w-28 truncate pr-2 text-sm font-semibold sm:block">{user.name}</span>}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-[70] mt-2 w-64 rounded-2xl border border-[#e5e5e5] bg-white p-3 text-midnight shadow-xl">
-          <div className="border-b border-[#e5e5e5] px-2 pb-3">
+        <div className="absolute right-0 top-full z-[70] mt-2 w-64 rounded-2xl border border-[#FFF8B8] bg-white p-3 text-midnight shadow-xl">
+          <div className="border-b border-[#FFF8B8] px-2 pb-3">
             <p className="truncate text-sm font-bold">{user.name}</p>
             <p className="truncate text-xs text-slate-600">{user.email}</p>
           </div>

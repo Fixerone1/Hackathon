@@ -12,7 +12,7 @@ export default function SignupPage() {
           <p className="eyebrow">Get started</p>
           <h1 className="page-title mt-2">Create your account</h1>
           <p className="page-description mb-6">Start building your Economic Mobility Score today.</p>
-          <div className="border-t border-[#e5e5e5] pt-5">
+          <div className="border-t border-[#FFF8B8] pt-5">
             <AuthForm mode="signup" />
           </div>
         </div>

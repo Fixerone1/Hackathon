@@ -298,13 +298,13 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
+      <header className="mb-7 flex flex-col gap-5 rounded-2xl border border-[#FFF8B8] bg-surface p-5 shadow-card sm:flex-row sm:items-end sm:justify-between sm:p-6">
         <div className="min-w-0">
           <p className="eyebrow">Your information</p>
           <h1 className="page-title mt-2">Build your learner profile</h1>
           <p className="page-description">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="w-full rounded-xl bg-[#f7f7f7] p-3 sm:w-48 sm:shrink-0">
+        <div className="w-full rounded-xl bg-[#FFF8B8] p-3 sm:w-48 sm:shrink-0">
           <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
             <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />
@@ -313,7 +313,7 @@ export default function ProfilePage() {
       </header>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.85fr)] xl:gap-8">
-        <section className="min-w-0 rounded-2xl border border-[#e5e5e5] bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
+        <section className="min-w-0 rounded-2xl border border-[#FFF8B8] bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">
           <ol className="mb-7 grid grid-cols-3 border-b border-slate-200" aria-label="Profile setup steps">
             {['About you', 'Goals', 'Experience'].map((label, index) => (
               <li key={label}>
@@ -506,7 +506,7 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <aside className="min-w-0 rounded-2xl border border-[#e5e5e5] bg-surface p-5 shadow-card sm:p-6">
+        <aside className="min-w-0 rounded-2xl border border-[#FFF8B8] bg-surface p-5 shadow-card sm:p-6">
           <h2 className="font-semibold text-midnight">What your profile improves</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">As verified opportunities are connected, these details can help check stated requirements more accurately.</p>
           <p className="mt-5 border-l-2 border-sunshine-dark pl-3 text-sm leading-6 text-slate-700">{nextStep}</p>
@@ -566,7 +566,7 @@ export default function ProfilePage() {
                     return (
                       <button key={date} type="button" role="gridcell" aria-pressed={selected} aria-label={`${new Intl.DateTimeFormat('en-ZA', { dateStyle: 'full' }).format(dateFromKey(date))}${events.length ? `, ${events.length} planned items` : ''}`} onClick={() => setSelectedCalendarDay(date)}
                         className={`min-h-12 border-b border-r border-slate-200 p-1 text-left transition-colors sm:min-h-16 sm:p-2 ${selected ? 'bg-sunshine-light' : 'bg-white hover:bg-slate-50'}`}>
-                        <span className={`grid h-6 w-6 place-items-center rounded-full text-xs ${date === todayKey ? 'bg-[#0D1B2A] font-bold text-white' : 'text-slate-700'}`}>{index + 1}</span>
+                        <span className={`grid h-6 w-6 place-items-center rounded-full text-xs ${date === todayKey ? 'bg-black font-bold text-white' : 'text-slate-700'}`}>{index + 1}</span>
                         {events.length > 0 && <span className="mt-1 block truncate text-[9px] font-semibold text-emerald-800 sm:text-[10px]">{events.length} item{events.length === 1 ? '' : 's'}</span>}
                       </button>
                     );

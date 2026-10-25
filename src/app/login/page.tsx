@@ -12,7 +12,7 @@ export default function LoginPage() {
           <p className="eyebrow">Learner workspace</p>
           <h1 className="page-title mt-2">Welcome back</h1>
           <p className="page-description mb-6">Sign in to continue to your Ukukhanya workspace.</p>
-          <div className="border-t border-[#e5e5e5] pt-5">
+          <div className="border-t border-[#FFF8B8] pt-5">
             <AuthForm mode="login" />
           </div>
         </div>

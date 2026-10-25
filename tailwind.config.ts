@@ -1,29 +1,57 @@
 import type { Config } from 'tailwindcss';
 
+const yellowScale = {
+  50: '#FFFFFF',
+  100: '#FFF8B8',
+  200: '#FFF8B8',
+  300: '#FFE500',
+  400: '#FFE500',
+  500: '#FFE500',
+  600: '#FFE500',
+  700: '#0A0A0A',
+  800: '#0A0A0A',
+  900: '#0A0A0A',
+  950: '#0A0A0A',
+};
+
+const neutralScale = {
+  50: '#FFFFFF',
+  100: '#FFFFFF',
+  200: '#FFF8B8',
+  300: '#FFE500',
+  400: '#0A0A0A',
+  500: '#0A0A0A',
+  600: '#0A0A0A',
+  700: '#0A0A0A',
+  800: '#0A0A0A',
+  900: '#0A0A0A',
+  950: '#0A0A0A',
+};
+
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
+        slate: neutralScale,
+        red: yellowScale,
+        amber: yellowScale,
+        blue: yellowScale,
+        yellow: yellowScale,
+        emerald: { ...yellowScale, DEFAULT: '#FFE500', light: '#FFF8B8', dark: '#0A0A0A' },
         white: '#FFFFFF',
         black: '#0A0A0A',
-        sand: '#F8FAFC',
+        sand: '#FFFFFF',
         surface: '#FFFFFF',
-        sunshine: { DEFAULT: '#FFE500', light: '#FFF8B8', dark: '#806E00' },
+        sunshine: { DEFAULT: '#FFE500', light: '#FFF8B8', dark: '#0A0A0A' },
         ocean: '#0A0A0A',
         'ocean-deep': '#0A0A0A',
-        terracotta: { DEFAULT: '#4B5563', action: '#0A0A0A', dark: '#111827' },
+        terracotta: { DEFAULT: '#FFE500', action: '#0A0A0A', dark: '#0A0A0A' },
         sage: '#FFF8B8',
         midnight: '#0A0A0A',
-        navy: '#111827',
-        emerald: {
-          DEFAULT: '#FFE500', light: '#FFF8B8', dark: '#806E00',
-          50: '#FFFDF0', 100: '#FFF8B8', 200: '#FFF08A', 300: '#FFE500', 400: '#E6CF00',
-          500: '#BFAE00', 600: '#998B00', 700: '#806E00', 800: '#5C4B00', 900: '#3D3300',
-        },
-        canvas: '#F8FAFC',
-        ink: '#111827',
-        amber: { 50: '#FFFDF0', 100: '#FFF8B8', 200: '#FFF08A', 300: '#FFE500', 800: '#5C4B00', 900: '#3D3300' },
+        navy: '#0A0A0A',
+        canvas: '#FFFFFF',
+        ink: '#0A0A0A',
       },
       fontFamily: { sans: ['IBM Plex Sans', 'sans-serif'] },
       borderRadius: { card: '16px', '3xl': '16px' },

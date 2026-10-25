@@ -136,7 +136,7 @@ export function DashboardNotifications({ userId }: { userId: string }) {
       </button>
       {open && (
         <section id="dashboard-notification-inbox" aria-label="New matching opportunities"
-          className="absolute right-0 top-full z-[80] mt-2 max-h-[min(75vh,34rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-[#e5e5e5] bg-white p-4 text-center text-midnight shadow-xl sm:text-left">
+          className="absolute right-0 top-full z-[80] mt-2 max-h-[min(75vh,34rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-[#FFF8B8] bg-white p-4 text-center text-midnight shadow-xl sm:text-left">
           <div className="flex items-center justify-between gap-3 text-left">
             <div>
               <h2 className="font-bold">Your reminders and matches</h2>

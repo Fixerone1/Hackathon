@@ -20,8 +20,8 @@ export function PhotoPlaceholder({ label, description, className = '' }: PhotoPl
         </span>
         <p className="mt-4 text-xs font-bold uppercase text-black">Photo to add</p>
         <p className="mt-2 text-lg font-bold leading-snug text-black">{label}</p>
-        <p className="mt-2 text-sm leading-6 text-[#555555]">{description}</p>
-        <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/75 px-3 py-1 text-xs font-medium text-[#444444]">
+        <p className="mt-2 text-sm leading-6 text-[#0A0A0A]">{description}</p>
+        <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/75 px-3 py-1 text-xs font-medium text-[#0A0A0A]">
           <ImagePlus size={14} aria-hidden="true" />
           Replace with an authentic photo
         </span>
