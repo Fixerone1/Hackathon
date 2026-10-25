@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { ArrowUpRight, BriefcaseBusiness } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Menu, X } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
@@ -44,6 +44,7 @@ function LinkedInMark() {
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
   const pathname = usePathname() || '/';
   const [signedIn, setSignedIn] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const bannerLabel = bannerLabels[pathname]
     || (pathname.startsWith('/app/employment/') ? 'Work and career tools' : 'Your next step');
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
@@ -68,69 +69,71 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b-4 border-sunshine bg-white text-midnight shadow-[0_2px_12px_rgba(34,34,34,0.06)]">
-        <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-2 px-3 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-midnight sm:gap-3" aria-label="CareerForge home">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-sunshine text-midnight ring-4 ring-sunshine-light sm:h-9 sm:w-9">
+      <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 font-bold text-black sm:gap-3" aria-label="CareerForge home">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-black text-white sm:h-10 sm:w-10">
               <BriefcaseBusiness size={18} strokeWidth={1.8} aria-hidden="true" />
             </span>
-            <span className="text-sm sm:text-base">CareerForge</span>
+            <span className="text-base sm:text-lg">CareerForge</span>
           </Link>
           {variant === 'public' ? (
-            <nav aria-label="Main navigation" className="flex min-w-0 items-center justify-end gap-0.5 text-xs font-medium sm:gap-2 sm:text-sm">
-              {signedIn && <>
-                <Link href="/how-it-works" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/how-it-works' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                  How it works
-                </Link>
-                <Link href="/opportunities" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light sm:inline-flex ${pathname === '/opportunities' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                  Opportunities
-                </Link>
-                <Link href="/partners" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/partners' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                  For organizations
-                </Link>
-                <Link href="/about" className={`hidden rounded-full px-3 py-2 transition-colors hover:bg-sunshine-light lg:inline-flex ${pathname === '/about' ? 'bg-sunshine-light font-semibold' : 'text-midnight'}`}>
-                  About
-                </Link>
-              </>}
+            <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
+              {[
+                ['/how-it-works', 'How it works'],
+                ['/opportunities', 'Opportunities'],
+                ['/partners', 'For organizations'],
+                ['/about', 'About'],
+              ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 transition-colors hover:bg-slate-50 ${pathname === href ? 'font-bold text-black' : 'text-slate-700'}`}>
+                {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
+              </Link>)}
               <AccountMenu compact onUserChange={setSignedIn} />
             </nav>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="hidden text-sm font-medium text-midnight sm:inline">Learner workspace</span>
+              <span className="hidden text-sm font-medium text-slate-600 sm:inline">Learner workspace</span>
               <AccountMenu compact />
             </div>
           )}
+          {variant === 'public' && <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
+            {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>}
         </div>
+        {variant === 'public' && mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+          <div className="mx-auto grid max-w-6xl gap-1">
+            {[
+              ['/', 'Home'], ['/how-it-works', 'How it works'], ['/opportunities', 'Opportunities'],
+              ['/partners', 'For organizations'], ['/about', 'About'], ['/login', 'Sign in'], ['/signup', 'Create account'],
+            ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
+              {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
+            </Link>)}
+          </div>
+        </nav>}
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
-      {!(variant === 'public' && pathname === '/') && (
-        <section
-          aria-label={`${bannerLabel} banner`}
-          className="relative isolate h-36 overflow-hidden border-y border-[#e5e5e5] bg-white sm:h-44 lg:h-52"
-        >
-          <img
-            src={bannerImage}
-            alt=""
-            aria-hidden="true"
-            width={612}
-            height={245}
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div aria-hidden="true" className="absolute inset-0 bg-black/45" />
-          <div className="pointer-events-none absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="max-w-full">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-sunshine drop-shadow sm:text-xs">CareerForge</p>
-                <h2 className="mt-1 whitespace-nowrap text-lg font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-2xl lg:text-3xl">
-                  {bannerLabel}
-                </h2>
+      {pathname !== '/' && pathname !== '/login' && pathname !== '/signup' && (
+        <section aria-label={`${bannerLabel} banner`} className={`relative isolate overflow-hidden bg-black text-white ${variant === 'workspace' ? 'min-h-48' : 'min-h-64 sm:min-h-72'}`}>
+          <div className="mx-auto grid min-h-[inherit] max-w-6xl items-center gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_0.8fr] lg:gap-10 lg:px-8">
+            <div className="relative z-10 max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-300">CareerForge · {variant === 'workspace' ? 'Your workspace' : 'Your next step'}</p>
+              <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{bannerLabel}</h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">{variant === 'workspace' ? 'Build your next move at your own pace, with your saved opportunities and progress close by.' : 'Practical support for work, money confidence, and the future you want to build.'}</p>
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                <Link href={variant === 'workspace' ? '/app/profile' : '/signup'} className="btn-primary w-full sm:w-auto">{variant === 'workspace' ? 'Update your profile' : 'Get started'} <ArrowRight size={16} aria-hidden="true" /></Link>
+                <Link href={variant === 'workspace' ? '/app/employment/opportunities' : '/opportunities'} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] border border-white/30 px-5 text-sm font-semibold text-white transition hover:border-emerald-300 hover:bg-white/10">{variant === 'workspace' ? 'Browse opportunities' : 'Explore opportunities'}</Link>
               </div>
             </div>
+            <div className="relative hidden min-h-40 overflow-hidden rounded-2xl border border-white/10 bg-[#111827] lg:block">
+              <img src={bannerImage} alt="" aria-hidden="true" width={612} height={245} className="absolute inset-0 h-full w-full object-cover opacity-75" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/10" />
+              <span className="absolute bottom-4 left-4 rounded-lg bg-black/75 px-3 py-2 text-sm font-semibold text-white">Your journey. Your way.</span>
+            </div>
           </div>
+          <span aria-hidden="true" className="absolute -bottom-16 right-[12%] h-48 w-48 rounded-full border-[24px] border-emerald/20" />
         </section>
       )}
-      <main id="main-content" className="bg-white">{children}</main>
-      <footer className={`border-t-4 border-sunshine bg-white text-midnight ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
+      <main id="main-content" className="min-h-[50vh] bg-canvas">{children}</main>
+      <footer className={`site-footer ${variant === 'workspace' ? 'pb-20 md:pb-0' : ''}`}>
         <div className="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">
             <div className="max-w-sm">

@@ -22,7 +22,7 @@ export function EmploymentNav() {
         {tabs.map(({ href, label }) => {
           const active = href === '/app/employment' ? pathname === href : pathname.startsWith(href);
           return <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-            className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${active ? 'bg-sunshine text-midnight' : 'border border-[#e5e5e5] bg-white text-midnight hover:border-sunshine-dark hover:bg-sunshine-light'}`}>{label}</Link>;
+            className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${active ? 'font-bold text-black' : 'font-medium text-slate-700 hover:bg-slate-50'}`}>{label}{active && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}</Link>;
         })}
       </div>
     </nav>

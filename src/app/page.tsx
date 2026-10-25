@@ -72,30 +72,30 @@ const pathways = [
 export default function HomePage() {
   return (
     <PublicShell>
-      <section className="relative isolate overflow-hidden bg-white text-midnight">
-        <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-sunshine-light" />
+      <section className="relative isolate overflow-hidden bg-black text-white">
+        <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-emerald/20" />
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
           <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
-            <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+            <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] text-white sm:text-6xl lg:text-[4.25rem]">
               Your future is
-              <span className="block"><span className="bg-sunshine px-2 text-midnight">yours to build.</span></span>
+              <span className="block"><span className="text-emerald">yours to build.</span></span>
             </h1>
-            <p className="mt-6 max-w-none text-base leading-7 text-midnight sm:text-lg sm:leading-8">
+            <p className="mt-6 max-w-none text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Whether you’re thinking about studying further, starting a business, or finding your feet in a new job, your next step deserves a plan that starts with you.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:items-start lg:justify-start">
               <Link href="/signup" className="btn-primary w-full sm:w-fit">
                 Start building your next step <ArrowRight size={17} aria-hidden="true" />
               </Link>
-              <Link href="/#journey-heading" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-[#d9d9d9] px-4 py-2 text-sm font-semibold text-midnight transition hover:border-sunshine-dark hover:bg-sunshine-light">
+              <Link href="/#journey-heading" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[10px] border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:border-emerald hover:bg-white/10">
                 See how it works
               </Link>
             </div>
-            <p className="mt-4 text-xs text-midnight">A practical starting point for young South Africans. Go at your own pace.</p>
+            <p className="mt-4 text-xs text-slate-400">A practical starting point for young South Africans. Go at your own pace.</p>
           </div>
 
           <div className="relative mx-auto w-full max-w-[570px] lg:justify-self-end">
-            <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-[2rem] bg-sunshine sm:-inset-4" />
+            <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-2xl bg-emerald sm:-inset-4" />
             <div className="relative overflow-hidden rounded-[1.75rem] border border-[#e5e5e5] bg-white p-2 shadow-[0_18px_48px_rgba(0,0,0,0.12)] sm:p-3">
               <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
                 <img
