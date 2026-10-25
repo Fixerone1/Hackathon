@@ -660,12 +660,20 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
-                  <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10 w-full sm:w-auto">
-                    View &amp; apply <span aria-hidden="true">→</span>
-                  </a>
+                <div className="mt-4 flex flex-col items-center gap-3 border-t border-slate-200 pt-3">
                   {action === 'saved' && <span className="text-xs font-medium text-emerald-800">Saved to your plan</span>}
-                  <div role="group" aria-label="Opportunity social actions" className="flex w-full items-center justify-center gap-2">
+                  {action === 'applied' && <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>}
+                  <div className="flex w-full items-center justify-center gap-2">
+                    <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10 whitespace-nowrap px-3">
+                      View &amp; apply <span aria-hidden="true">→</span>
+                    </a>
+                    {action === 'applied' ? (
+                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
+                    ) : (
+                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                    )}
+                  </div>
+                  <div role="group" aria-label="Opportunity social actions" className="flex items-center justify-center gap-2">
                     <button type="button" aria-label={action === 'saved' ? 'Unlike and remove from saved opportunities' : 'Like and save this opportunity'}
                       aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
                       title={action === 'saved' ? 'Remove from saved' : 'Like and save'}
@@ -685,20 +693,6 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                       <MessageCircle size={19} aria-hidden="true" />
                     </button>
                   </div>
-                  {action === 'applied' ? (
-                    <>
-                      <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
-                    </>
-                  ) : action === 'saved' ? (
-                    <>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
-                    </>
-                  ) : (
-                    <>
-                      <button type="button" className="btn-secondary w-full sm:w-auto" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
-                    </>
-                  )}
                 </div>
                 {openNoteId === opportunity.id && (
                   <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center sm:text-left">

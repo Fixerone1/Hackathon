@@ -13,7 +13,7 @@ const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQ = 20;
 const hits = new Map<string, number[]>();
 
-const KINDS = ['cv-review', 'interview-feedback', 'career-advice', 'idea-validation', 'financial-coach', 'application-plan'] as const;
+const KINDS = ['cv-review', 'cv-summary', 'cv-cover-letter', 'cv-bursary-statement', 'interview-feedback', 'career-advice', 'idea-validation', 'financial-coach', 'application-plan'] as const;
 type Kind = (typeof KINDS)[number];
 
 const INJECTION_PATTERNS = [
@@ -27,6 +27,9 @@ const INJECTION_PATTERNS = [
 
 const SYSTEM_PROMPTS: Record<Kind, string> = {
   'cv-review': 'You are a South African careers coach. Review the CV content and give 5 specific, encouraging improvements. Be concise.',
+  'cv-summary': 'You are a South African careers coach. Draft a concise 3-4 sentence CV profile summary using only facts supplied by the learner. Do not invent experience, qualifications, achievements, numbers, or skills. Avoid first person and clichés. Mention the target role, strongest evidence, and career direction when supplied. Keep the language clear and under 80 words.',
+  'cv-cover-letter': 'You are a South African careers coach. Draft a concise cover letter using only facts supplied by the learner and the supplied job advert. Never invent qualifications, experience, achievements, eligibility, or employer information. Use a professional tone and clear editable placeholders only where information is missing.',
+  'cv-bursary-statement': 'You are a South African education and careers coach. Draft a concise personal statement for a bursary or learnership using only facts supplied by the learner. Never invent hardship, achievements, qualifications, or goals. Keep it sincere, specific, and editable.',
   'interview-feedback': 'You are an interview coach for South African youth. Give feedback on the answer using the STAR method, with a short improved example opening. Be concise and kind.',
   'career-advice': 'You are a careers advisor for South African youth. Suggest realistic next steps (learnerships, internships, short courses). Do not invent specific vacancies.',
   'idea-validation': 'You are a small-business mentor for South African youth. Critique the business idea honestly, list the top 3 risks and 3 next experiments. Do not give legal or tax advice; point to CIPC, SARS, Seda or NYDA for official guidance.',

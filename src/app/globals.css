@@ -249,6 +249,10 @@ html.larger-text body {
 
 /* Print: CV preview only */
 @media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
   body * {
     visibility: hidden;
   }
@@ -258,10 +262,15 @@ html.larger-text body {
   }
   #cv-print {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
     margin: 0;
-    padding: 24px;
+    padding: 0;
+    min-height: 0;
     box-shadow: none !important;
     border: none !important;
+    color: #0A0A0A;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

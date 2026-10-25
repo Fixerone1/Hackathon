@@ -8,7 +8,7 @@ export default function CvPage() {
       <PageIntro
         eyebrow="Employment Hub"
         title="CV builder"
-        description="Build a clear CV from your profile, add your experience, then save or print it as a PDF."
+        description="Build a job-focused CV from your profile, complete a guided question bank, review it, and export an editable Word document, text, or print-ready PDF."
       />
       <EmploymentNav />
       <CvBuilder />
