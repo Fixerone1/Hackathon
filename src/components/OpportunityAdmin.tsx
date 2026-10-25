@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
@@ -54,6 +54,13 @@ const emptyDraft: OpportunityDraft = {
   status: 'draft',
 };
 
+const maxBannerSizeBytes = 5 * 1024 * 1024;
+const bannerTypes = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+} as const;
+
 function opportunitySaveError(error: unknown): string {
   const details = error && typeof error === 'object'
     ? error as { message?: unknown; code?: unknown }
@@ -96,6 +103,10 @@ function toDraft(opportunity: Opportunity): OpportunityDraft {
 export function OpportunityAdmin() {
   const [listings, setListings] = useState<Opportunity[]>([]);
   const [draft, setDraft] = useState(emptyDraft);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreviewUrl, setBannerPreviewUrl] = useState('');
+  const [bannerInputKey, setBannerInputKey] = useState(0);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [editingId, setEditingId] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -132,13 +143,49 @@ export function OpportunityAdmin() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (!bannerFile) {
+      setBannerPreviewUrl('');
+      return;
+    }
+    const previewUrl = URL.createObjectURL(bannerFile);
+    setBannerPreviewUrl(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [bannerFile]);
+
   function update<K extends keyof OpportunityDraft>(key: K, value: OpportunityDraft[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
   }
 
   function resetForm() {
     setDraft(emptyDraft);
+    setBannerFile(null);
+    setBannerInputKey((key) => key + 1);
     setEditingId('');
+  }
+
+  function selectBannerFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] || null;
+    setError('');
+    setMessage('');
+    if (!file) {
+      setBannerFile(null);
+      return;
+    }
+    if (!Object.hasOwn(bannerTypes, file.type)) {
+      setBannerFile(null);
+      event.target.value = '';
+      setError('Choose a JPEG, PNG, or WebP image for the opportunity banner.');
+      return;
+    }
+    if (file.size > maxBannerSizeBytes) {
+      setBannerFile(null);
+      event.target.value = '';
+      setError('The opportunity banner image must be 5 MB or smaller.');
+      return;
+    }
+    setBannerFile(file);
+    update('banner_image_url', '');
   }
 
   async function saveListing(event: FormEvent<HTMLFormElement>) {
@@ -152,7 +199,7 @@ export function OpportunityAdmin() {
       setSaving(false);
       return;
     }
-    if (draft.banner_image_url.trim() && !isValidWebUrl(draft.banner_image_url.trim())) {
+    if (!bannerFile && draft.banner_image_url.trim() && !isValidWebUrl(draft.banner_image_url.trim())) {
       setError('The banner image URL must begin with https://.');
       setSaving(false);
       return;
@@ -189,30 +236,51 @@ export function OpportunityAdmin() {
       return;
     }
 
-    const payload = {
-      title: draft.title.trim(),
-      organization: draft.organization.trim(),
-      category: draft.category,
-      summary: draft.summary.trim(),
-      source_name: draft.source_name.trim(),
-      source_url: draft.source_url.trim(),
-      banner_image_url: draft.banner_image_url.trim() || null,
-      location: draft.location.trim(),
-      provinces: selectedProvinces,
-      remote_ok: draft.remote_ok,
-      minimum_nqf_level: minNqf,
-      required_skills: draft.required_skills_text.split(',').map((item) => item.trim()).filter(Boolean),
-      shift_types: draft.shift_types,
-      salary_min_monthly: salaryMin,
-      salary_max_monthly: salaryMax,
-      closing_date: closingDate,
-      verified_at: today,
-      status: draft.status as OpportunityStatus,
-      withdrawn_at: null,
-    };
+    let uploadedBannerPath = '';
+    let listingSaved = false;
 
     try {
       const supabase = getSupabase();
+      let bannerImageUrl = draft.banner_image_url.trim() || null;
+      if (bannerFile) {
+        setUploadingBanner(true);
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) throw new Error('Sign in again before uploading an opportunity banner.');
+        const extension = bannerTypes[bannerFile.type as keyof typeof bannerTypes];
+        uploadedBannerPath = `${authData.user.id}/${crypto.randomUUID()}.${extension}`;
+        const { error: uploadError } = await supabase.storage
+          .from('opportunity-banners')
+          .upload(uploadedBannerPath, bannerFile, {
+            contentType: bannerFile.type,
+            cacheControl: '3600',
+            upsert: false,
+          });
+        if (uploadError) throw uploadError;
+        bannerImageUrl = supabase.storage.from('opportunity-banners').getPublicUrl(uploadedBannerPath).data.publicUrl;
+      }
+
+      const payload = {
+        title: draft.title.trim(),
+        organization: draft.organization.trim(),
+        category: draft.category,
+        summary: draft.summary.trim(),
+        source_name: draft.source_name.trim(),
+        source_url: draft.source_url.trim(),
+        banner_image_url: bannerImageUrl,
+        location: draft.location.trim(),
+        provinces: selectedProvinces,
+        remote_ok: draft.remote_ok,
+        minimum_nqf_level: minNqf,
+        required_skills: draft.required_skills_text.split(',').map((item) => item.trim()).filter(Boolean),
+        shift_types: draft.shift_types,
+        salary_min_monthly: salaryMin,
+        salary_max_monthly: salaryMax,
+        closing_date: closingDate,
+        verified_at: today,
+        status: draft.status as OpportunityStatus,
+        withdrawn_at: null,
+      };
+
       if (editingId) {
         const { error: saveError } = await supabase.from('opportunities').update(payload).eq('id', editingId);
         if (saveError) throw saveError;
@@ -222,14 +290,24 @@ export function OpportunityAdmin() {
         const { error: saveError } = await supabase.from('opportunities').insert({ ...payload, created_by: authData.user.id });
         if (saveError) throw saveError;
       }
+      listingSaved = true;
       await loadListings();
       setMessage(editingId ? 'Opportunity updated.' : 'Opportunity added to the review queue.');
       resetForm();
     } catch (caught) {
       console.error('Could not save opportunity:', caught);
+      if (uploadedBannerPath && !listingSaved) {
+        try {
+          const { error: cleanupError } = await getSupabase().storage.from('opportunity-banners').remove([uploadedBannerPath]);
+          if (cleanupError) console.error('Could not remove the unlinked opportunity banner upload:', cleanupError);
+        } catch (cleanupError) {
+          console.error('Could not remove the unlinked opportunity banner upload:', cleanupError);
+        }
+      }
       setError(opportunitySaveError(caught));
     } finally {
       setSaving(false);
+      setUploadingBanner(false);
     }
   }
 
@@ -308,10 +386,37 @@ export function OpportunityAdmin() {
             <input id="opportunity-source-url" className={inputClass} type="url" required placeholder="https://" value={draft.source_url} onChange={(event) => update('source_url', event.target.value)} />
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="opportunity-banner-image" className="label">Opportunity banner image URL <span className="font-normal text-slate-500">(optional)</span></label>
-            <input id="opportunity-banner-image" className={inputClass} type="url" placeholder="https://source.example/image.jpg" value={draft.banner_image_url} onChange={(event) => update('banner_image_url', event.target.value)} />
-            <p className="mt-1 text-xs text-slate-500">Use an image you have permission to display. Must be hosted over HTTPS; leave blank to show the site placeholder.</p>
-            {draft.banner_image_url && isValidWebUrl(draft.banner_image_url) && <img src={draft.banner_image_url} alt="Opportunity banner preview" className="mt-3 h-32 w-full rounded-lg border border-slate-200 object-cover sm:max-w-md" />}
+            <label htmlFor="opportunity-banner-file" className="label">Upload your own opportunity banner <span className="font-normal text-slate-500">(optional)</span></label>
+            <input
+              key={bannerInputKey}
+              id="opportunity-banner-file"
+              className={inputClass}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              aria-describedby="opportunity-banner-guidance"
+              onChange={selectBannerFile}
+            />
+            <p id="opportunity-banner-guidance" className="mt-1 text-xs leading-5 text-slate-500">JPEG, PNG, or WebP · maximum 5 MB. Use an image you have permission to publish. Uploads are stored in the site’s Supabase Storage bucket.</p>
+            {bannerFile && <button type="button" className="link mt-2 text-sm" onClick={() => { setBannerFile(null); setBannerInputKey((key) => key + 1); }}>Remove selected image</button>}
+            {!bannerFile && (
+              <div className="mt-3">
+                <label htmlFor="opportunity-banner-image" className="label">Or use an existing HTTPS image URL</label>
+                <input
+                  id="opportunity-banner-image"
+                  className={inputClass}
+                  type="url"
+                  placeholder="https://source.example/image.jpg"
+                  value={draft.banner_image_url}
+                  onChange={(event) => {
+                    setBannerFile(null);
+                    update('banner_image_url', event.target.value);
+                  }}
+                />
+              </div>
+            )}
+            {(bannerPreviewUrl || (draft.banner_image_url && isValidWebUrl(draft.banner_image_url))) && (
+              <img src={bannerPreviewUrl || draft.banner_image_url} alt="Opportunity banner preview" className="mt-3 h-32 w-full rounded-lg border border-slate-200 object-cover sm:max-w-md" />
+            )}
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="opportunity-summary" className="label">Plain-language summary</label>
@@ -390,7 +495,7 @@ export function OpportunityAdmin() {
           {error && <p className="sm:col-span-2 text-sm text-red-700" role="alert">{error}</p>}
           {message && <p className="sm:col-span-2 text-sm text-emerald-dark" role="status">{message}</p>}
           <div className="sm:col-span-2 flex flex-wrap gap-3">
-            <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Save changes' : 'Add opportunity'}</button>
+            <button type="submit" className="btn-primary" disabled={saving}>{uploadingBanner ? 'Uploading banner...' : saving ? 'Saving...' : editingId ? 'Save changes' : 'Add opportunity'}</button>
             {editingId && <button type="button" className="btn-secondary" onClick={resetForm} disabled={saving}>Cancel edit</button>}
           </div>
         </form>
