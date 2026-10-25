@@ -195,6 +195,11 @@ export function categoryLabel(category: OpportunityCategory): string {
   return opportunityCategories.find((item) => item.value === category)?.label || category;
 }
 
+export function opportunityCoverageLabel(provinces: string[]): string {
+  const matchesAllProvinces = southAfricanProvinces.every((province) => provinces.includes(province));
+  return provinces.length === 0 || matchesAllProvinces ? 'Nationwide' : provinces.join(', ');
+}
+
 export function isValidWebUrl(value: string): boolean {
   try {
     const url = new URL(value);

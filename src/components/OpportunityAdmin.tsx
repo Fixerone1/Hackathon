@@ -7,6 +7,7 @@ import {
   isValidWebUrl,
   nqfLevels,
   normalizeOpportunity,
+  opportunityCoverageLabel,
   opportunityCategories,
   southAfricanProvinces,
   type Opportunity,
@@ -23,7 +24,8 @@ type OpportunityDraft = {
   source_url: string;
   banner_image_url: string;
   location: string;
-  provinces_text: string;
+  nationwide: boolean;
+  provinces: string[];
   remote_ok: boolean;
   minimum_nqf_level: string;
   required_skills_text: string;
@@ -43,7 +45,8 @@ const emptyDraft: OpportunityDraft = {
   source_url: '',
   banner_image_url: '',
   location: '',
-  provinces_text: '',
+  nationwide: true,
+  provinces: [],
   remote_ok: false,
   minimum_nqf_level: '',
   required_skills_text: '',
@@ -79,6 +82,8 @@ function opportunitySaveError(error: unknown): string {
 }
 
 function toDraft(opportunity: Opportunity): OpportunityDraft {
+  const includesAllProvinces = southAfricanProvinces.every((province) => opportunity.provinces.includes(province));
+  const nationwide = opportunity.provinces.length === 0 || includesAllProvinces;
   return {
     title: opportunity.title,
     organization: opportunity.organization,
@@ -88,7 +93,8 @@ function toDraft(opportunity: Opportunity): OpportunityDraft {
     source_url: opportunity.source_url,
     banner_image_url: opportunity.banner_image_url || '',
     location: opportunity.location,
-    provinces_text: opportunity.provinces.join(', '),
+    nationwide,
+    provinces: nationwide ? [] : opportunity.provinces,
     remote_ok: opportunity.remote_ok,
     minimum_nqf_level: opportunity.minimum_nqf_level === null ? '' : String(opportunity.minimum_nqf_level),
     required_skills_text: opportunity.required_skills.join(', '),
@@ -211,13 +217,12 @@ export function OpportunityAdmin() {
       setSaving(false);
       return;
     }
-    const selectedProvinces = draft.provinces_text.split(',').map((item) => item.trim()).filter(Boolean);
-    const invalidProvinces = selectedProvinces.filter((province) => !southAfricanProvinces.includes(province as (typeof southAfricanProvinces)[number]));
-    if (invalidProvinces.length > 0) {
-      setError(`Use the official province names: ${southAfricanProvinces.join(', ')}.`);
+    if (!draft.nationwide && draft.provinces.length === 0) {
+      setError('Choose Nationwide or select at least one province.');
       setSaving(false);
       return;
     }
+    const selectedProvinces = draft.nationwide ? [] : draft.provinces;
     const minNqf = draft.minimum_nqf_level ? Number(draft.minimum_nqf_level) : null;
     if (minNqf !== null && (!Number.isInteger(minNqf) || minNqf < 1 || minNqf > 10)) {
       setError('Minimum NQF level must be a number from 1 to 10.');
@@ -425,12 +430,51 @@ export function OpportunityAdmin() {
           <div>
             <label htmlFor="opportunity-location" className="label">Location or coverage</label>
             <input id="opportunity-location" className={inputClass} maxLength={160} placeholder="For example, Johannesburg or National" value={draft.location} onChange={(event) => update('location', event.target.value)} />
+            <p className="mt-1 text-xs text-slate-500">Optional place name or extra location detail. Use the coverage selector for nationwide or province availability.</p>
           </div>
-          <div>
-            <label htmlFor="opportunity-provinces" className="label">Applicable provinces</label>
-            <input id="opportunity-provinces" className={inputClass} placeholder="Gauteng, Limpopo (blank means all)" value={draft.provinces_text} onChange={(event) => update('provinces_text', event.target.value)} />
-            <p className="mt-1 text-xs text-slate-500">Use province names separated by commas.</p>
-          </div>
+          <fieldset className="sm:col-span-2">
+            <legend className="label">Where is this opportunity available?</legend>
+            <label className="flex min-h-12 items-center gap-3 rounded-xl border border-slate-300 bg-sunshine-light/40 px-3 py-2 text-sm font-semibold text-midnight">
+              <input
+                type="checkbox"
+                className="h-5 w-5 accent-sunshine-dark"
+                checked={draft.nationwide}
+                onChange={(event) => {
+                  setDraft((current) => ({
+                    ...current,
+                    nationwide: event.target.checked,
+                    provinces: event.target.checked ? [] : current.provinces,
+                  }));
+                }}
+              />
+              Nationwide — available in all provinces
+            </label>
+            <p className="mt-2 text-xs leading-5 text-slate-500">For province-specific opportunities, uncheck Nationwide and choose every applicable province below. Choosing all provinces is treated as nationwide.</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {southAfricanProvinces.map((province) => (
+                <label key={province} className={`flex min-h-11 items-center gap-3 rounded-lg border border-slate-300 px-3 py-2 text-sm ${draft.nationwide ? 'bg-slate-50 text-slate-500' : 'bg-white text-slate-700'}`}>
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-sunshine-dark"
+                    checked={draft.provinces.includes(province)}
+                    disabled={draft.nationwide}
+                    onChange={(event) => {
+                      const selected = event.target.checked
+                        ? [...draft.provinces, province]
+                        : draft.provinces.filter((item) => item !== province);
+                      const allSelected = selected.length === southAfricanProvinces.length;
+                      setDraft((current) => ({
+                        ...current,
+                        nationwide: allSelected,
+                        provinces: allSelected ? [] : selected,
+                      }));
+                    }}
+                  />
+                  {province}
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <div>
             <label htmlFor="opportunity-minimum-nqf" className="label">Stated minimum NQF <span className="font-normal text-slate-500">(optional)</span></label>
             <select id="opportunity-minimum-nqf" className={inputClass} value={draft.minimum_nqf_level} onChange={(event) => update('minimum_nqf_level', event.target.value)}>
@@ -523,6 +567,7 @@ export function OpportunityAdmin() {
                       </span>
                     </div>
                     <p className="mt-1 text-sm text-slate-600">{opportunity.organization} · {categoryLabel(opportunity.category)} · Source: {opportunity.source_name}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-600">Coverage: {opportunityCoverageLabel(opportunity.provinces)}</p>
                     {(opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
                       <p className="mt-1 text-xs text-slate-500">
                         {opportunity.shift_types.length > 0 && `Shifts: ${opportunity.shift_types.join(', ')}`}

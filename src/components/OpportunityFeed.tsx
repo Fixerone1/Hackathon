@@ -8,6 +8,7 @@ import {
   categoryLabel,
   matchOpportunity,
   normalizeOpportunity,
+  opportunityCoverageLabel,
   opportunityCategories,
   type LearnerOpportunityAction,
   type Opportunity,
@@ -564,19 +565,17 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   <summary className="min-h-10 cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-midnight marker:text-emerald-dark hover:bg-slate-50">View requirements and plan a return date</summary>
                   <div className="mt-3 border-l-2 border-sunshine-dark pl-4">
                     <p className="max-w-4xl whitespace-pre-line text-sm leading-6 text-slate-700">{opportunity.summary}</p>
-                    {(opportunity.minimum_nqf_level !== null || opportunity.required_skills.length > 0 || opportunity.provinces.length > 0 || opportunity.remote_ok || opportunity.shift_types.length > 0 || opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && (
-                      <div className="mt-3">
-                        <p className="metadata-label mb-2">Listing details · confirm against the original advert</p>
-                        <div className="flex flex-wrap gap-2 text-sm text-slate-700">
-                          {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
-                          {opportunity.required_skills.length > 0 && <span className="chip">Skills: {opportunity.required_skills.join(', ')}</span>}
-                          {opportunity.provinces.length > 0 && <span className="chip">Province: {opportunity.provinces.join(', ')}</span>}
-                          {opportunity.remote_ok && <span className="chip">Remote option</span>}
-                          {opportunity.shift_types.length > 0 && <span className="chip">Shifts: {opportunity.shift_types.join(', ')}</span>}
-                          {(opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && <span className="chip">Monthly pay: R {opportunity.salary_min_monthly ?? '—'} to {opportunity.salary_max_monthly ?? '—'}</span>}
-                        </div>
+                    <div className="mt-3">
+                      <p className="metadata-label mb-2">Listing details · confirm against the original advert</p>
+                      <div className="flex flex-wrap gap-2 text-sm text-slate-700">
+                        <span className="chip">Coverage: {opportunityCoverageLabel(opportunity.provinces)}</span>
+                        {opportunity.minimum_nqf_level !== null && <span className="chip">Minimum NQF {opportunity.minimum_nqf_level}</span>}
+                        {opportunity.required_skills.length > 0 && <span className="chip">Skills: {opportunity.required_skills.join(', ')}</span>}
+                        {opportunity.remote_ok && <span className="chip">Remote option</span>}
+                        {opportunity.shift_types.length > 0 && <span className="chip">Shifts: {opportunity.shift_types.join(', ')}</span>}
+                        {(opportunity.salary_min_monthly !== null || opportunity.salary_max_monthly !== null) && <span className="chip">Monthly pay: R {opportunity.salary_min_monthly ?? '—'} to {opportunity.salary_max_monthly ?? '—'}</span>}
                       </div>
-                    )}
+                    </div>
                     {reasons.length > 0 && <p className="mt-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
                     {cautions.length > 0 && <p className="mt-2 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
                     <p className="mt-3 text-xs leading-5 text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Apply on the employer&apos;s site; Ukukhanya does not submit applications.</p>
