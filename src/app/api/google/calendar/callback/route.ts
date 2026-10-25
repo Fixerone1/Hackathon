@@ -6,7 +6,12 @@ export const runtime = 'nodejs';
 function callbackCookie(request: Request): string | null {
   const value = request.headers.get('cookie')?.split(';').map((part) => part.trim())
     .find((part) => part.startsWith('google_calendar_oauth_state='));
-  return value ? decodeURIComponent(value.slice('google_calendar_oauth_state='.length)) : null;
+  if (!value) return null;
+  try {
+    return decodeURIComponent(value.slice('google_calendar_oauth_state='.length));
+  } catch {
+    return null;
+  }
 }
 
 function settingsRedirect(request: Request, result: 'connected' | 'error') {

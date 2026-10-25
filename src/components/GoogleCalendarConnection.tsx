@@ -13,7 +13,7 @@ export function GoogleCalendarConnection() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  const loadConnection = useCallback(async () => {
+  const loadConnection = useCallback(async (): Promise<boolean> => {
     try {
       const supabase = getSupabase();
       const { data, error: sessionError } = await supabase.auth.getSession();
@@ -25,27 +25,35 @@ export function GoogleCalendarConnection() {
       const result = await response.json() as { connected?: boolean; error?: string };
       if (!response.ok) throw new Error(result.error || 'Google Calendar status could not be loaded.');
       setConnected(result.connected === true);
-      setError(localStorage.getItem(connectionErrorKey) || '');
+      const storedError = localStorage.getItem(connectionErrorKey);
+      setError(storedError || '');
+      return result.connected === true;
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Google Calendar status could not be loaded.');
+      return false;
     }
   }, []);
 
   useEffect(() => {
-    void loadConnection();
-    window.addEventListener('uk-calendar-connected', loadConnection);
     const params = new URLSearchParams(window.location.search);
+    const callbackResult = params.has('calendar_connected') ? 'connected' : params.has('calendar_error') ? 'error' : null;
     if (params.has('calendar_connected')) {
       localStorage.removeItem(connectionErrorKey);
-      setError('');
-      setMessage('Google Calendar is connected. Your saved dates will sync automatically.');
-      window.history.replaceState({}, '', window.location.pathname);
     } else if (params.has('calendar_error')) {
       localStorage.removeItem(connectionErrorKey);
-      setError('Google Calendar could not be connected. Check the Google OAuth setup and try again.');
-      window.history.replaceState({}, '', window.location.pathname);
     }
-    return () => window.removeEventListener('uk-calendar-connected', loadConnection);
+    if (callbackResult) window.history.replaceState({}, '', window.location.pathname);
+    void loadConnection().then((isConnected) => {
+      if (callbackResult === 'connected' && isConnected) {
+        setError('');
+        setMessage('Google Calendar is connected. Your saved dates will sync automatically.');
+      } else if (callbackResult === 'connected') {
+        setError('Google Calendar authorization succeeded, but the connection could not be confirmed. Refresh Settings.');
+      } else if (callbackResult === 'error') {
+        setError('Google Calendar could not be connected. Check the Google OAuth setup and try again.');
+      }
+    });
+    return undefined;
   }, [loadConnection]);
 
   async function connect() {

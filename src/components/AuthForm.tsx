@@ -132,7 +132,6 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
         <span className="bg-white px-3 text-xs font-medium text-slate-500">or</span>
         <span className="absolute inset-x-0 top-1/2 -z-10 border-t border-slate-200" aria-hidden="true" />
       </div>
-      {isSignup && <input type="hidden" name="privacy_consent_google" value={privacyAgreed ? 'true' : 'false'} />}
       {isSignup && !privacyAgreed && <p className="-mt-2 text-xs text-slate-500">Agree to the privacy notice above to continue with Google.</p>}
       <button type="button" onClick={() => void handleGoogleSignIn()} disabled={submitting || Boolean(configurationError)}
         className="flex min-h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-midnight transition hover:bg-slate-50 disabled:opacity-60">

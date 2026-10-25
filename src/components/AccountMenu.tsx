@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
@@ -18,7 +18,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
   const [signingOut, setSigningOut] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
-  async function updateAccount(account: User | null) {
+  const updateAccount = useCallback(async (account: User | null) => {
     if (!account) {
       setUser(null);
       setAvatarUrl('');
@@ -38,10 +38,31 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
       setAvatarUrl(providerAvatar.startsWith('https://') ? providerAvatar : '');
       return;
     }
-    const { data, error: avatarError } = await getSupabase().storage.from('profile-avatars').createSignedUrl(avatarPath, 3600);
-    if (avatarError) throw avatarError;
-    setAvatarUrl(data.signedUrl);
-  }
+    setAvatarUrl('');
+  }, [onUserChange]);
+
+  useEffect(() => {
+    const avatarPath: string = user?.avatarPath || '';
+    if (!avatarPath) return;
+    let active = true;
+    let refreshTimer: number | undefined;
+    async function refreshAvatarUrl() {
+      try {
+        const { data, error: avatarError } = await getSupabase().storage.from('profile-avatars').createSignedUrl(avatarPath, 3600);
+        if (avatarError) throw avatarError;
+        if (!active) return;
+        setAvatarUrl(data.signedUrl);
+        refreshTimer = window.setTimeout(() => void refreshAvatarUrl(), 50 * 60 * 1000);
+      } catch (caught) {
+        if (active) setError(caught instanceof Error ? caught.message : 'Profile photo could not be loaded.');
+      }
+    }
+    void refreshAvatarUrl();
+    return () => {
+      active = false;
+      if (refreshTimer !== undefined) window.clearTimeout(refreshTimer);
+    };
+  }, [user?.avatarPath]);
 
   useEffect(() => {
     let active = true;
@@ -75,7 +96,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
       setError(caught instanceof Error ? caught.message : 'Account status could not be loaded.');
     }
     return () => { active = false; };
-  }, [onUserChange]);
+  }, [onUserChange, updateAccount]);
 
   async function signOut() {
     setSigningOut(true);
@@ -170,7 +191,7 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
             <p className="truncate text-sm font-bold">{user.name}</p>
             <p className="truncate text-xs text-slate-600">{user.email}</p>
           </div>
-          <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
+          <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light focus-within:ring-2 focus-within:ring-sunshine-dark">
             <ImagePlus size={17} aria-hidden="true" />
             {uploadingAvatar ? 'Uploading photo...' : 'Add or change photo'}
             <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={uploadingAvatar} onChange={(event) => {

@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <div className="space-y-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7">
           <section>
             <h2 className="section-heading">How your information is used</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-700">Ukukhanya stores your name and email for account access, and profile, checklist, and notification settings to provide the learner workspace. Your data is stored in Supabase and protected by user-specific row-level security. Profile photos you add are stored privately. If you connect Google Calendar, encrypted authorization credentials are stored by the service so it can maintain the application and closing-date reminders you asked it to create.</p>
+            <p className="mt-2 text-sm leading-7 text-slate-700">Ukukhanya stores your name and email for account access, and profile, checklist, notification, and CV details to provide the learner workspace. Your data is stored in Supabase and protected by user-specific row-level security. Profile photos you add are stored privately. If you connect Google Calendar, encrypted authorization credentials are stored by the service so it can maintain the application and closing-date reminders you asked it to create.</p>
           </section>
           <section>
             <h2 className="section-heading">What we do not ask for</h2>
