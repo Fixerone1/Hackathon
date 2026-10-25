@@ -57,6 +57,7 @@ The `/api/ai` endpoint uses Azure OpenAI when configured with the values in `.en
 Authentication is delegated to Supabase; passwords are not stored by this application. The browser client stores its session in browser storage, not an HttpOnly cookie. Migrations store learner profile, checklist, privacy consent, and email preferences with per-user row-level security. Email categories are off by default; preference and consent timestamps are saved, but email sending is not implemented.
 
 For the current schema-to-feature inventory, known mismatches, rollback notes, and the authenticated-user export query, see [`docs/sql-audit.md`](docs/sql-audit.md).
+For the public-source consumer-app review and patterns selected for CareerForge, see [`docs/benchmark.md`](docs/benchmark.md).
 
 ### Schema map
 

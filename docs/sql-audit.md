@@ -107,3 +107,17 @@ select jsonb_build_object(
 ```
 
 This query is for an authenticated user session, not an admin/service-role export.
+
+## Implementation status addendum (2026-10-25)
+
+The following additive changes were made after the audit. The original findings above describe the pre-fix schema, as requested.
+
+- New ordered migrations `20261026000000` through `20261026004000` restrict opportunity SELECT to authenticated users, remove the saved-draft policy bypass, keep creator attribution nullable with `ON DELETE SET NULL`, archive legacy `withdrawn` records as drafts, enforce the requested draft/published and category values, require HTTPS source URLs, add duplicate detection/uniqueness and full-text/category/province indexes, and validate profile dropdown/range values.
+- `src/lib/opportunities.ts` is now the shared source for category labels, NQF levels, and the nine provinces. The admin form uses HTTPS validation and the draft/published type.
+- Settings export now includes the learner's saved/applied opportunity actions and scheduled return dates.
+- `supabase/tests/database/rls.sql` contains 24 pgTAP checks for user isolation, learner write restrictions, app-metadata admin access, anonymous opportunity access, draft visibility and RLS enablement.
+- `supabase/config.toml`, `npm run db:reset`, and `npm run db:test` provide local setup commands. README has the full schema diagram and ordered migration list.
+
+**Not verified here:** `npm run db:reset` could not complete in the dev container. Supabase CLI startup timed out while initializing its local services; direct use of the resulting Postgres container lacked Supabase's `auth.jwt()` helper, so that attempt stopped at the original opportunity policy. Do not treat the pgTAP suite or migration chain as passing until run through a functioning Supabase local stack. A local reset is expected to discard only the local test database.
+
+**Still missing and intentionally not claimed as implemented:** stored match score/tier/breakdown/reasons/gaps, pathways, a richer application follow-up/status history, notification channels/due-send queue/delivery audit, CV/assessment persistence, and a server-assembled/cached Forge `UserContext`. The current application computes matches in the client, tracks saved/applied plus a scheduled date, and has no email delivery. These require feature code and RLS policies in addition to schema; no unused stand-in tables were added.
