@@ -133,6 +133,8 @@ The learner dashboard and Employment Hub show published opportunities from Supab
 
 Listings are admin-curated rather than scraped. Check the live original advert and its terms before publishing; use a short summary you have permission to share. Possible primary sources include [SAYouth](https://sayouth.mobi/), the [DPSA Public Service Vacancy Circular](https://www.dpsa.gov.za/newsroom/psvc/), and [NSFAS](https://www.nsfas.org.za/), as well as the opportunity provider's own advert. Each listing is hidden from the feed if its closing date passes or it has not been re-verified for 30 days. Admins can confirm that a listing is still open from `/admin`.
 
+The learner feed can search by role, organisation, location, source, or listing details and filter by opportunity type. If no current listing matches, it links to SAYouth, DPSA, and NSFAS directly; these are source directories, not live listings imported or verified by Ukukhanya.
+
 Apply the opportunity migration, grant `app_metadata.role = admin` to a trusted account, sign in, and add a verified listing at `/admin` before learners will see entries. Automated source ingestion is not enabled: the Adzuna API requires registration credentials, and South African coverage must be confirmed before relying on it. Email alerts are also not enabled; this release uses the on-site feed only.
 
 `prisma/schema.prisma` is a legacy planning artifact and is not applied by this application. Supabase migrations are the active database schema. Keep every user table protected by RLS and configure a strict Content Security Policy before production use.

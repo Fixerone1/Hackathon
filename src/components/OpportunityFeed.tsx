@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Heart, Image, Linkedin, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, Image, Linkedin, MessageCircle } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import {
   categoryLabel,
@@ -18,6 +18,26 @@ type OpportunityFeedProps = { mode?: 'matches' | 'applications' };
 type ActionRow = { opportunity_id: string; status: LearnerOpportunityAction; scheduled_apply_date: string | null };
 type AccountDetails = { name: string; email: string };
 const pageSize = 5;
+const officialOpportunitySources = [
+  {
+    name: 'SAYouth',
+    type: 'Jobs and learning opportunities',
+    description: 'Explore opportunities on the national youth platform.',
+    href: 'https://sayouth.mobi/',
+  },
+  {
+    name: 'DPSA vacancy circulars',
+    type: 'Public service vacancies',
+    description: 'Check the latest official Public Service Vacancy Circular.',
+    href: 'https://www.dpsa.gov.za/newsroom/psvc/',
+  },
+  {
+    name: 'NSFAS',
+    type: 'Student financial aid',
+    description: 'Check funding information and application updates directly.',
+    href: 'https://www.nsfas.org.za/',
+  },
+];
 
 function formatDate(value: string | null): string {
   if (!value) return 'No closing date listed';
@@ -132,6 +152,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const [actions, setActions] = useState<Record<string, LearnerOpportunityAction>>({});
   const [reminders, setReminders] = useState<Record<string, string>>({});
   const [category, setCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState('');
@@ -210,25 +231,35 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
   const matches = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     const verificationCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const query = searchQuery.trim().toLocaleLowerCase();
     return opportunities
       .filter((opportunity) => mode === 'applications' || opportunity.status === 'published')
       .filter((opportunity) => mode === 'applications' || !opportunity.closing_date || opportunity.closing_date >= today)
       .filter((opportunity) => mode === 'applications' || opportunity.verified_at >= verificationCutoff)
       .filter((opportunity) => mode !== 'applications' || Boolean(actions[opportunity.id]))
       .filter((opportunity) => category === 'all' || opportunity.category === category)
+      .filter((opportunity) => !query || [
+        opportunity.title,
+        opportunity.organization,
+        opportunity.location,
+        opportunity.summary,
+        opportunity.source_name,
+        categoryLabel(opportunity.category),
+        ...opportunity.provinces,
+      ].some((value) => value.toLocaleLowerCase().includes(query)))
       .map((opportunity) => ({
         ...matchOpportunity(opportunity, profile),
         action: actions[opportunity.id],
       }))
       .sort((left, right) => (right.score ?? -1) - (left.score ?? -1));
-  }, [actions, category, mode, opportunities, profile]);
+  }, [actions, category, mode, opportunities, profile, searchQuery]);
 
   const pageCount = Math.max(1, Math.ceil(matches.length / pageSize));
   const pageMatches = matches.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
     setPage(1);
-  }, [category, mode]);
+  }, [category, mode, searchQuery]);
 
   async function setAction(opportunityId: string, status: LearnerOpportunityAction | null) {
     setBusyId(opportunityId);
@@ -391,22 +422,35 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
   return (
     <section aria-label={mode === 'applications' ? 'Saved opportunities and applications' : 'Personalized opportunities'}>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-        <div className="w-full text-center sm:text-left">
-          <p className="text-sm text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Current listings from verified sources, ranked against the details in your profile.'}</p>
-        </div>
-        <div className="mx-auto w-full max-w-xs sm:mx-0">
-          <label htmlFor="opportunity-category" className="label text-center sm:text-left">Opportunity type</label>
-          <select id="opportunity-category" className="input" value={category} onChange={(event) => setCategory(event.target.value)}>
-            <option value="all">All types</option>
-            {opportunityCategories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-          </select>
+      <div className="mb-5">
+        <p className="mb-4 text-sm leading-6 text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Search current listings from verified sources. Matches use the details in your profile; check each original advert before applying.'}</p>
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,0.55fr)]">
+          <div>
+            <label htmlFor="opportunity-search" className="label">Search opportunities</label>
+            <input
+              id="opportunity-search"
+              className="input"
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Role, organisation, location, or skill"
+            />
+          </div>
+          <div>
+            <label htmlFor="opportunity-category" className="label">Opportunity type</label>
+            <select id="opportunity-category" className="input" value={category} onChange={(event) => setCategory(event.target.value)}>
+              <option value="all">All types</option>
+              {opportunityCategories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            </select>
+          </div>
         </div>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-y border-slate-200 py-3 text-sm" aria-live="polite">
         <p className="font-medium text-midnight">
-          {matches.length === 0 ? '0 opportunities' : `Showing ${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, matches.length)} of ${matches.length} opportunities`}
+          {matches.length === 0
+            ? '0 opportunities'
+            : `Showing ${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, matches.length)} of ${matches.length} opportunities`}
         </p>
         {pageCount > 1 && <nav className="flex items-center gap-2" aria-label="Opportunity pages">
           <button type="button" className="btn-secondary min-h-9 px-3" aria-label="Previous opportunities" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}><ChevronLeft size={16} aria-hidden="true" /></button>
@@ -418,14 +462,64 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       {error && <p className="mb-5 text-sm text-red-700" role="alert">{error}</p>}
 
       {matches.length === 0 && !error ? (
-        <div className="border-y border-slate-200 py-7 text-center sm:text-left">
-          <h2 className="font-semibold text-midnight">{mode === 'applications' ? 'Nothing saved yet' : 'No current verified listings yet'}</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            {mode === 'applications'
-              ? 'When you save an opportunity or mark that you applied, it will appear here.'
-              : 'Listings appear here after an admin verifies the original source, checks the details, and publishes them. We do not invent or scrape adverts.'}
-          </p>
-          {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
+        <div className="space-y-6">
+          <div className="rounded-2xl border-2 border-sunshine bg-sunshine-light/40 p-5 sm:p-6">
+            <h2 className="font-semibold text-midnight">
+              {mode === 'applications'
+                ? 'Nothing saved yet'
+                : searchQuery.trim() || category !== 'all'
+                  ? 'No opportunities match these filters'
+                  : 'No current verified listings yet'}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-700">
+              {mode === 'applications'
+                ? 'Save a listing from your matches to keep it here, set a reminder, and track when you apply.'
+                : searchQuery.trim() || category !== 'all'
+                  ? 'Try a different search or type. Filters only change what you see; they do not remove saved listings.'
+                  : 'New listings appear here after they are checked against the original source. Until then, you can search these official opportunity sites directly.'}
+            </p>
+            {(searchQuery.trim() || category !== 'all') && (
+              <button
+                type="button"
+                className="btn-secondary mt-4 min-h-10"
+                onClick={() => {
+                  setSearchQuery('');
+                  setCategory('all');
+                }}
+              >
+                Clear filters
+              </button>
+            )}
+            {mode === 'applications' && <Link href="/app/employment/opportunities" className="link mt-4 inline-block text-sm">Browse opportunities</Link>}
+          </div>
+          {mode === 'matches' && (
+            <section aria-labelledby="official-opportunity-sources-heading">
+              <div className="mb-3">
+                <p className="eyebrow">Trusted places to start</p>
+                <h2 id="official-opportunity-sources-heading" className="mt-1 text-lg font-semibold text-midnight">Browse official opportunity sources</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600">These links open the provider’s site. Check current availability, requirements, and closing dates there.</p>
+              </div>
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {officialOpportunitySources.map((source) => (
+                  <li key={source.href}>
+                    <a
+                      href={source.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex h-full min-h-36 flex-col rounded-2xl border border-sunshine bg-white p-4 transition hover:bg-sunshine-light/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2"
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">{source.type}</span>
+                      <span className="mt-2 flex items-center justify-between gap-2 font-semibold text-midnight">
+                        {source.name}
+                        <ArrowUpRight size={17} className="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                      </span>
+                      <span className="mt-2 text-sm leading-5 text-slate-600">{source.description}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
       ) : matches.length > 0 ? (
         <ul className="divide-y divide-slate-200 border-y border-slate-200">
