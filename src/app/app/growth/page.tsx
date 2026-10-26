@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { PageIntro } from '@/components/PageIntro';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
 const validationQuestions = [
   'Does the problem affect enough people?',
@@ -194,6 +195,11 @@ export default function GrowthStudioPage() {
           </p>
         </section>
       </main>
+      <PublishedSiteContent
+        contentType="growth_resource"
+        heading="Ideas and growth resources"
+        eyebrow="Explore more"
+      />
     </div>
   );
 }

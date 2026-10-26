@@ -1,5 +1,5 @@
 export const siteContentTypes = [
-  { value: 'announcement', label: 'Learner announcement', placement: 'Dashboard' },
+  { value: 'announcement', label: 'Dashboard announcement', placement: 'Home dashboard' },
   { value: 'learning_resource', label: 'Learning resource or course', placement: 'Employment Hub' },
   { value: 'faq', label: 'Frequently asked question', placement: 'Public homepage' },
   { value: 'homepage_feature', label: 'Homepage feature', placement: 'Public homepage' },

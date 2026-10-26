@@ -3,24 +3,15 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
-import { ArrowUpRight, LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { BrandLogo } from '@/components/BrandLogo';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { GooglePrivacyConsentBridge } from '@/components/GooglePrivacyConsentBridge';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
 
-function LinkedInMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
-      <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.97V9.2h2.96v9.55ZM6.45 7.9a1.72 1.72 0 1 1 0-3.44 1.72 1.72 0 0 1 0 3.44Zm12.3 10.85h-2.95V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.5V9.2h2.84v1.3h.04c.4-.75 1.36-1.55 2.8-1.55 3 0 3.57 1.97 3.57 4.53v5.27Z"/>
-    </svg>
-  );
-}
-
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
   const [workspaceUserId, setWorkspaceUserId] = useState<string | null>(null);
-  const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
   const handleUserChange = useCallback((_signedIn: boolean, userId?: string) => {
     setWorkspaceUserId(userId || null);
   }, []);
@@ -28,9 +19,9 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
   return (
     <>
       {variant === 'workspace' && <GooglePrivacyConsentBridge />}
-      <header className="site-header sticky top-0 z-30 border-b border-slate-200 bg-white text-slate-950 shadow-[0_3px_14px_rgba(10,10,10,0.07)]">
+      <header className="site-header sticky top-0 z-30 border-b border-slate-800 bg-black text-white shadow-[0_3px_14px_rgba(10,10,10,0.18)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:min-h-[68px] sm:gap-4 sm:px-6 lg:px-8">
-          <Link href={variant === 'workspace' ? '/app' : '/'} className="flex shrink-0 items-center gap-2.5 rounded-xl font-bold text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 sm:gap-3" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
+          <Link href={variant === 'workspace' ? '/app' : '/'} className="flex shrink-0 items-center gap-2.5 rounded-xl font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sunshine-dark focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:gap-3" aria-label={variant === 'workspace' ? 'Ukukhanya dashboard' : 'Ukukhanya home'}>
             <span className="grid h-10 w-12 place-items-center overflow-hidden rounded-xl bg-white p-1 sm:h-11 sm:w-14">
               <BrandLogo className="h-full w-full object-contain" />
             </span>
@@ -65,36 +56,6 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
               <p className="mt-4 text-sm leading-6 text-midnight">
                 A practical starting point for work readiness, money confidence, and your next steps.
               </p>
-              <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-xs font-medium text-slate-200">
-                <span className="h-2 w-2 rounded-full bg-sunshine-dark" aria-hidden="true" />
-                South African youth-mobility prototype
-              </span>
-              <div className="mt-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-midnight">Connect with us</p>
-                {linkedInUrl && /^https:\/\/(www\.)?linkedin\.com\//i.test(linkedInUrl) ? (
-                  <a
-                    href={linkedInUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Ukukhanya on LinkedIn (opens in a new tab)"
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald px-4 text-sm font-semibold text-black transition hover:bg-emerald-300 focus-visible:outline-white"
-                  >
-                    <LinkedInMark />
-                    LinkedIn
-                    <ArrowUpRight size={15} aria-hidden="true" />
-                  </a>
-                ) : (
-                  <span
-                    title="Set NEXT_PUBLIC_LINKEDIN_URL to your official LinkedIn page"
-                    aria-label="LinkedIn profile link not configured"
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 px-4 text-sm font-semibold text-slate-200"
-                  >
-                    <LinkedInMark />
-                    LinkedIn
-                    <span className="text-xs font-normal text-midnight">Coming soon</span>
-                  </span>
-                )}
-              </div>
             </div>
 
             <nav aria-label="Explore Ukukhanya">

@@ -162,7 +162,10 @@ export function SiteContentAdmin() {
         if (saveError) throw saveError;
       }
       await loadContent();
-      setMessage(editingId ? 'Content updated.' : 'Content created.');
+      const destination = siteContentTypes.find((type) => type.value === draft.content_type)?.placement;
+      setMessage(draft.status === 'published'
+        ? `Content ${editingId ? 'updated and' : ''} published to ${destination || 'its site section'}.`
+        : editingId ? 'Content updated; it is not currently published.' : 'Draft created; publish it when it is ready.');
       resetForm();
     } catch (caught) {
       console.error('Could not save site content:', caught);
@@ -190,7 +193,10 @@ export function SiteContentAdmin() {
         .eq('id', item.id);
       if (saveError) throw saveError;
       await loadContent();
-      setMessage(status === 'published' ? 'Content published to its site section.' : `Content moved to ${status}.`);
+      const destination = siteContentTypes.find((type) => type.value === item.content_type)?.placement;
+      setMessage(status === 'published'
+        ? `Content published to ${destination || 'its site section'}.`
+        : `Content moved to ${status}.`);
     } catch (caught) {
       setError(contentError(caught));
     } finally {
@@ -224,7 +230,7 @@ export function SiteContentAdmin() {
       <section aria-labelledby="site-content-form-heading">
         <h2 id="site-content-form-heading" className="text-xl font-semibold text-midnight">{editingId ? 'Edit site content' : 'Create site content'}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Publish learner announcements, learning resources, seminars, events, and other opportunity information. Application listings remain separate; content published as an opportunity resource appears in the Work and Study information feeds.
+          Publish dashboard announcements, learning resources, money and growth guidance, seminars, events, and other opportunity information. Choose a destination below; published content appears in that section. Application listings remain separate from informational content.
         </p>
         <form className="mt-5 grid gap-5 border-y border-slate-200 py-6 sm:grid-cols-2" onSubmit={saveContent}>
           <div>
