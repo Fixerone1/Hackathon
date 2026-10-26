@@ -136,8 +136,8 @@ export function DashboardNotifications({ userId }: { userId: string }) {
       </button>
       {open && (
         <section id="dashboard-notification-inbox" aria-label="New matching opportunities"
-          className="absolute right-0 top-full z-[80] mt-2 max-h-[min(75vh,34rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 text-center text-midnight shadow-xl sm:text-left">
-          <div className="flex items-center justify-between gap-3 text-left">
+          className="fixed inset-x-3 top-[calc(4.25rem+env(safe-area-inset-top))] bottom-[calc(5rem+env(safe-area-inset-bottom)+0.75rem)] z-[80] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 text-left text-midnight shadow-xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-[calc(4.5rem+env(safe-area-inset-top))] sm:max-h-[min(75vh,34rem)] sm:w-[min(24rem,calc(100vw-2rem))] md:absolute md:inset-x-auto md:right-0 md:top-full md:mt-2 md:max-h-[min(75vh,34rem)]">
+          <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="font-bold">Your reminders and matches</h2>
               <p className="mt-1 text-xs text-slate-600">Saved dates stay here until you change or complete them.</p>
@@ -154,7 +154,7 @@ export function DashboardNotifications({ userId }: { userId: string }) {
           {loading ? <p className="py-5 text-sm text-slate-600" role="status">Checking your reminders...</p>
             : error ? <p className="py-4 text-sm text-red-700" role="alert">{error}</p>
               : <>
-                {dueReminders.length > 0 && <section className="mt-3 border-y border-amber-200 bg-amber-50/70 px-3 text-left" aria-label="Application reminders due">
+                {dueReminders.length > 0 && <section className="mt-3 rounded-xl border border-amber-200 bg-amber-50/70 px-3" aria-label="Application reminders due">
                   <h3 className="py-3 text-sm font-bold text-midnight">Come back to apply</h3>
                   <ul className="divide-y divide-amber-200">
                     {dueReminders.map((reminder) => (

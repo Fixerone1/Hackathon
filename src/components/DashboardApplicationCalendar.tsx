@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { HomeArrow } from '@/components/HomeArrow';
 
 type CalendarAction = {
   opportunity_id: string;
@@ -69,8 +70,8 @@ export function DashboardApplicationCalendar({ actions }: { actions: CalendarAct
           <h2 id="dashboard-calendar-heading" className="mt-1 text-lg font-bold text-midnight">Application calendar</h2>
           <p className="mt-1 text-sm text-slate-600">See return reminders and closing dates at a glance.</p>
         </div>
-        <Link href="/app/employment/applications" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-midnight transition hover:bg-slate-50">
-          Manage saved dates <ArrowRight size={15} aria-hidden="true" />
+        <Link href="/app/employment/applications" className="group inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 px-3 text-sm font-semibold text-midnight transition hover:bg-slate-50">
+          Manage saved dates <HomeArrow />
         </Link>
       </div>
 

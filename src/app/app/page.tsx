@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { DashboardApplicationCalendar } from '@/components/DashboardApplicationCalendar';
+import { HomeArrow } from '@/components/HomeArrow';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
 import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Check, Compass, GraduationCap, Lightbulb, Sparkles, type LucideIcon } from 'lucide-react';
@@ -292,14 +293,14 @@ export default function DashboardPage() {
                         <li key={`${tool.label}-${tool.href}`}>
                           <Link href={tool.href} className="group flex min-h-11 items-center justify-between gap-2 rounded-lg px-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-midnight">
                             <span className="min-w-0"><span className="block font-semibold">{tool.label}</span><span className="block text-xs text-slate-500">{tool.description}</span></span>
-                            <ArrowRight size={15} className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                            <HomeArrow />
                           </Link>
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 sm:px-5">
-                    <Link href={href} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-midnight px-3 text-sm font-semibold text-white transition hover:bg-slate-700">{action} <ArrowRight size={15} aria-hidden="true" /></Link>
+                    <Link href={href} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-midnight px-3 text-sm font-semibold text-white transition hover:bg-slate-700">{action} <ArrowRight size={15} className="text-white" aria-hidden="true" /></Link>
                     {!isCurrentFocus && <button type="button" onClick={() => changeFocus(focus)} className="min-h-10 px-2 text-sm font-medium text-slate-600 underline underline-offset-2 hover:text-midnight">Make my focus</button>}
                   </div>
                 </article>
@@ -325,7 +326,7 @@ export default function DashboardPage() {
             </span>
             <span className="mt-2 flex items-center justify-between text-xs text-slate-500">
               {profileSections.filter(Boolean).length} of {profileSections.length} useful details
-              <ArrowRight size={14} className="text-slate-500 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              <HomeArrow />
             </span>
           </Link>
           <Link href="/app/employment/applications" className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
@@ -333,21 +334,21 @@ export default function DashboardPage() {
               <span className="block text-sm font-medium text-slate-600">Saved to revisit</span>
               <span className="mt-1 block text-2xl font-bold text-midnight">{savedCount}</span>
             </span>
-            <span className="text-right text-xs text-slate-500">Your saved<br />opportunities <ArrowRight size={14} className="ml-auto mt-1 transition-transform group-hover:translate-x-1" aria-hidden="true" /></span>
+            <span className="text-right text-xs text-slate-500">Your saved<br />opportunities <HomeArrow className="ml-auto mt-1" /></span>
           </Link>
           <Link href="/app/employment/applications" className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
             <span>
               <span className="block text-sm font-medium text-slate-600">Marked as applied</span>
               <span className="mt-1 block text-2xl font-bold text-midnight">{appliedCount}</span>
             </span>
-            <span className="text-right text-xs text-slate-500">Track your<br />application progress <ArrowRight size={14} className="ml-auto mt-1 transition-transform group-hover:translate-x-1" aria-hidden="true" /></span>
+            <span className="text-right text-xs text-slate-500">Track your<br />application progress <HomeArrow className="ml-auto mt-1" /></span>
           </Link>
         </div>
         {nextDeadline && (
           <Link href="/app/employment/applications" className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm transition hover:border-amber-400">
             <CalendarDays size={18} className="shrink-0 text-amber-800" aria-hidden="true" />
             <span className="min-w-0 flex-1"><strong className="text-amber-950">{nextDeadline.label} · {formatDate(nextDeadline.date)}</strong><span className="block truncate text-amber-900">{nextDeadline.title}</span></span>
-            <span className="inline-flex items-center gap-1 font-semibold text-amber-950">Review <ArrowRight size={15} aria-hidden="true" /></span>
+            <span className="inline-flex items-center gap-2 font-semibold text-amber-950">Review <HomeArrow /></span>
           </Link>
         )}
       </section>
@@ -364,7 +365,7 @@ export default function DashboardPage() {
             <p className="eyebrow">Explore beyond {focusOption.label === 'Everything' ? 'your current focus' : focusOption.label}</p>
             <p className="mt-1 text-sm leading-6 text-slate-600">There’s more than one way to move forward.</p>
           </div>
-          <Link href={tip.otherHref} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-midnight transition hover:border-slate-500 hover:bg-slate-50">{tip.otherLabel} <ArrowRight size={15} aria-hidden="true" /></Link>
+          <Link href={tip.otherHref} className="group inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-midnight transition hover:border-slate-500 hover:bg-slate-50">{tip.otherLabel} <HomeArrow /></Link>
         </article>
       </section>
 
@@ -392,7 +393,7 @@ export default function DashboardPage() {
                 <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
                   {action.label}<span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
                 </Link>
-                <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
+                <Link href={action.href} aria-label={`Open ${action.area}`} className="group grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-slate-100"><HomeArrow /></Link>
               </li>
             ))}
           </ul>

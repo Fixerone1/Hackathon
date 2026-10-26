@@ -36,7 +36,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             </span>
             <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             {variant === 'public' && workspaceUserId && (
               <Link href="/app" className="btn-primary min-h-10 gap-2 px-3 text-sm" aria-label="Open your dashboard">
                 <LayoutDashboard size={16} aria-hidden="true" />
