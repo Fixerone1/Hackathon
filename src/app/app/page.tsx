@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
+import { DashboardApplicationCalendar } from '@/components/DashboardApplicationCalendar';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
 import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Check, Compass, GraduationCap, Lightbulb, Sparkles, type LucideIcon } from 'lucide-react';
@@ -350,6 +351,8 @@ export default function DashboardPage() {
           </Link>
         )}
       </section>
+
+      <DashboardApplicationCalendar actions={forge.actions} />
 
       <section className="mb-6 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(16rem,0.8fr)]">
         <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
