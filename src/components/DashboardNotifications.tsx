@@ -58,11 +58,11 @@ export function DashboardNotifications({ userId }: { userId: string }) {
         if (opportunityResult.error) throw opportunityResult.error;
         if (profileResult.error) throw profileResult.error;
         if (actionResult.error) throw actionResult.error;
-        const storageKey = `careerforge-opportunities-viewed-${userId}`;
-        const reminderStorageKey = `careerforge-reminders-viewed-${userId}`;
+        const storageKey = `beacon:opportunities-viewed-${userId}`;
+        const reminderStorageKey = `beacon:reminders-viewed-${userId}`;
         const savedLastViewed = localStorage.getItem(storageKey);
         const savedSeenReminders = localStorage.getItem(reminderStorageKey);
-        setAlertsEnabled(localStorage.getItem('careerforge-dashboard-alerts') !== 'false');
+        setAlertsEnabled(localStorage.getItem('beacon:dashboard-alerts') !== 'false');
         const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         const profile = (profileResult.data || {}) as OpportunityProfile;
         const freshMatches = (opportunityResult.data || [])
@@ -108,12 +108,12 @@ export function DashboardNotifications({ userId }: { userId: string }) {
     try {
       if (items.length > 0) {
         const viewedAt = new Date().toISOString();
-        localStorage.setItem(`careerforge-opportunities-viewed-${userId}`, viewedAt);
+        localStorage.setItem(`beacon:opportunities-viewed-${userId}`, viewedAt);
         setLastViewed(viewedAt);
       }
       const dueIds = reminders.filter((reminder) => reminder.date <= dateTick).map((reminder) => reminder.id);
       const seenIds = [...new Set([...seenReminderIds, ...dueIds])];
-      localStorage.setItem(`careerforge-reminders-viewed-${userId}`, JSON.stringify(seenIds));
+      localStorage.setItem(`beacon:reminders-viewed-${userId}`, JSON.stringify(seenIds));
       setSeenReminderIds(seenIds);
     } catch (caught) {
       setError(caught instanceof Error ? `Notifications could not be marked as viewed: ${caught.message}` : 'Notifications could not be marked as viewed.');

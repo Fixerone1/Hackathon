@@ -413,7 +413,7 @@ export function SkillsPassportBuilder() {
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="passport-qualifications-heading">
           <h2 id="passport-qualifications-heading" className="text-lg font-bold text-black">Education and training</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600">Only include details you want to share. Listed items are not independently verified by Ukukhanya.</p>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Only include details you want to share. Listed items are not independently verified by Beacon.</p>
           <label className="mt-4 flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-800">
             <input type="checkbox" className="h-4 w-4 accent-sunshine-dark" checked={data.visibility.education} onChange={(event) => toggleVisibility('education', event.target.checked)} />
             Share education

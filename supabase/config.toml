@@ -1,4 +1,4 @@
-project_id = "careerforge"
+project_id = "beacon"
 
 [api]
 enabled = true

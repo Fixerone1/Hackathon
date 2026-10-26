@@ -60,7 +60,7 @@ type ForgeContextValue = {
 };
 
 const preferenceDefaults: ForgePreferences = {
-  forge_name: 'Forge',
+  forge_name: 'Beacon Guide',
   tone: 'straight_up',
   language: 'en-ZA',
   data_light: false,
@@ -101,7 +101,7 @@ export function ForgeProvider({ children }: { children: ReactNode }) {
       try {
         const supabase = getSupabase();
         const { data: authData, error: authError } = await supabase.auth.getUser();
-        if (authError || !authData.user) throw new Error('Sign in again to refresh your Forge context.');
+        if (authError || !authData.user) throw new Error('Sign in again to refresh Beacon Guide.');
         const [profileResult, progressResult, preferencesResult, actionsResult] = await Promise.all([
           supabase.from('learner_profiles').select('*').maybeSingle(),
           supabase.from('learner_progress').select('checklist').maybeSingle(),
@@ -122,7 +122,7 @@ export function ForgeProvider({ children }: { children: ReactNode }) {
         setPreferences({ ...preferenceDefaults, ...(preferencesResult.data || {}) });
         setActions(loadedActions);
       } catch (caught) {
-        if (active) setError(caught instanceof Error ? caught.message : 'Forge context could not be loaded.');
+        if (active) setError(caught instanceof Error ? caught.message : 'Beacon Guide could not be loaded.');
       } finally {
         if (active) setLoading(false);
       }
@@ -172,7 +172,7 @@ export function ForgeProvider({ children }: { children: ReactNode }) {
     actions.forEach((action) => facts.push({
       label: action.status === 'applied' ? 'Marked applied' : 'Saved opportunity',
       value: `${action.opportunities.title} · ${action.opportunities.organization}`,
-      source: 'Action you took in Ukukhanya',
+      source: 'Action you took in Beacon',
     }));
     return {
       loading,

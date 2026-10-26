@@ -250,7 +250,7 @@ function goalCardImage(goal: Goal, progress: ReturnType<typeof goalProgress>, sh
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = 'ukukhanya-savings-goal.png';
+    anchor.download = 'beacon-savings-goal.png';
     anchor.click();
     URL.revokeObjectURL(url);
   }, 'image/png');
@@ -533,7 +533,7 @@ export function MoneySkills() {
       setContributions(nextContributions);
       const after = before ? goalProgress(before, nextContributions) : null;
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        || localStorage.getItem('careerforge-accessibility')?.includes('"reduceMotion":true');
+        || localStorage.getItem('beacon:accessibility')?.includes('"reduceMotion":true');
       if (!reducedMotion && after?.progressPercent === 100 && !wasComplete) setCelebration(true);
       setContributionGoalId('');
       setContributionAmount(0);

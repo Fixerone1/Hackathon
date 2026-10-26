@@ -111,7 +111,7 @@ export function PublicSkillsPassport() {
           <>
             <header className="rounded-2xl border border-slate-200 bg-sunshine p-5 text-center shadow-card sm:p-8">
               <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white text-midnight"><BriefcaseBusiness size={22} aria-hidden="true" /></span>
-              <p className="mt-4 text-xs font-bold uppercase tracking-wide text-black">Ukukhanya · Skills Passport</p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-wide text-black">Beacon · Skills Passport</p>
               <h1 className="mt-2 break-words text-3xl font-bold leading-tight text-black sm:text-4xl">{passport.display_name || 'Learner portfolio'}</h1>
               {passport.headline && <p className="mt-2 text-base font-semibold text-black/75 sm:text-lg">{passport.headline}</p>}
               {passport.summary && <p className="mx-auto mt-4 max-w-2xl whitespace-pre-wrap text-sm leading-7 text-black/80 sm:text-base">{passport.summary}</p>}
@@ -183,7 +183,7 @@ export function PublicSkillsPassport() {
 
               {passport.email && <section className="rounded-2xl border border-slate-200 bg-white p-5 text-center sm:p-6"><h2 className="font-bold text-black">Contact</h2><a href={`mailto:${encodeURIComponent(passport.email)}`} className="link mt-2 inline-flex min-h-10 items-center text-sm">{passport.email}</a></section>}
 
-              <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">This portfolio contains information selected and provided by the learner. Skills, experience, education, and certificates have not been independently verified by Ukukhanya. Please confirm qualifications and work samples with their issuers or owners where needed.</p>
+              <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">This portfolio contains information selected and provided by the learner. Skills, experience, education, and certificates have not been independently verified by Beacon. Please confirm qualifications and work samples with their issuers or owners where needed.</p>
             </div>
           </>
         )}

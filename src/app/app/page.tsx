@@ -176,7 +176,7 @@ export default function DashboardPage() {
     let active = true;
     async function loadDashboard() {
       try {
-        const storedFocus = localStorage.getItem('careerforge-home-focus');
+        const storedFocus = localStorage.getItem('beacon:home-focus');
         if (validFocus(storedFocus) && active) setHomeFocus(storedFocus);
         const supabase = getSupabase();
         const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -203,7 +203,7 @@ export default function DashboardPage() {
 
   function changeFocus(focus: HomeFocus) {
     setHomeFocus(focus);
-    localStorage.setItem('careerforge-home-focus', focus);
+    localStorage.setItem('beacon:home-focus', focus);
   }
 
   async function toggleAction(id: string) {
@@ -398,7 +398,7 @@ export default function DashboardPage() {
             ))}
           </ul>
         </details>
-        <PublishedSiteContent contentType="announcement" heading="Updates from Ukukhanya" eyebrow="From Ukukhanya" className="!my-0" display="list" />
+        <PublishedSiteContent contentType="announcement" heading="Updates from Beacon" eyebrow="From Beacon" className="!my-0" display="list" />
       </div>
 
       {storageWarning && <p role="alert" className="mb-4 text-sm text-amber-800">{storageWarning}</p>}

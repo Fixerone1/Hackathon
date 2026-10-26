@@ -226,7 +226,7 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
   useEffect(() => {
     if (!account.email) return;
     try {
-      const saved = localStorage.getItem(`careerforge-opportunity-notes-${account.email}`);
+      const saved = localStorage.getItem(`beacon:opportunity-notes-${account.email}`);
       setNotes(saved ? JSON.parse(saved) as Record<string, string> : {});
     } catch (caught) {
       setError(caught instanceof Error ? `Private notes could not be loaded: ${caught.message}` : 'Private notes could not be loaded.');
@@ -463,7 +463,7 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
     const updated = { ...notes, [opportunityId]: value };
     setNotes(updated);
     try {
-      localStorage.setItem(`careerforge-opportunity-notes-${account.email}`, JSON.stringify(updated));
+      localStorage.setItem(`beacon:opportunity-notes-${account.email}`, JSON.stringify(updated));
     } catch (caught) {
       setError(caught instanceof Error ? `Your private note could not be saved: ${caught.message}` : 'Your private note could not be saved.');
     }
@@ -633,7 +633,7 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
                     </div>
                     {reasons.length > 0 && <p className="mt-3 text-sm leading-6 text-emerald-900"><span className="font-semibold">Why this may fit:</span> {reasons.join(' · ')}</p>}
                     {cautions.length > 0 && <p className="mt-2 text-sm leading-6 text-amber-900"><span className="font-semibold">Check before applying:</span> {cautions.join(' · ')}</p>}
-                    <p className="mt-3 text-xs leading-5 text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Apply on the employer&apos;s site; Ukukhanya does not submit applications.</p>
+                    <p className="mt-3 text-xs leading-5 text-slate-500">Source: {opportunity.source_name} · Verified {formatDate(opportunity.verified_at)}. Apply on the employer&apos;s site; Beacon does not submit applications.</p>
                   </div>
                   {action === 'saved' ? (
                     <div className="mt-4 flex flex-col gap-2 rounded-lg bg-sunshine-light/60 p-3 sm:flex-row sm:items-end">
@@ -666,7 +666,7 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
                   <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
                     <h3 className="font-semibold text-midnight">AI application plan</h3>
                     <p className="mt-1 text-sm leading-6 text-slate-600">
-                      When you choose to create a plan, this listing and the profile details shown above are sent to the configured AI provider for suggestions. Ukukhanya does not send them to the employer or save the generated plan. Check the original listing and edit all AI-written content before using it.
+                      When you choose to create a plan, this listing and the profile details shown above are sent to the configured AI provider for suggestions. Beacon does not send them to the employer or save the generated plan. Check the original listing and edit all AI-written content before using it.
                     </p>
                     <button
                       type="button"
