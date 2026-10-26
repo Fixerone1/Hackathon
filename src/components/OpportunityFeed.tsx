@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, Image, Linkedin, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronLeft, ChevronRight, Heart, Image, MessageCircle, Share2 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import { sendApplicationReminder, syncGoogleCalendar } from '@/lib/integrations';
 import {
@@ -357,6 +357,27 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     }
   }
 
+  async function shareOpportunity(opportunity: Opportunity) {
+    setError('');
+    setMessage('');
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({
+          title: opportunity.title,
+          text: `${opportunity.title} at ${opportunity.organization}`,
+          url: opportunity.source_url,
+        });
+        setMessage('Opportunity shared.');
+        return;
+      }
+      await navigator.clipboard.writeText(opportunity.source_url);
+      setMessage('Opportunity link copied. You can share it anywhere.');
+    } catch (caught) {
+      if (caught instanceof Error && caught.name === 'AbortError') return;
+      setError(`Could not share this opportunity: ${errorMessage(caught, 'sharing is not available in this browser.')}`);
+    }
+  }
+
   async function createApplicationPlan(opportunity: Opportunity) {
     setAiBusyId(opportunity.id);
     setAiErrors((current) => ({ ...current, [opportunity.id]: '' }));
@@ -660,37 +681,34 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-4 flex flex-col items-center gap-3 border-t border-slate-200 pt-3">
-                  {action === 'saved' && <span className="text-xs font-medium text-emerald-800">Saved to your plan</span>}
-                  {action === 'applied' && <span className="text-sm font-medium text-emerald-dark">Marked as applied</span>}
-                  <div className="flex w-full items-center justify-center gap-2">
+                <div className="mt-4 flex flex-col gap-2 border-t border-slate-200 pt-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10 whitespace-nowrap px-3">
-                      View &amp; apply <span aria-hidden="true">→</span>
+                      View &amp; apply <ArrowUpRight size={16} aria-hidden="true" />
                     </a>
                     {action === 'applied' ? (
-                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>Move to saved</button>
+                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
+                        <Heart size={16} aria-hidden="true" />Move to saved
+                      </button>
                     ) : (
-                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>Mark as applied</button>
+                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>
+                        <Check size={16} aria-hidden="true" />Mark as applied
+                      </button>
                     )}
                   </div>
-                  <div role="group" aria-label="Opportunity social actions" className="flex items-center justify-center gap-2">
-                    <button type="button" aria-label={action === 'saved' ? 'Unlike and remove from saved opportunities' : 'Like and save this opportunity'}
-                      aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
-                      title={action === 'saved' ? 'Remove from saved' : 'Like and save'}
+                  <div role="group" aria-label="Opportunity actions" className="flex flex-wrap gap-2">
+                    <button type="button" aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
                       onClick={() => void setAction(opportunity.id, action === 'saved' ? null : 'saved')}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light disabled:opacity-50">
-                      <Heart size={19} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" />
+                      className={`btn-secondary min-h-10 px-3 ${action === 'saved' ? 'border-sunshine-dark bg-sunshine-light text-midnight' : ''}`}>
+                      <Heart size={16} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" />{action === 'saved' ? 'Saved to plan' : 'Save to plan'}
                     </button>
-                    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(opportunity.source_url)}`}
-                      target="_blank" rel="noopener noreferrer" aria-label="Share this opportunity on LinkedIn" title="Share on LinkedIn"
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light">
-                      <Linkedin size={19} aria-hidden="true" />
-                    </a>
-                    <button type="button" aria-label={openNoteId === opportunity.id ? 'Close private note' : 'Add a private note'}
-                      aria-expanded={openNoteId === opportunity.id} title="Add a private note"
+                    <button type="button" className="btn-secondary min-h-10 px-3" onClick={() => void shareOpportunity(opportunity)}>
+                      <Share2 size={16} aria-hidden="true" />Share
+                    </button>
+                    <button type="button" aria-expanded={openNoteId === opportunity.id}
                       onClick={() => setOpenNoteId((current) => current === opportunity.id ? '' : opportunity.id)}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-midnight transition hover:border-slate-300 hover:bg-sunshine-light">
-                      <MessageCircle size={19} aria-hidden="true" />
+                      className="btn-secondary min-h-10 px-3">
+                      <MessageCircle size={16} aria-hidden="true" />{openNoteId === opportunity.id ? 'Close note' : 'Private note'}
                     </button>
                   </div>
                 </div>
