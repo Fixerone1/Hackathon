@@ -89,8 +89,8 @@ export const employmentNavigation = [
     label: 'Study & career pathways',
     Icon: Route,
     group: 'tools',
-    text: 'Verified courses, learnerships, and university deadlines are not connected yet.',
-    tag: 'MORE TO COME',
+    text: 'Build a goal-led plan and verify requirements before choosing a course or opportunity.',
+    tag: 'PATHWAY PLANNER',
     focus: ['study'],
   },
 ] as const;
