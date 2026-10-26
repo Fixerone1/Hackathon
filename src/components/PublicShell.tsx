@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, LayoutDashboard } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { BrandLogo } from '@/components/BrandLogo';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
@@ -37,6 +37,12 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
           <div className="flex items-center gap-2">
+            {variant === 'public' && workspaceUserId && (
+              <Link href="/app" className="btn-primary min-h-10 gap-2 px-3 text-sm" aria-label="Open your dashboard">
+                <LayoutDashboard size={16} aria-hidden="true" />
+                Dashboard
+              </Link>
+            )}
             {variant === 'workspace' && workspaceUserId && <DashboardNotifications userId={workspaceUserId} />}
             <AccountMenu compact publicNavigation={variant === 'public'} onUserChange={handleUserChange} />
           </div>

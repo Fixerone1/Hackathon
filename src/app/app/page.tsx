@@ -124,82 +124,82 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-7 sm:px-6 md:py-9 lg:px-8">
-      <header className="mb-6">
-        <p className="eyebrow">Your home</p>
-        <h1 className="mt-2 text-3xl font-bold leading-tight text-midnight sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-600">Pick up where you left off. Your reminder and next step are here.</p>
-      </header>
-
-      {forge.recentWin && <p className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status"><strong>Nice progress.</strong> {forge.recentWin}</p>}
-
-      <section className="mb-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="next-step-heading">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500"><Sparkles size={15} aria-hidden="true" /> Your next step <span aria-hidden="true">·</span> <FocusIcon size={14} aria-hidden="true" /> {focusOption.label} focus</p>
-            <h2 id="next-step-heading" className="mt-2 text-xl font-bold text-midnight">{nextAction.label}</h2>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
+      <section className="relative mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-sunshine p-5 text-black shadow-card sm:p-7 lg:p-8" aria-labelledby="dashboard-heading">
+        <div aria-hidden="true" className="absolute -right-20 -top-24 h-64 w-64 rounded-full border-[32px] border-black/5" />
+        <div className="relative grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)]">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/45 px-3 py-1.5 text-xs font-semibold text-black"><FocusIcon size={14} aria-hidden="true" />{focusOption.label} · {forge.stage}</p>
+            <h1 id="dashboard-heading" className="mt-4 text-3xl font-bold leading-tight text-black sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-black/75 sm:text-base">Pick up where you left off. Here’s one useful next step, with room to explore other interests too.</p>
+            {forge.recentWin && <p className="mt-4 inline-flex rounded-lg border border-black/10 bg-white/55 px-3 py-2 text-sm font-medium text-black" role="status"><strong className="mr-1">Nice progress.</strong>{forge.recentWin}</p>}
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <label htmlFor="home-focus" className="text-sm font-semibold text-black">Your current focus</label>
+              <select id="home-focus" className="min-h-10 rounded-lg border border-black/20 bg-white/80 px-3 text-sm font-medium text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black" value={homeFocus} onChange={(event) => changeFocus(event.target.value as HomeFocus)}>
+                {focusOptions.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+              </select>
+            </div>
+          </div>
+          <aside className="rounded-xl border border-black/10 bg-white/80 p-4 shadow-sm sm:p-5" aria-labelledby="next-step-heading">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-600"><Sparkles size={15} aria-hidden="true" /> One useful next step</p>
+            <h2 id="next-step-heading" className="mt-2 text-lg font-bold text-midnight">{nextAction.label}</h2>
             <details className="mt-2 text-sm text-slate-600">
               <summary className="min-h-8 cursor-pointer font-medium text-midnight underline underline-offset-2">Why this step?</summary>
               <p className="mt-2 leading-6">{homeFocus === 'all' && forge.preferences.personalisation_paused ? 'Personal suggestions are paused. This general starting point is not based on your profile or activity.' : nextAction.reason}</p>
             </details>
-          </div>
-          <Link href={nextAction.href} className="btn-primary min-h-11 w-full sm:w-auto">Continue <ArrowRight size={16} aria-hidden="true" /></Link>
-        </div>
-        <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
-          <label htmlFor="home-focus" className="text-sm font-semibold text-slate-700">Tailor Home to:</label>
-          <select id="home-focus" className="input min-h-10 w-full sm:w-auto sm:min-w-44" value={homeFocus} onChange={(event) => changeFocus(event.target.value as HomeFocus)}>
-            {focusOptions.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
-          </select>
-          <span className="text-xs text-slate-500">Your choice is remembered on this device.</span>
+            <Link href={nextAction.href} className="btn-primary mt-4 min-h-11 w-full sm:w-auto">Continue <ArrowRight size={16} aria-hidden="true" /></Link>
+          </aside>
         </div>
       </section>
 
-      <section className="mb-5 grid gap-4 sm:grid-cols-2">
-        <article className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">A useful tip for {focusOption.label === 'Everything' ? 'your journey' : focusOption.label}</p>
+      <section className="mb-6 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(16rem,0.8fr)]">
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+          <p className="eyebrow">A useful tip · {focusOption.label}</p>
           <p className="mt-2 text-sm leading-6 text-slate-700">{tip.text}</p>
         </article>
-        <article className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-5">
+        <article className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Explore another path</p>
-            <p className="mt-2 text-sm leading-6 text-slate-700">Your current focus is one part of the journey. Take a look at something different whenever you’re ready.</p>
+            <p className="eyebrow">Explore beyond {focusOption.label === 'Everything' ? 'your current focus' : focusOption.label}</p>
+            <p className="mt-1 text-sm leading-6 text-slate-600">There’s more than one way to move forward.</p>
           </div>
-          <Link href={tip.otherHref} className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-midnight underline underline-offset-4 hover:text-slate-600">{tip.otherLabel} <ArrowRight size={15} aria-hidden="true" /></Link>
+          <Link href={tip.otherHref} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-midnight transition hover:border-slate-500 hover:bg-slate-50">{tip.otherLabel} <ArrowRight size={15} aria-hidden="true" /></Link>
         </article>
       </section>
 
-      <details className="mb-5 rounded-2xl border border-slate-200 bg-white shadow-card">
-        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
-          <span>
-            <span className="block font-semibold text-midnight">Your starter plan</span>
-            <span className="mt-1 block text-xs text-slate-500">{progressCount} actions complete</span>
-          </span>
-          <span className="text-sm font-semibold text-midnight">View checklist</span>
-        </summary>
-        <ul className="divide-y divide-slate-200 border-t border-slate-200 px-5">
-          {starterActions.map((action) => (
-            <li key={action.id} className="flex items-center gap-3 py-3">
-              <input
-                id={`starter-action-${action.id}`}
-                type="checkbox"
-                checked={completed.includes(action.id)}
-                disabled={saving}
-                onChange={() => void toggleAction(action.id)}
-                className="h-5 w-5 shrink-0 accent-sunshine-dark"
-              />
-              <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
-                {action.label}<span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
-              </Link>
-              <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
-            </li>
-          ))}
-        </ul>
-      </details>
+      <div className="mb-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
+        <details className="rounded-2xl border border-slate-200 bg-white shadow-card">
+          <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+            <span>
+              <span className="block font-semibold text-midnight">Your starter plan</span>
+              <span className="mt-1 block text-xs text-slate-500">{progressCount} actions complete</span>
+            </span>
+            <span className="text-sm font-semibold text-midnight">View checklist</span>
+          </summary>
+          <ul className="divide-y divide-slate-200 border-t border-slate-200 px-5">
+            {starterActions.map((action) => (
+              <li key={action.id} className="flex items-center gap-3 py-3">
+                <input
+                  id={`starter-action-${action.id}`}
+                  type="checkbox"
+                  checked={completed.includes(action.id)}
+                  disabled={saving}
+                  onChange={() => void toggleAction(action.id)}
+                  aria-label={`Mark ${action.label} ${completed.includes(action.id) ? 'incomplete' : 'complete'}`}
+                  className="h-5 w-5 shrink-0 accent-sunshine-dark"
+                />
+                <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
+                  {action.label}<span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
+                </Link>
+                <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
+              </li>
+            ))}
+          </ul>
+        </details>
+        <PublishedSiteContent contentType="announcement" heading="Updates from Ukukhanya" eyebrow="From Ukukhanya" className="!my-0" display="list" />
+      </div>
 
-      <PublishedSiteContent contentType="announcement" heading="Updates from Ukukhanya" className="!my-0" display="list" />
-
-      {storageWarning && <p role="alert" className="mt-4 text-sm text-amber-800">{storageWarning}</p>}
-      <p className="mt-5 text-xs leading-5 text-slate-500">Your checklist is private to your account. Dates and application details should always be confirmed with the official provider.</p>
+      {storageWarning && <p role="alert" className="mb-4 text-sm text-amber-800">{storageWarning}</p>}
+      <p className="border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">Your checklist is private to your account. Dates and application details should always be confirmed with the official provider.</p>
     </div>
   );
 }

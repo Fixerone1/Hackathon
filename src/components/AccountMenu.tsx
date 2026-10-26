@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
-import { Home, ImagePlus, LogIn, LogOut, Settings, UserPlus, UserRound } from 'lucide-react';
+import { Home, ImagePlus, LayoutDashboard, LogIn, LogOut, Settings, UserPlus, UserRound } from 'lucide-react';
 
 type AccountUser = { id: string; name: string; email: string; avatarPath: string | null };
 
@@ -231,6 +231,9 @@ export function AccountMenu({ compact = false, publicNavigation = false, onUserC
               event.currentTarget.value = '';
             }} />
           </label>
+          <Link href="/app" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold hover:bg-sunshine-light">
+            <LayoutDashboard size={17} aria-hidden="true" /> Dashboard
+          </Link>
           <Link href="/app/settings" onClick={() => setOpen(false)} className="mt-2 flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-sunshine-light">
             <Settings size={17} aria-hidden="true" /> Settings
           </Link>
