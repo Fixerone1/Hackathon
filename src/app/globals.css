@@ -257,7 +257,9 @@ html.larger-text body {
     visibility: hidden;
   }
   #cv-print,
-  #cv-print * {
+  #cv-print *,
+  #passport-print,
+  #passport-print * {
     visibility: visible;
   }
   #cv-print {
@@ -269,6 +271,21 @@ html.larger-text body {
     padding: 0;
     min-height: 0;
     width: 100%;
+    box-shadow: none !important;
+    border: none !important;
+    color: #0A0A0A;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #passport-print {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    max-width: 190mm;
     box-shadow: none !important;
     border: none !important;
     color: #0A0A0A;

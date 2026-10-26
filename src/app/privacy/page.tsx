@@ -26,6 +26,10 @@ export default function PrivacyPage() {
             <p className="mt-2 text-sm leading-7 text-slate-700">If you choose to create an AI application plan, the selected opportunity details and relevant profile information, which may include work authorization, availability, shift preferences, salary range, and certificates, are sent to the AI provider configured by the service operator. The plan is not sent to an employer or saved by Ukukhanya. Your application pack is assembled in your browser and copied only when you request it; review it before pasting it into an employer form. Ukukhanya cannot fill third-party forms or submit applications automatically. Do not include sensitive information, and verify all suggestions against the original listing before applying. AI plans are unavailable when the service is hosted on GitHub Pages or the AI provider is not configured.</p>
           </section>
           <section>
+            <h2 className="section-heading">Skills Passport sharing</h2>
+            <p className="mt-2 text-sm leading-7 text-slate-700">A Skills Passport is private until you publish it. You choose which sections appear on its share link and whether to include a contact email. Anyone who has a published link can view its selected content until you revoke the link or it expires. Revoking replaces the link token. The public view does not include your account ID, address, phone number, income goals, work authorisation, or private profile fields. Information you choose to share is learner-provided; Ukukhanya does not verify credentials or work samples. Do not include another person’s private information.</p>
+          </section>
+          <section>
             <h2 className="section-heading">Your choices</h2>
             <p className="mt-2 text-sm leading-7 text-slate-700">You can update your profile and notification preferences in Settings. You can export or delete your account data from Settings. Do not enter information you do not want stored in this prototype.</p>
           </section>

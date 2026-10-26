@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Share2 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
 import { sendApplicationReminder, syncGoogleCalendar } from '@/lib/integrations';
 import { profileNextStep, profileStrength, qualificationNqfLevels } from '@/lib/profile';
@@ -323,11 +323,14 @@ export default function ProfilePage() {
           <h1 className="page-title mt-2">Build your learner profile</h1>
           <p className="page-description text-black/75">Start with three essentials. Add more when you are ready. We do not ask for an ID number, bank details, or photos.</p>
         </div>
-        <div className="w-full rounded-xl bg-sunshine-light p-3 sm:w-48 sm:shrink-0">
-          <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
-            <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />
+        <div className="flex w-full flex-col gap-3 sm:w-56 sm:shrink-0">
+          <div className="rounded-xl bg-sunshine-light p-3">
+            <div className="mb-2 flex justify-between text-xs font-medium text-slate-600"><span>Profile strength</span><span>{strength}%</span></div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Profile strength" aria-valuemin={0} aria-valuemax={100} aria-valuenow={strength}>
+              <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${strength}%` }} />
+            </div>
           </div>
+          <Link href="/app/passport" className="btn-primary min-h-10 w-full px-3 text-xs"><Share2 size={15} aria-hidden="true" />Build a Skills Passport</Link>
         </div>
       </header>
 

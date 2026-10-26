@@ -38,6 +38,7 @@ const focusLinks: Record<HomeFocus, Array<{ title: string; description: string; 
   work: [
     { title: 'Opportunity matches', description: 'Review verified openings and dates.', href: '/app/employment/opportunities', Icon: BriefcaseBusiness },
     { title: 'My applications', description: 'Pick up where you left off.', href: '/app/employment/applications', Icon: ClipboardCheck },
+    { title: 'Skills Passport', description: 'Share selected skills and work samples.', href: '/app/passport', Icon: FileText },
   ],
   business: [
     { title: 'Growth Studio', description: 'Shape an idea into a small test.', href: '/app/growth', Icon: Lightbulb },

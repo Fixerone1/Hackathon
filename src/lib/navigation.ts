@@ -4,6 +4,7 @@ import {
   BriefcaseBusiness,
   ChartNoAxesCombined,
   ClipboardCheck,
+  ContactRound,
   FileText,
   LayoutDashboard,
   Lightbulb,
@@ -64,6 +65,15 @@ export const employmentNavigation = [
     group: 'tools',
     text: 'Build a tailored CV from your profile and export an editable document.',
     tag: 'CV TOOL',
+    focus: ['work'],
+  },
+  {
+    href: '/app/passport',
+    label: 'Skills Passport',
+    Icon: ContactRound,
+    group: 'tools',
+    text: 'Create a shareable portfolio with evidence you choose to show employers.',
+    tag: 'SHAREABLE PORTFOLIO',
     focus: ['work'],
   },
   {
