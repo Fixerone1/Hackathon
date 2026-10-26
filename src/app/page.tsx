@@ -64,17 +64,17 @@ const audiences = [
   {
     icon: Compass,
     title: 'Not sure which career to choose?',
-    text: 'Use your profile to gather your interests, skills, and goals as you consider possible directions. A dedicated career assessment is not active in this preview.',
+    text: 'Use the skills check and pathway planner to reflect on your strengths and research possible next steps. The results are for guidance, not a formal career assessment.',
   },
   {
     icon: Lightbulb,
     title: 'Have a business idea or need funding?',
-    text: 'You can explore a business direction, but verified business-funding listings are not connected yet. Check funding offers directly with the official provider.',
+    text: 'Use Growth Studio to shape an idea into a small test. Verified business-funding listings are not connected yet, so check offers directly with official providers.',
   },
   {
     icon: Banknote,
     title: 'Want to feel more confident with money?',
-    text: 'Explore the Money Skills area for practical next steps. Its lessons and budgeting calculators are not active in this preview yet.',
+    text: 'Explore practical money lessons, budgeting tools, savings goals, and take-home pay estimates in Money Skills.',
   },
 ];
 
@@ -237,7 +237,7 @@ export default function HomePage() {
         <div className="mt-6 rounded-2xl border-2 border-sunshine bg-white p-5 sm:p-6">
           <h3 className="font-bold text-midnight">What to expect in this preview</h3>
           <p className="mt-2 text-sm leading-6 text-midnight">
-            This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Study pathways do not yet include verified courses or university deadlines. CV, interview, career-assessment, Skills Academy, and Money Skills tools are not active yet, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you, guarantee funding, or replace official application information. Always confirm details directly with the institution, employer, or funder.
+            This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Skills Academy, career self-assessment, interview practice, Money Skills, and Growth Studio offer practical guidance, not accredited qualifications or guaranteed outcomes. Study pathways do not yet include a verified course catalogue or university deadlines, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you or replace official application information. Always confirm details directly with the institution, employer, or funder.
           </p>
         </div>
         <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
