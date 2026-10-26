@@ -15,7 +15,7 @@ export function PhotoPlaceholder({ label, description, className = '' }: PhotoPl
     >
       <div aria-hidden="true" className="absolute -right-8 -top-12 -z-10 h-48 w-48 rounded-full border-[24px] border-white/70" />
       <div className="m-auto flex max-w-sm flex-col items-center px-6 py-8 text-center">
-        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-emerald text-black shadow-sm">
+        <span className="grid h-14 w-14 place-items-center rounded-full bg-emerald text-black shadow-sm">
           <UsersRound size={26} strokeWidth={1.7} aria-hidden="true" />
         </span>
         <p className="mt-4 text-xs font-bold uppercase text-black">Photo to add</p>
