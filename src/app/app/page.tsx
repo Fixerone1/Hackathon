@@ -125,17 +125,16 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <section className="relative mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-sunshine p-5 text-black shadow-card sm:p-7 lg:p-8" aria-labelledby="dashboard-heading">
-        <div aria-hidden="true" className="absolute -right-20 -top-24 h-64 w-64 rounded-full border-[32px] border-black/5" />
+      <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 text-black shadow-card sm:p-7 lg:p-8" aria-labelledby="dashboard-heading">
         <div className="relative grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)]">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/45 px-3 py-1.5 text-xs font-semibold text-black"><FocusIcon size={14} aria-hidden="true" />{focusOption.label} · {forge.stage}</p>
+            <p className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700"><FocusIcon size={14} aria-hidden="true" />{focusOption.label} · {forge.stage}</p>
             <h1 id="dashboard-heading" className="mt-4 text-3xl font-bold leading-tight text-black sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-black/75 sm:text-base">Pick up where you left off. Here’s one useful next step, with room to explore other interests too.</p>
-            {forge.recentWin && <p className="mt-4 inline-flex rounded-lg border border-black/10 bg-white/55 px-3 py-2 text-sm font-medium text-black" role="status"><strong className="mr-1">Nice progress.</strong>{forge.recentWin}</p>}
+            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">Pick up where you left off. Here’s one useful next step, with room to explore other interests too.</p>
+            {forge.recentWin && <p className="mt-4 inline-flex rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-900" role="status"><strong className="mr-1">Nice progress.</strong>{forge.recentWin}</p>}
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <label htmlFor="home-focus" className="text-sm font-semibold text-black">Your current focus</label>
-              <select id="home-focus" className="min-h-10 rounded-lg border border-black/20 bg-white/80 px-3 text-sm font-medium text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black" value={homeFocus} onChange={(event) => changeFocus(event.target.value as HomeFocus)}>
+              <label htmlFor="home-focus" className="text-sm font-semibold text-slate-700">Your current focus</label>
+              <select id="home-focus" className="input min-h-10 w-full sm:w-auto sm:min-w-44" value={homeFocus} onChange={(event) => changeFocus(event.target.value as HomeFocus)}>
                 {focusOptions.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
               </select>
             </div>
