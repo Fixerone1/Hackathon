@@ -5,6 +5,7 @@ import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
 
 const progressStorageKey = 'beacon:skills-academy-progress-v1';
+const activityStorageKey = 'beacon:skills-academy-activity-v1';
 
 const lessons = [
   {
@@ -133,6 +134,7 @@ export default function AcademyPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answerFeedback, setAnswerFeedback] = useState('');
   const [progressLoaded, setProgressLoaded] = useState(false);
+  const [lessonStarted, setLessonStarted] = useState(false);
   const selectedLesson = lessons.find((lesson) => lesson.id === selectedLessonId) ?? lessons[0];
   const completedCount = completedLessons.length;
   const progressPercent = Math.round((completedCount / lessons.length) * 100);
@@ -149,6 +151,14 @@ export default function AcademyPage() {
           setCompletedLessons([...new Set(validIds)]);
         }
       }
+      const savedLessonId = lessons.find((lesson) => lesson.id === localStorage.getItem(activityStorageKey));
+      if (savedLessonId) {
+        setSelectedLessonId(savedLessonId.id);
+        setLessonStarted(true);
+      } else {
+        localStorage.setItem(activityStorageKey, lessons[0].id);
+        setLessonStarted(true);
+      }
     } catch {
       localStorage.removeItem(progressStorageKey);
     } finally {
@@ -164,8 +174,14 @@ export default function AcademyPage() {
 
   function selectLesson(id: LessonId) {
     setSelectedLessonId(id);
+    setLessonStarted(true);
+    try {
+      localStorage.setItem(activityStorageKey, id);
+      setAnswerFeedback('');
+    } catch (caught) {
+      setAnswerFeedback(caught instanceof Error ? `Your lesson could not be saved for later: ${caught.message}` : 'Your lesson could not be saved for later.');
+    }
     setSelectedAnswer(null);
-    setAnswerFeedback('');
   }
 
   function checkAnswer() {
@@ -202,6 +218,7 @@ export default function AcademyPage() {
             >
               <div className="h-full rounded-full bg-yellow-400 transition-all" style={{ width: `${progressPercent}%` }} />
             </div>
+            {lessonStarted && completedCount === 0 && <p className="mt-2 text-xs font-medium text-midnight">You opened a lesson. Come back here to continue it.</p>}
             <p className="mt-3 text-xs leading-5 text-slate-600">Practice progress only. These activities do not award an accredited qualification or credential.</p>
           </section>
 

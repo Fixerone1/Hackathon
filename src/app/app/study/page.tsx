@@ -5,6 +5,7 @@ import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
 import { StudyProfileSummary } from '@/components/StudyProfileSummary';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
+import { StudyAdmissions } from '@/components/StudyAdmissions';
 import { studyNavigation } from '@/lib/navigation';
 
 export const metadata = { title: 'Study and bursaries' };
@@ -20,6 +21,8 @@ export default function StudyPage() {
       <StudyNav />
 
       <StudyProfileSummary />
+
+      <StudyAdmissions />
 
       <section className="mb-8" aria-labelledby="study-tools-heading">
         <div className="mb-4">

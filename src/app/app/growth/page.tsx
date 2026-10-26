@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PageIntro } from '@/components/PageIntro';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 
@@ -20,8 +20,53 @@ const defaultAnswers = {
   stage: 'I only have an idea',
 };
 
+const draftStorageKey = 'beacon:growth-draft-v1';
+
 export default function GrowthStudioPage() {
   const [answers, setAnswers] = useState(defaultAnswers);
+  const [checkedQuestions, setCheckedQuestions] = useState<number[]>([]);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [draftError, setDraftError] = useState('');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(draftStorageKey);
+      if (saved) {
+        const parsed: unknown = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const draft = parsed as Record<string, unknown>;
+          const savedAnswers = draft.answers && typeof draft.answers === 'object' && !Array.isArray(draft.answers)
+            ? draft.answers as Record<string, unknown>
+            : {};
+          const stages = ['I only have an idea', 'I already have customers or users', 'I am ready to launch'];
+          setAnswers({
+            idea: typeof savedAnswers.idea === 'string' ? savedAnswers.idea : '',
+            problem: typeof savedAnswers.problem === 'string' ? savedAnswers.problem : '',
+            audience: typeof savedAnswers.audience === 'string' ? savedAnswers.audience : '',
+            unique: typeof savedAnswers.unique === 'string' ? savedAnswers.unique : '',
+            stage: typeof savedAnswers.stage === 'string' && stages.includes(savedAnswers.stage) ? savedAnswers.stage : defaultAnswers.stage,
+          });
+          setCheckedQuestions(Array.isArray(draft.checkedQuestions)
+            ? [...new Set(draft.checkedQuestions.filter((item): item is number => Number.isInteger(item) && item >= 0 && item < validationQuestions.length))]
+            : []);
+        }
+      }
+    } catch (caught) {
+      setDraftError(caught instanceof Error ? `Your idea draft could not be loaded: ${caught.message}` : 'Your idea draft could not be loaded.');
+    } finally {
+      setDraftLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try {
+      localStorage.setItem(draftStorageKey, JSON.stringify({ answers, checkedQuestions }));
+      setDraftError('');
+    } catch (caught) {
+      setDraftError(caught instanceof Error ? `Your idea draft could not be saved: ${caught.message}` : 'Your idea draft could not be saved.');
+    }
+  }, [answers, checkedQuestions, draftLoaded]);
 
   const ideaSummary = useMemo(() => {
     const idea = answers.idea.trim() || 'your idea';
@@ -62,6 +107,12 @@ export default function GrowthStudioPage() {
     setAnswers((current) => ({ ...current, [field]: value }));
   };
 
+  const toggleQuestion = (index: number) => {
+    setCheckedQuestions((current) => current.includes(index)
+      ? current.filter((item) => item !== index)
+      : [...current, index]);
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <PageIntro
@@ -76,6 +127,9 @@ export default function GrowthStudioPage() {
           <h2 className="mt-2 text-2xl font-bold text-black">Build the idea before you build the business</h2>
           <p className="mt-3 text-sm leading-7 text-slate-700">
             Use this quick prompt to shape a stronger idea, understand the real problem, and decide the next step that makes sense.
+          </p>
+          <p className="mt-2 text-xs text-slate-600" role={draftError ? 'alert' : 'status'}>
+            {draftError || (draftLoaded ? 'Your idea and checklist save automatically in this browser.' : 'Loading your saved idea...')}
           </p>
         </section>
 
@@ -172,13 +226,19 @@ export default function GrowthStudioPage() {
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
           <h3 className="text-xl font-bold text-black">Validation checklist</h3>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {validationQuestions.map((question) => (
+            {validationQuestions.map((question, index) => (
               <label key={question} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
-                <input type="checkbox" className="mt-1 h-4 w-4 accent-yellow-500" />
+                <input
+                  type="checkbox"
+                  checked={checkedQuestions.includes(index)}
+                  onChange={() => toggleQuestion(index)}
+                  className="mt-1 h-4 w-4 accent-yellow-500"
+                />
                 <span>{question}</span>
               </label>
             ))}
           </div>
+          <p className="mt-3 text-xs text-slate-600">{checkedQuestions.length} of {validationQuestions.length} checks complete</p>
         </section>
 
         <section className="rounded-2xl border border-yellow-300 bg-yellow-50 p-5 shadow-card sm:p-6">

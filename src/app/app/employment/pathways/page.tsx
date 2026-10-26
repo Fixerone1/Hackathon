@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
@@ -13,13 +13,52 @@ const pathwayOptions = [
 ] as const;
 
 type PathwayType = (typeof pathwayOptions)[number]['id'];
+const draftStorageKey = 'beacon:pathway-draft-v1';
+
+function isPathwayType(value: unknown): value is PathwayType {
+  return pathwayOptions.some((option) => option.id === value);
+}
 
 export default function PathwaysPage() {
   const [goal, setGoal] = useState('');
   const [currentEvidence, setCurrentEvidence] = useState('');
   const [pathway, setPathway] = useState<PathwayType>('explore');
   const [checkedActions, setCheckedActions] = useState<number[]>([]);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [draftError, setDraftError] = useState('');
   const destination = goal.trim() || 'your target role or study goal';
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(draftStorageKey);
+      if (saved) {
+        const parsed: unknown = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const draft = parsed as Record<string, unknown>;
+          setGoal(typeof draft.goal === 'string' ? draft.goal : '');
+          setCurrentEvidence(typeof draft.currentEvidence === 'string' ? draft.currentEvidence : '');
+          if (isPathwayType(draft.pathway)) setPathway(draft.pathway);
+          setCheckedActions(Array.isArray(draft.checkedActions)
+            ? [...new Set(draft.checkedActions.filter((item): item is number => Number.isInteger(item) && item >= 0 && item < 4))]
+            : []);
+        }
+      }
+    } catch (caught) {
+      setDraftError(caught instanceof Error ? `Your pathway draft could not be loaded: ${caught.message}` : 'Your pathway draft could not be loaded.');
+    } finally {
+      setDraftLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try {
+      localStorage.setItem(draftStorageKey, JSON.stringify({ goal, currentEvidence, pathway, checkedActions }));
+      setDraftError('');
+    } catch (caught) {
+      setDraftError(caught instanceof Error ? `Your pathway draft could not be saved: ${caught.message}` : 'Your pathway draft could not be saved.');
+    }
+  }, [checkedActions, currentEvidence, draftLoaded, goal, pathway]);
 
   const pathwayStep = {
     work: {
@@ -134,6 +173,9 @@ export default function PathwaysPage() {
               </div>
               <span className="rounded-full border border-yellow-500 bg-white px-3 py-1 text-xs font-semibold text-slate-800">{checkedActions.length}/{actions.length} actions checked</span>
             </div>
+            <p className="mt-2 text-xs text-slate-600" role={draftError ? 'alert' : 'status'}>
+              {draftError || (draftLoaded ? 'Your pathway draft saves automatically in this browser.' : 'Loading your saved pathway...')}
+            </p>
 
             <ol className="mt-5 space-y-3">
               {actions.map((action, index) => (

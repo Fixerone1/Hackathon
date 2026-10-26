@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { DashboardApplicationCalendar } from '@/components/DashboardApplicationCalendar';
+import { JourneyProgress } from '@/components/JourneyProgress';
 import { HomeArrow } from '@/components/HomeArrow';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
@@ -260,6 +261,8 @@ export default function DashboardPage() {
           </aside>
         </div>
       </section>
+
+      <JourneyProgress profileProgress={profileProgress} appliedCount={appliedCount} />
 
       <section className="mb-7" aria-labelledby="journey-roadmap-heading">
         <div className="mb-4 max-w-3xl">
