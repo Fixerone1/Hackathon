@@ -7,29 +7,31 @@ import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { getSupabase } from '@/lib/supabase';
 import { useForge } from '@/components/ForgeContext';
-import { ArrowRight, Banknote, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, ClipboardCheck, Compass, FileText, GraduationCap, Lightbulb, Route, Sparkles, type LucideIcon } from 'lucide-react';
+import { ArrowRight, Banknote, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, ClipboardCheck, Compass, FileText, GraduationCap, Lightbulb, Route, type LucideIcon } from 'lucide-react';
 
 type CurrentUser = { id: string };
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
 
 const focusDetails: Record<HomeFocus, { label: string; message: string; Icon: typeof Compass }> = {
-  all: { label: 'Your next step', message: 'Choose what feels useful today. Your plan can change whenever you do.', Icon: Compass },
-  study: { label: 'Study and learning', message: 'Your workspace is centred on learning routes, skills, and study opportunities.', Icon: GraduationCap },
-  work: { label: 'Work and opportunities', message: 'Your workspace is centred on building work readiness and tracking opportunities.', Icon: BriefcaseBusiness },
-  business: { label: 'Business ideas', message: 'Your workspace is centred on testing ideas and finding practical next moves.', Icon: Lightbulb },
-  money: { label: 'Money confidence', message: 'Your workspace is centred on everyday money skills and steady progress.', Icon: Banknote },
+  all: { label: 'Your journey', message: 'Start with study, explore work, build money confidence, and grow an idea at your own pace.', Icon: Compass },
+  study: { label: 'Study and learning', message: 'Explore bursaries, study pathways, and practical learning opportunities.', Icon: GraduationCap },
+  work: { label: 'Work and opportunities', message: 'Build work readiness, find opportunities, and keep track of applications.', Icon: BriefcaseBusiness },
+  business: { label: 'Growth Studio', message: 'Shape a business idea into a practical experiment and next step.', Icon: Lightbulb },
+  money: { label: 'Money confidence', message: 'Build useful everyday money skills and set goals that work for you.', Icon: Banknote },
 };
 
 const starterActions = [
-  { id: 'profile', label: 'Add your skills and experience' },
-  { id: 'budget', label: 'Set a monthly savings goal' },
-  { id: 'idea', label: 'Write down one business idea to test' },
+  { id: 'profile', label: 'Add your skills and experience', area: 'Work', href: '/app/profile' },
+  { id: 'budget', label: 'Set a monthly savings goal', area: 'Money', href: '/app/money' },
+  { id: 'idea', label: 'Write down one business idea to test', area: 'Growth', href: '/app/growth' },
 ];
 
 const focusLinks: Record<HomeFocus, Array<{ title: string; description: string; href: string; Icon: LucideIcon }>> = {
   all: [
-    { title: 'Explore opportunities', description: 'Review current verified listings.', href: '/app/employment/opportunities', Icon: BriefcaseBusiness },
-    { title: 'Update your profile', description: 'Make your matches more useful.', href: '/app/profile', Icon: ClipboardCheck },
+    { title: 'Explore bursaries', description: 'Find funding and study options.', href: '/app/study', Icon: GraduationCap },
+    { title: 'Explore work opportunities', description: 'Browse verified listings.', href: '/app/employment/opportunities', Icon: BriefcaseBusiness },
+    { title: 'Build money skills', description: 'Plan a budget and savings goal.', href: '/app/money', Icon: Banknote },
+    { title: 'Grow an idea', description: 'Explore a practical business next step.', href: '/app/growth', Icon: Lightbulb },
   ],
   study: [
     { title: 'Bursaries and scholarships', description: 'Find verified funding listings and official sources.', href: '/app/study#bursaries', Icon: GraduationCap },
@@ -233,69 +235,122 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <section className="relative mb-7 overflow-hidden rounded-2xl border border-slate-200 bg-sunshine p-4 text-black shadow-card sm:p-6 lg:p-8" aria-labelledby="dashboard-heading">
-        <div className="relative grid items-center gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-8">
+      <section className="mb-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7" aria-labelledby="dashboard-heading">
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.72fr)]">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/40 px-3 py-1.5 text-xs font-semibold text-black"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} · {forge.stage}</p>
-            <h1 id="dashboard-heading" className="mt-3 text-2xl font-bold leading-tight text-black sm:mt-4 sm:text-3xl lg:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-black/80 sm:text-base">{focusDetail.message}</p>
-            <p className="mt-2 text-sm font-medium text-black">{progress}% of your starter plan complete</p>
-            <div className="mt-4" role="group" aria-label="Choose what you want to focus on">
-              <p className="mb-2 text-xs font-semibold text-black/80">What matters to you right now?</p>
-              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
-                {([
-                  ['all', 'All'], ['study', 'Study'], ['work', 'Work'], ['business', 'Business'], ['money', 'Money'],
-                ] as const).map(([focus, label]) => <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`flex min-h-11 w-full min-w-0 items-center justify-center rounded-xl border px-1 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:min-h-12 sm:px-2 sm:text-sm ${homeFocus === focus ? 'border-black bg-black text-white shadow-[0_3px_12px_rgba(10,10,10,0.18)]' : 'border-black/20 bg-white/35 text-black hover:border-black/50 hover:bg-white/60'}`}>{label}</button>)}
-              </div>
-            </div>
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-              <Link href={forge.preferences.personalisation_paused && homeFocus === 'all' ? '/app/employment/opportunities' : focusAction.href} className="btn-primary w-full sm:w-auto">
-                {forge.preferences.personalisation_paused && homeFocus === 'all' ? 'Explore opportunities' : focusAction.label} <ArrowRight size={16} aria-hidden="true" />
+            <p className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} <span aria-hidden="true">·</span> {forge.stage}</p>
+            <h1 id="dashboard-heading" className="mt-4 text-3xl font-bold leading-tight text-midnight sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">{focusDetail.message}</p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={forge.preferences.personalisation_paused && homeFocus === 'all' ? '/app/study' : focusAction.href} className="btn-primary min-h-11">
+                {forge.preferences.personalisation_paused && homeFocus === 'all' ? 'Start with Study' : focusAction.label} <ArrowRight size={16} aria-hidden="true" />
               </Link>
+              <Link href="/app/profile" className="btn-secondary min-h-11">Update my profile</Link>
             </div>
           </div>
-          <aside className="rounded-xl border border-black/10 bg-white/70 p-4 sm:p-5">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-xs font-bold uppercase text-black">One useful action</p>
-              <span className="grid h-9 w-9 place-items-center rounded-lg bg-yellow text-black"><Sparkles size={17} aria-hidden="true" /></span>
-            </div>
-            <h2 className="mt-3 text-lg font-semibold text-black">
-              {forge.preferences.personalisation_paused ? 'Pick a small step that suits you' : forge.nextAction?.label || 'Pick a small step that suits you'}
+          <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5" aria-label="Suggested next step and plan progress">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">One useful action</p>
+            <h2 className="mt-2 text-lg font-semibold text-midnight">
+              {forge.preferences.personalisation_paused ? 'Choose a small step that suits you' : forge.nextAction?.label || 'Choose a small step that suits you'}
             </h2>
-            <details className="mt-3 text-sm text-black/75">
-              <summary className="min-h-8 cursor-pointer font-medium text-black underline underline-offset-2">Why this suggestion?</summary>
+            <details className="mt-2 text-sm text-slate-600">
+              <summary className="min-h-8 cursor-pointer font-medium text-midnight underline underline-offset-2">Why this suggestion?</summary>
               <p className="mt-2 leading-6">
                 {forge.preferences.personalisation_paused
                   ? 'Personalisation is paused, so this suggestion is not based on your profile or saved activity.'
-                  : forge.nextAction?.reason || 'No open action is recorded, so the choice stays with you.'}
+                  : forge.nextAction?.reason || 'No open action is recorded, so choose whichever step feels useful.'}
               </p>
             </details>
+            <div className="mt-5 border-t border-slate-200 pt-4">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="font-medium text-slate-700">Starter plan</span>
+                <span className="font-semibold text-midnight">{completed.length}/{starterActions.length} done</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Starter plan progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+                <div className="h-full rounded-full bg-sunshine-dark transition-[width]" style={{ width: `${progress}%` }} />
+              </div>
+              <p className="mt-1 text-xs text-slate-500">{progress}% complete</p>
+            </div>
           </aside>
         </div>
       </section>
 
-      {forge.recentWin && <p className="mb-6 text-sm text-emerald-dark" role="status">Latest recorded win: {forge.recentWin}</p>}
+      {forge.recentWin && <p className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900" role="status">A recent win: {forge.recentWin}</p>}
 
-      <PublishedSiteContent contentType="announcement" heading="Updates and announcements" eyebrow="From Ukukhanya" display="list" className="mx-auto max-w-6xl" />
-
-      <DashboardApplicationCalendar actions={forge.actions} />
-
-      <section className="mb-8 border-t border-slate-200 pt-5" aria-labelledby="focus-tools-heading">
-        <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+      <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="journey-heading">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="eyebrow">Chosen for you</p>
-            <h2 id="focus-tools-heading" className="mt-1 text-lg font-semibold text-black">{focusDetail.label}</h2>
+            <p className="eyebrow">Choose your direction</p>
+            <h2 id="journey-heading" className="mt-1 text-xl font-bold text-midnight">Your journey, one step at a time</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Start with study, then explore work, money skills, or growing an idea. You can switch focus whenever you like.</p>
           </div>
-          <Link href="/app/settings" className="link text-sm">Personalize home</Link>
+          <Link href="/app/settings" className="link text-sm">Personalize Home</Link>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {focusLinks[homeFocus].map(({ title, description, href, Icon }) => <Link key={href} href={href} className="group flex min-h-24 items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-yellow-700 hover:shadow-card">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-yellow text-black"><Icon size={19} aria-hidden="true" /></span>
-            <span className="min-w-0 flex-1"><span className="block font-semibold text-black">{title}</span><span className="mt-1 block text-sm text-slate-600">{description}</span></span>
-            <ArrowRight size={17} className="shrink-0 text-slate-500 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-          </Link>)}
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4" role="group" aria-label="Choose a journey area">
+          {([
+            ['study', 'Study', 'Explore education and bursaries', GraduationCap],
+            ['work', 'Work', 'Build skills and find opportunities', BriefcaseBusiness],
+            ['money', 'Money Skills', 'Plan and practise with money', Banknote],
+            ['business', 'Growth Studio', 'Turn an idea into a test', Lightbulb],
+          ] as const).map(([focus, label, description, Icon], index) => (
+            <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`group min-h-32 rounded-xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-midnight ${homeFocus === focus ? 'border-midnight bg-slate-50 ring-1 ring-midnight' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
+              <span className="flex items-center justify-between">
+                <span className={`grid h-10 w-10 place-items-center rounded-lg ${homeFocus === focus ? 'bg-midnight text-white' : 'bg-sunshine-light text-midnight'}`}><Icon size={19} aria-hidden="true" /></span>
+                <span className="text-xs font-semibold text-slate-500">0{index + 1}</span>
+              </span>
+              <span className="mt-3 block font-semibold text-midnight">{label}</span>
+              <span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span>
+            </button>
+          ))}
+        </div>
+        <div className="mt-5 border-t border-slate-200 pt-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-semibold text-midnight">{homeFocus === 'all' ? 'Quick links across your journey' : `${focusDetail.label}: quick links`}</h3>
+            {homeFocus !== 'all' && <button type="button" onClick={() => changeFocus('all')} className="min-h-9 text-sm font-semibold text-slate-600 underline underline-offset-2 hover:text-midnight">Show all areas</button>}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {focusLinks[homeFocus].map(({ title, description, href, Icon }) => <Link key={href} href={href} className="group flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-400 hover:bg-white">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-midnight shadow-sm"><Icon size={18} aria-hidden="true" /></span>
+              <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-midnight">{title}</span><span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span></span>
+              <ArrowRight size={16} className="shrink-0 text-slate-500 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            </Link>)}
+          </div>
         </div>
       </section>
+
+      <div className="mb-8 grid items-start gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(16rem,0.65fr)]">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="eyebrow">Small steps add up</p>
+              <h2 id="actions-heading" className="mt-1 text-xl font-bold text-midnight">Your starter plan</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-600">Choose a task to open its tool, then tick it off when you’re done.</p>
+            </div>
+            <span className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-midnight">{completed.length} of {starterActions.length} complete</span>
+          </div>
+          <ul className="divide-y divide-slate-200 border-y border-slate-200">
+            {starterActions.map((action) => (
+              <li key={action.id} className="flex items-center gap-3 py-4">
+                <input
+                  id={`starter-action-${action.id}`}
+                  type="checkbox"
+                  checked={completed.includes(action.id)}
+                  onChange={() => toggleAction(action.id)}
+                  aria-label={`Mark ${action.label} ${completed.includes(action.id) ? 'incomplete' : 'complete'}`}
+                  className="h-5 w-5 shrink-0 accent-sunshine-dark"
+                />
+                <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
+                  {action.label}
+                  <span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
+                </Link>
+                <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs leading-5 text-slate-500">Your checklist is saved to your account and only you can access it.</p>
+        </section>
+        <PublishedSiteContent contentType="announcement" heading="Updates & announcements" eyebrow="From Ukukhanya" display="list" className="!my-0" />
+      </div>
 
       <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:p-6" aria-labelledby="matches-heading">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
@@ -311,63 +366,8 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <div className="grid items-start gap-5 border-t border-slate-200 py-6 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-6 md:py-7">
-        <section className="rounded-2xl border border-slate-200 bg-surface p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
-          <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
-            <div>
-              <h2 id="actions-heading" className="section-heading">Your starter plan</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Three small actions across your development goals.</p>
-            </div>
-            <span className="text-sm font-semibold text-emerald-dark">{completed.length} of {starterActions.length} complete</span>
-          </div>
-          <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Starter plan progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-            <div className="h-full bg-sunshine-dark transition-[width]" style={{ width: `${progress}%` }} />
-          </div>
-          <ul className="divide-y divide-slate-200 border-y border-slate-200">
-            {starterActions.map((action, index) => (
-              <li key={action.id} className="py-4">
-                <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={completed.includes(action.id)}
-                    onChange={() => toggleAction(action.id)}
-                    className="mt-0.5 h-5 w-5 accent-sunshine-dark"
-                  />
-                  <span className="flex-1">
-                    <span className="block font-medium text-midnight">{action.label}</span>
-                    <span className="mt-1 block text-xs text-slate-500">{['Employment readiness', 'Money confidence', 'Growth potential'][index]}</span>
-                  </span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <aside className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5 sm:px-6">
-          <section className="py-5 first:pt-5" aria-labelledby="mobility-score-heading">
-            <p className="eyebrow">Economic Mobility Score</p>
-            <h2 id="mobility-score-heading" className="mt-2 text-xl font-bold text-midnight">Live as you complete each pillar</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">The full score updates from employment, money, and growth progress. Finish each pillar to see the complete calculation.</p>
-          </section>
-          <section className="py-5" aria-labelledby="progress-heading">
-            <p className="eyebrow">Starter plan progress</p>
-            <h2 id="progress-heading" className="mt-2 text-3xl font-bold text-midnight">{progress}%</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Completion of the three checklist actions shown here.</p>
-          </section>
-          <section id="money-skills" className="py-5">
-            <h2 className="font-semibold text-midnight">Money confidence</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Set a savings goal and practice everyday money decisions.</p>
-          </section>
-          <section id="growth-studio" className="py-5">
-            <h2 className="font-semibold text-midnight">Growth potential</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Capture an idea and choose one small experiment.</p>
-          </section>
-        </aside>
-      </div>
+      <DashboardApplicationCalendar actions={forge.actions} />
       {storageWarning && <p role="status" className="mb-4 text-sm text-amber-800">{storageWarning}</p>}
-      <p className="border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">
-        Your checklist is saved to your account. Only you can access your learner progress.
-      </p>
     </div>
   );
 }

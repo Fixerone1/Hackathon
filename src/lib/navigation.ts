@@ -16,8 +16,8 @@ import {
 
 export const workspaceNavigation = [
   { href: '/app', label: 'Home', shortLabel: 'Home', Icon: LayoutDashboard },
-  { href: '/app/employment', label: 'Work', shortLabel: 'Work', Icon: BriefcaseBusiness },
   { href: '/app/study', label: 'Study', shortLabel: 'Study', Icon: GraduationCap },
+  { href: '/app/employment', label: 'Work', shortLabel: 'Work', Icon: BriefcaseBusiness },
   {
     href: '/app/money',
     label: 'Money Skills',
@@ -30,7 +30,7 @@ export const workspaceNavigation = [
   {
     href: '/app/growth',
     label: 'Growth Studio',
-    shortLabel: 'Ideas',
+    shortLabel: 'Growth',
     Icon: ChartNoAxesCombined,
     text: 'Shape a business idea into a practical test and a next step.',
     tag: 'IDEA WORKSHOP',
