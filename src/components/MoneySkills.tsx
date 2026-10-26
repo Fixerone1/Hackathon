@@ -233,11 +233,15 @@ function goalCardImage(goal: Goal, progress: ReturnType<typeof goalProgress>, sh
   canvas.height = 630;
   const context = canvas.getContext('2d');
   if (!context) throw new Error('This browser cannot create a share card image.');
-  context.fillStyle = '#FFC400';
+  const styles = getComputedStyle(document.documentElement);
+  const yellow = styles.getPropertyValue('--beacon-yellow').trim();
+  const ink = styles.getPropertyValue('--ink').trim();
+  if (!yellow || !ink) throw new Error('Beacon design colours are unavailable for the share card.');
+  context.fillStyle = yellow;
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = '#0A0A0A';
+  context.fillStyle = ink;
   context.font = 'bold 36px sans-serif';
-  context.fillText('UKUKHANYA · MY SAVINGS GOAL', 84, 106);
+  context.fillText('BEACON · MY SAVINGS GOAL', 84, 106);
   context.font = 'bold 72px sans-serif';
   context.fillText(goal.name.slice(0, 28), 84, 240);
   context.font = '500 44px sans-serif';
@@ -250,7 +254,7 @@ function goalCardImage(goal: Goal, progress: ReturnType<typeof goalProgress>, sh
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = 'ukukhanya-savings-goal.png';
+    anchor.download = 'beacon-savings-goal.png';
     anchor.click();
     URL.revokeObjectURL(url);
   }, 'image/png');
@@ -533,7 +537,7 @@ export function MoneySkills() {
       setContributions(nextContributions);
       const after = before ? goalProgress(before, nextContributions) : null;
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        || localStorage.getItem('careerforge-accessibility')?.includes('"reduceMotion":true');
+        || localStorage.getItem('beacon:accessibility')?.includes('"reduceMotion":true');
       if (!reducedMotion && after?.progressPercent === 100 && !wasComplete) setCelebration(true);
       setContributionGoalId('');
       setContributionAmount(0);
@@ -976,7 +980,7 @@ export function MoneySkills() {
               <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${progress.status === 'Behind' ? 'bg-amber-100 text-amber-900' : 'bg-sunshine-light text-black'}`}>{progress.status}</span>
             </div>
             <div className="mt-5 flex items-center gap-4">
-              <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full" role="img" aria-label={`${progress.progressPercent}% of goal saved`} style={{ background: `conic-gradient(#FFC400 ${progress.progressPercent}%, #E5E7EB 0)` }}>
+              <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full" role="img" aria-label={`${progress.progressPercent}% of goal saved`} style={{ background: `conic-gradient(var(--beacon-yellow) ${progress.progressPercent}%, var(--gray-200) 0)` }}>
                 <span className="grid h-[4.25rem] w-[4.25rem] place-items-center rounded-full bg-white text-lg font-bold text-black">{progress.progressPercent}%</span>
               </div>
               <div><p className="text-sm text-slate-600">Saved so far</p><p className="text-xl font-bold text-black">{formatRand(progress.savedCents)}</p><p className="mt-1 text-sm text-slate-600">Need about {formatRand(progress.requiredMonthlyCents)} each month to meet the date.</p></div>

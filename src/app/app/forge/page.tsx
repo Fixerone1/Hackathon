@@ -109,7 +109,7 @@ export default function ForgeMemoryPage() {
       const { error: saveError } = await query;
       if (saveError) throw saveError;
       setFacts((current) => current.filter((item) => item.key !== fact.key));
-      setMessage('Removed. Forge will no longer use this fact after the next context refresh.');
+      setMessage('Removed. Beacon Guide will no longer use this fact after the next context refresh.');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'This fact could not be removed.');
     } finally {
@@ -122,8 +122,8 @@ export default function ForgeMemoryPage() {
       <Link href="/app/settings" className="link text-sm">Settings</Link>
       <header className="mt-3 rounded-2xl border border-slate-200 bg-sunshine p-5 sm:p-6">
         <p className="eyebrow text-black">Your data, your call</p>
-        <h1 className="page-title mt-2 text-black">What Forge knows about me</h1>
-        <p className="page-description text-black/75">Only details you added or actions you took in Ukukhanya appear here. Nothing inferred is used.</p>
+        <h1 className="page-title mt-2 text-black">What Beacon Guide knows about me</h1>
+        <p className="page-description text-black/75">Only details you added or actions you took in Beacon appear here. Nothing inferred is used.</p>
       </header>
       {loading && <p className="py-6 text-sm text-slate-600" role="status">Loading your facts...</p>}
       {error && <p className="mt-5 text-sm text-red-700" role="alert">{error}</p>}

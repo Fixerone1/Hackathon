@@ -54,7 +54,7 @@ const defaults: Preferences = {
 };
 
 const forgeDefaults: ForgePreferences = {
-  forge_name: 'Forge',
+  forge_name: 'Beacon Guide',
   tone: 'straight_up',
   language: 'en-ZA',
   data_light: false,
@@ -116,7 +116,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     try {
-      const savedAccessibility = localStorage.getItem('careerforge-accessibility');
+      const savedAccessibility = localStorage.getItem('beacon:accessibility');
       if (savedAccessibility) {
         const parsed = JSON.parse(savedAccessibility) as Partial<AccessibilityPreferences>;
         setAccessibility({
@@ -125,14 +125,14 @@ export default function SettingsPage() {
           largerText: parsed.largerText === true,
         });
       }
-      const savedFocus = localStorage.getItem('careerforge-home-focus');
+      const savedFocus = localStorage.getItem('beacon:home-focus');
       if (savedFocus === 'study' || savedFocus === 'work' || savedFocus === 'business' || savedFocus === 'money') {
         setHomeFocus(savedFocus);
       }
-      setDashboardAlerts(localStorage.getItem('careerforge-dashboard-alerts') !== 'false');
+      setDashboardAlerts(localStorage.getItem('beacon:dashboard-alerts') !== 'false');
     } catch {
-      localStorage.removeItem('careerforge-accessibility');
-      localStorage.removeItem('careerforge-home-focus');
+      localStorage.removeItem('beacon:accessibility');
+      localStorage.removeItem('beacon:home-focus');
     } finally {
       setLocalPreferencesLoaded(true);
     }
@@ -144,9 +144,9 @@ export default function SettingsPage() {
     root.classList.toggle('hc', accessibility.highContrast);
     root.classList.toggle('reduce-motion', accessibility.reduceMotion);
     root.classList.toggle('larger-text', accessibility.largerText);
-    localStorage.setItem('careerforge-accessibility', JSON.stringify(accessibility));
-    localStorage.setItem('careerforge-home-focus', homeFocus);
-    localStorage.setItem('careerforge-dashboard-alerts', String(dashboardAlerts));
+    localStorage.setItem('beacon:accessibility', JSON.stringify(accessibility));
+    localStorage.setItem('beacon:home-focus', homeFocus);
+    localStorage.setItem('beacon:dashboard-alerts', String(dashboardAlerts));
   }, [accessibility, dashboardAlerts, homeFocus, localPreferencesLoaded]);
 
   function update<K extends keyof Preferences>(key: K, value: Preferences[K]) {
@@ -214,18 +214,18 @@ export default function SettingsPage() {
         opportunity_actions: opportunityActions.data,
         skills_passport: skillsPassport.data,
         local_preferences: {
-          dashboard_alerts: localStorage.getItem('careerforge-dashboard-alerts') !== 'false',
-          homepage_focus: localStorage.getItem('careerforge-home-focus') || 'all',
-          accessibility: localStorage.getItem('careerforge-accessibility'),
+          dashboard_alerts: localStorage.getItem('beacon:dashboard-alerts') !== 'false',
+          homepage_focus: localStorage.getItem('beacon:home-focus') || 'all',
+          accessibility: localStorage.getItem('beacon:accessibility'),
           opportunity_notes: authData.user.email
-            ? localStorage.getItem(`careerforge-opportunity-notes-${authData.user.email}`)
+            ? localStorage.getItem(`beacon:opportunity-notes-${authData.user.email}`)
             : null,
         },
       }, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(file);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'ukukhanya-data-export.json';
+      anchor.download = 'beacon-data-export.json';
       anchor.click();
       URL.revokeObjectURL(url);
       setMessage('Your data export was downloaded.');
@@ -237,7 +237,7 @@ export default function SettingsPage() {
   }
 
   async function deleteAccount() {
-    if (!window.confirm('Permanently delete your Ukukhanya account, saved profile, checklist, notification settings, and Skills Passport? Any Skills Passport share link will stop working. This cannot be undone.')) return;
+    if (!window.confirm('Permanently delete your Beacon account, saved profile, checklist, notification settings, and Skills Passport? Any Skills Passport share link will stop working. This cannot be undone.')) return;
     setPrivacyBusy(true);
     setError('');
     try {
@@ -247,11 +247,11 @@ export default function SettingsPage() {
       const { error } = await supabase.rpc('delete_my_account');
       if (error) throw error;
       await supabase.auth.signOut({ scope: 'local' });
-      localStorage.removeItem('careerforge-accessibility');
-      localStorage.removeItem('careerforge-home-focus');
-      localStorage.removeItem('careerforge-dashboard-alerts');
-      localStorage.removeItem(`careerforge-opportunities-viewed-${authData.user.id}`);
-      if (authData.user.email) localStorage.removeItem(`careerforge-opportunity-notes-${authData.user.email}`);
+      localStorage.removeItem('beacon:accessibility');
+      localStorage.removeItem('beacon:home-focus');
+      localStorage.removeItem('beacon:dashboard-alerts');
+      localStorage.removeItem(`beacon:opportunities-viewed-${authData.user.id}`);
+      if (authData.user.email) localStorage.removeItem(`beacon:opportunity-notes-${authData.user.email}`);
       router.replace('/');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Your account could not be deleted.');
@@ -313,7 +313,7 @@ export default function SettingsPage() {
       </section>
       <GoogleCalendarConnection />
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="accessibility-heading">
-        <h2 id="accessibility-heading" className="font-semibold text-midnight">Make Ukukhanya work for you</h2>
+        <h2 id="accessibility-heading" className="font-semibold text-midnight">Make Beacon work for you</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">Choose a focus and we’ll bring the most relevant tools to the top of your homepage. You can change it any time.</p>
         <label htmlFor="home-focus" className="label mt-4">My main focus right now</label>
         <select id="home-focus" className="input max-w-sm" value={homeFocus} onChange={(event) => setHomeFocus(event.target.value as HomeFocus)}>
@@ -338,11 +338,11 @@ export default function SettingsPage() {
         </div>
       </section>
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="forge-preferences-heading">
-        <h2 id="forge-preferences-heading" className="font-semibold text-midnight">Your Forge preferences</h2>
+        <h2 id="forge-preferences-heading" className="font-semibold text-midnight">Your Beacon Guide preferences</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">Choose how your personal workspace speaks and what it remembers. Personalisation pause stops tailored suggestions; it does not delete your saved profile.</p>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="forge-name" className="label">Copilot name</label>
+            <label htmlFor="forge-name" className="label">Guide name</label>
             <input id="forge-name" className="input" maxLength={40} value={forgePreferences.forge_name} onChange={(event) => setForgePreferences((current) => ({ ...current, forge_name: event.target.value }))} />
           </div>
           <div>
@@ -370,8 +370,8 @@ export default function SettingsPage() {
             </label>
           ))}
         </div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">Forge’s tone and personalization controls will apply as contextual suggestions are enabled. Streaks start off and never punish missed days.</p>
-        <Link href="/app/forge" className="link mt-4 inline-flex text-sm">What Forge knows about me</Link>
+        <p className="mt-4 text-xs leading-5 text-slate-500">Beacon Guide’s tone and personalization controls apply to contextual suggestions. Streaks start off and never punish missed days.</p>
+        <Link href="/app/forge" className="link mt-4 inline-flex text-sm">What Beacon Guide knows about me</Link>
       </section>
       <section className="mt-10 max-w-3xl border-t border-slate-200 pt-6" aria-labelledby="privacy-heading">
         <h2 id="privacy-heading" className="font-semibold text-midnight">Privacy and data</h2>

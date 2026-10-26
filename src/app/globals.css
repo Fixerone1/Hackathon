@@ -4,30 +4,55 @@
 
 :root {
   color-scheme: light;
-  --color-black: #0A0A0A;
-  --color-yellow: #FFE500;
-  --color-yellow-soft: #FFF8B8;
-  --color-yellow-dark: #0A0A0A;
-  --color-emerald: var(--color-yellow);
-  --color-white: #FFFFFF;
-  --color-canvas: #FFFFFF;
-  --color-text: #0A0A0A;
-  --color-muted: #0A0A0A;
-  --color-line: #D1D5DB;
-  --color-emerald-soft: var(--color-yellow-soft);
+  --beacon-yellow: #FFC400;
+  --beacon-yellow-600: #E6B000;
+  --beacon-yellow-100: #FFF4CC;
+  --ink: #0A0A0A;
+  --deep-blue: #0B2A5B;
+  --blue-100: #E6EEFB;
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-500: #64748B;
+  --gray-700: #334155;
+  --gray-900: #0F172A;
+  --success: #12B76A;
+  --success-text: #027A48;
+  --success-bg: #E7F8EF;
+  --warning: #F79009;
+  --warning-text: #B54708;
+  --warning-bg: #FEF0DB;
+  --error: #D92D20;
+  --error-text: #B42318;
+  --error-bg: #FDECEA;
+  --growth-green: #12B76A;
+  --color-black: var(--ink);
+  --color-yellow: var(--beacon-yellow);
+  --color-yellow-soft: var(--beacon-yellow-100);
+  --color-yellow-dark: var(--beacon-yellow-600);
+  --color-emerald: var(--growth-green);
+  --color-white: var(--white);
+  --color-canvas: var(--gray-50);
+  --color-text: var(--ink);
+  --color-muted: var(--gray-500);
+  --color-line: var(--gray-200);
+  --color-emerald-soft: var(--success-bg);
   --page-background: var(--color-canvas);
   --surface: var(--color-white);
-  --surface-muted: #FFF8B8;
+  --surface-muted: var(--gray-100);
   --ink-primary: var(--color-text);
   --ink-muted: var(--color-muted);
   --line: var(--color-line);
   --accent: var(--color-yellow);
-  --accent-action: var(--color-black);
-  --support: var(--color-yellow-soft);
-  --radius-card: 16px;
-  --shadow-soft: 0 8px 28px rgba(10, 10, 10, 0.07), 0 1px 3px rgba(10, 10, 10, 0.04);
-  --content-width: 72rem;
-  --font-ui: 'IBM Plex Sans', sans-serif;
+  --accent-action: var(--beacon-yellow);
+  --support: var(--beacon-yellow-100);
+  --radius-card: 12px;
+  --shadow-soft: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --content-width: 75rem;
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-ui: var(--font-body);
 }
 
 html {
@@ -62,31 +87,30 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-card;
+    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[10px] px-5 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn text-white;
-    background-color: var(--accent-action);
+    @apply btn text-black;
+    background-color: var(--beacon-yellow);
   }
   .btn-primary:hover {
-      background-color: #0A0A0A;
-      box-shadow: 0 5px 16px rgba(10, 10, 10, 0.18);
+    background-color: var(--beacon-yellow-600);
   }
   .btn-secondary {
-    @apply btn border border-slate-300 bg-white text-ink hover:border-black hover:bg-sunshine-light;
+    @apply btn border border-slate-900 bg-white text-ink hover:bg-slate-100;
   }
   .btn-accent {
     @apply btn text-black;
-    background-color: var(--color-yellow);
+    background-color: var(--beacon-yellow);
   }
   .btn-accent:hover {
-    background-color: #FFF8B8;
+    background-color: var(--beacon-yellow-600);
   }
   .input {
-    @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
+    @apply min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-black;
@@ -105,6 +129,7 @@ body {
 
   .page-title {
     @apply text-3xl font-bold leading-[1.12] text-black sm:text-4xl lg:text-[2.65rem];
+    font-family: var(--font-heading);
   }
 
   .page-description {
@@ -121,6 +146,7 @@ body {
 
   .section-heading {
     @apply text-xl font-bold leading-snug text-black sm:text-2xl;
+    font-family: var(--font-heading);
   }
 
   .section-description {
@@ -134,8 +160,9 @@ body {
 
 /* Accessibility: visible focus everywhere */
 :focus-visible {
-  outline: 2px solid #0A0A0A;
+  outline: 3px solid var(--deep-blue);
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--white);
 }
 
 .tracking-tight,
@@ -145,6 +172,15 @@ body {
 
 .shadow-card {
   box-shadow: var(--shadow-soft);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
 }
 
 footer.site-footer {
@@ -215,36 +251,6 @@ html.reduce-motion *::after {
 
 html.larger-text body {
   font-size: 112.5%;
-}
-
-[class*="border-slate-"],
-[class*="border-yellow-"],
-[class*="border-sunshine"],
-[class*="border-amber-"],
-[class*="border-red-"],
-[class*="border"][class*="FFF8B8"],
-[class*="border"][class*="FFE500"],
-[class*="border-t-yellow"],
-[class*="border-b-yellow"],
-[class*="border-l-yellow"],
-[class*="border-r-yellow"],
-[class*="border-x-yellow"],
-[class*="border-y-yellow"],
-[class*="border-t-sunshine"],
-[class*="border-b-sunshine"],
-[class*="border-l-sunshine"],
-[class*="border-r-sunshine"],
-[class*="border-x-sunshine"],
-[class*="border-y-sunshine"] {
-  border-color: var(--color-line);
-}
-
-[class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-yellow-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-sunshine"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-amber-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-red-"] > :not([hidden]) ~ :not([hidden]) {
-  border-color: var(--color-line);
 }
 
 /* Print: CV preview only */

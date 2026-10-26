@@ -5,7 +5,7 @@ import { CalendarDays } from 'lucide-react';
 import { integrationApiPath } from '@/lib/integrations';
 import { getSupabase } from '@/lib/supabase';
 
-const connectionErrorKey = 'careerforge-google-calendar-error';
+const connectionErrorKey = 'beacon:google-calendar-error';
 
 export function GoogleCalendarConnection() {
   const [connected, setConnected] = useState(false);
@@ -108,7 +108,7 @@ export function GoogleCalendarConnection() {
         <CalendarDays size={21} className="mt-1 shrink-0 text-black" aria-hidden="true" />
         <div>
           <h2 id="calendar-connection-heading" className="section-heading">Google Calendar</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">Save application dates and opportunity closing dates to your primary calendar. Ukukhanya only manages reminders it created.</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Save application dates and opportunity closing dates to your primary calendar. Beacon only manages reminders it created.</p>
           <p className="mt-2 text-sm font-medium text-midnight" role="status">{connected ? 'Connected' : 'Not connected'}</p>
         </div>
       </div>

@@ -1,8 +1,8 @@
 {
-  "name": "ukukhanya",
+  "name": "beacon",
   "version": "0.1.0",
   "private": true,
-  "description": "Ukukhanya - a youth economic mobility platform for employment readiness, money confidence, and entrepreneurship",
+  "description": "Beacon - a South African youth platform for employment readiness, money confidence, and growth",
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
     "dev:web": "next dev --hostname 0.0.0.0",
@@ -13,7 +13,8 @@
     "db:test": "npx --yes supabase test db"
   },
   "dependencies": {
-    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/poppins": "^5.3.0",
     "@supabase/supabase-js": "^2.118.0",
     "lucide-react": "^0.451.0",
     "next": "14.2.35",

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
 
-const progressStorageKey = 'careerforge-skills-academy-progress-v1';
+const progressStorageKey = 'beacon:skills-academy-progress-v1';
 
 const lessons = [
   {

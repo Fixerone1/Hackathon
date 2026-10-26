@@ -23,7 +23,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
     }
     setSubmitting(true);
     try {
-      localStorage.setItem('careerforge-google-privacy-consent', 'true');
+      localStorage.setItem('beacon:google-privacy-consent', 'true');
       const { error: authError } = await getSupabase().auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -34,7 +34,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       });
       if (authError) throw authError;
     } catch (caught) {
-      localStorage.removeItem('careerforge-google-privacy-consent');
+      localStorage.removeItem('beacon:google-privacy-consent');
       setError(caught instanceof Error ? caught.message : 'Google sign-in is unavailable. Please try again.');
       setSubmitting(false);
     }
@@ -141,7 +141,7 @@ export function AuthForm({ mode }: { mode: 'signup' | 'login' }) {
       {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
       {notice && <p role="status" className="rounded-lg border border-emerald/30 bg-emerald-light p-3 text-sm text-midnight">{notice}</p>}
       <p className="text-center text-sm text-slate-600">
-        {isSignup ? 'Already have an account?' : 'New to Ukukhanya?'}{' '}
+        {isSignup ? 'Already have an account?' : 'New to Beacon?'}{' '}
         <Link href={isSignup ? '/login' : '/signup'} className="link">
           {isSignup ? 'Sign in' : 'Create an account'}
         </Link>

@@ -25,14 +25,14 @@ export function HomeToolDirectory() {
   }, [focus]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('careerforge-home-focus');
+    const stored = localStorage.getItem('beacon:home-focus');
     if (stored === 'study' || stored === 'work' || stored === 'business' || stored === 'money') setFocus(stored);
   }, []);
 
   function chooseFocus(nextFocus: Focus) {
     setFocus(nextFocus);
-    if (nextFocus === 'all') localStorage.removeItem('careerforge-home-focus');
-    else localStorage.setItem('careerforge-home-focus', nextFocus);
+    if (nextFocus === 'all') localStorage.removeItem('beacon:home-focus');
+    else localStorage.setItem('beacon:home-focus', nextFocus);
   }
 
   return (

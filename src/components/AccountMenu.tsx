@@ -178,7 +178,7 @@ export function AccountMenu({ compact = false, publicNavigation = false, onUserC
                 <LogIn size={17} aria-hidden="true" />
                 Sign in
               </Link>
-              <Link href="/signup" onClick={() => setOpen(false)} className="mt-1 flex min-h-11 items-center gap-3 rounded-xl bg-[#2F2D29] px-3 text-sm font-semibold text-white transition hover:bg-black">
+              <Link href="/signup" onClick={() => setOpen(false)} className="mt-1 flex min-h-11 items-center gap-3 rounded-xl bg-black px-3 text-sm font-semibold text-white transition hover:bg-slate-900">
                 <UserPlus size={17} aria-hidden="true" />
                 Create account
               </Link>
@@ -190,7 +190,7 @@ export function AccountMenu({ compact = false, publicNavigation = false, onUserC
 
     return compact ? (
       <div className="flex items-center gap-1.5">
-        <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#FFF8B8] hover:bg-sunshine-light">
+        <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-sunshine-light hover:bg-sunshine-light">
           <UserRound size={19} aria-hidden="true" />
         </Link>
         <Link href="/signup" className="btn-primary min-h-10 px-3 py-2 text-xs sm:px-4 sm:text-sm">

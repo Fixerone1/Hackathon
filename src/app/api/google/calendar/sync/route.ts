@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { authenticatedUser, decryptGoogleToken, getServiceClient } from '@/lib/server/integrations';
 
 export const runtime = 'nodejs';
+const legacyCalendarProperty = 'ukukhanya_app';
 
 type SavedAction = {
   opportunity_id: string;
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
     do {
       const url = new URL('https://www.googleapis.com/calendar/v3/calendars/primary/events');
       url.searchParams.set('maxResults', '2500');
-      url.searchParams.set('privateExtendedProperty', 'ukukhanya_app=1');
+      url.searchParams.set('privateExtendedProperty', `${legacyCalendarProperty}=1`);
       if (pageToken) url.searchParams.set('pageToken', pageToken);
       const response = await googleRequest(url.toString(), accessToken);
       if (!response.ok) {
@@ -118,7 +119,7 @@ export async function POST(request: Request) {
       const response = await googleRequest(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(eventId)}`, accessToken, { method: 'DELETE' });
       if (!response.ok && response.status !== 404) {
         console.error('[integrations] google_calendar_delete_failed');
-        return NextResponse.json({ error: 'Outdated Ukukhanya calendar reminders could not be removed.' }, { status: 502 });
+        return NextResponse.json({ error: 'Outdated Beacon calendar reminders could not be removed.' }, { status: 502 });
       }
     }
 
@@ -127,11 +128,11 @@ export async function POST(request: Request) {
       nextDay.setUTCDate(nextDay.getUTCDate() + 1);
       const eventBody = {
         summary: event.summary,
-        description: 'Reminder from your Ukukhanya learner workspace.',
+        description: 'Reminder from your Beacon learner workspace.',
         start: { date: event.date },
         end: { date: nextDay.toISOString().slice(0, 10) },
         reminders: { useDefault: true },
-        extendedProperties: { private: { ukh_key: event.key, ukukhanya_app: '1' } },
+        extendedProperties: { private: { ukh_key: event.key, [legacyCalendarProperty]: '1' } },
       };
       const exists = existing.has(event.key);
       const url = `https://www.googleapis.com/calendar/v3/calendars/primary/events${exists ? `/${encodeURIComponent(existing.get(event.key) || '')}` : ''}`;

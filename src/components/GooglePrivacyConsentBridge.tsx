@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { getSupabase } from '@/lib/supabase';
 
-const connectionErrorKey = 'careerforge-google-calendar-error';
+const connectionErrorKey = 'beacon:google-calendar-error';
 
 export function GooglePrivacyConsentBridge() {
   useEffect(() => {
@@ -16,7 +16,7 @@ export function GooglePrivacyConsentBridge() {
     }
 
     async function recordConsent(session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']) {
-      if (!session || localStorage.getItem('careerforge-google-privacy-consent') !== 'true') return;
+      if (!session || localStorage.getItem('beacon:google-privacy-consent') !== 'true') return;
       const { error } = await supabase.auth.updateUser({
         data: { privacy_consent: true, privacy_notice_version: 'prototype-1' },
       });
@@ -25,7 +25,7 @@ export function GooglePrivacyConsentBridge() {
         return;
       }
       if (active) {
-        localStorage.removeItem('careerforge-google-privacy-consent');
+        localStorage.removeItem('beacon:google-privacy-consent');
       }
     }
 

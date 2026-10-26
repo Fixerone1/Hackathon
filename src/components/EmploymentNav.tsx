@@ -20,7 +20,7 @@ export function EmploymentNav() {
               key={href}
               href={href}
               aria-current={active ? 'page' : undefined}
-              className={`inline-flex min-h-11 min-w-0 items-center justify-center rounded-lg px-1 text-center text-[11px] leading-tight transition-colors sm:px-3 sm:text-sm ${active ? 'bg-[#2F2D29] font-bold text-white' : 'font-medium text-slate-700 hover:bg-slate-50'}`}
+              className={`inline-flex min-h-11 min-w-0 items-center justify-center rounded-lg px-1 text-center text-[11px] leading-tight transition-colors sm:px-3 sm:text-sm ${active ? 'bg-ink font-bold text-white' : 'font-medium text-slate-700 hover:bg-slate-50'}`}
             >
               {label}
               {active && <span className="ml-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sunshine" aria-hidden="true" />}
@@ -38,7 +38,7 @@ export function EmploymentNav() {
                 key={href}
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border px-2 py-2 text-center text-xs leading-tight transition-colors last:col-span-2 last:mx-auto last:w-1/2 sm:last:col-span-1 sm:last:mx-0 sm:last:w-auto sm:text-sm ${active ? 'border-[#2F2D29] bg-[#2F2D29] font-semibold text-white' : 'border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50'}`}
+                className={`flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border px-2 py-2 text-center text-xs leading-tight transition-colors last:col-span-2 last:mx-auto last:w-1/2 sm:last:col-span-1 sm:last:mx-0 sm:last:w-auto sm:text-sm ${active ? 'border-ink bg-ink font-semibold text-white' : 'border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50'}`}
               >
                 <Icon size={17} className="shrink-0" aria-hidden="true" />
                 <span>{label}</span>

@@ -85,7 +85,7 @@ export default function HomePage() {
         <div aria-hidden="true" className="absolute -right-24 -top-32 -z-10 h-96 w-96 rounded-full border-[48px] border-black/10" />
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:px-8 lg:py-20">
           <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-black">Ukukhanya means “light” in isiZulu</p>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-black">Beacon · Light your way forward.</p>
             <h1 className="mt-0 text-[2.65rem] font-bold leading-[1.04] text-black sm:text-6xl lg:text-[4.25rem]">
               Your future is
               <span className="block"><span className="text-black/70">yours to build.</span></span>
@@ -109,21 +109,21 @@ export default function HomePage() {
             <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-2 shadow-[0_18px_48px_rgba(10,10,10,0.12)] sm:p-3">
               <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-people.jpg`}
                   alt="A diverse group of young people smiling together"
                   width={519}
                   height={345}
                   className="row-span-2 h-full min-h-[15rem] w-full object-cover sm:min-h-[23rem]"
                 />
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-students.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-students.jpg`}
                   alt="Students sharing ideas around a laptop in a library"
                   width={1000}
                   height={667}
                   className="h-full min-h-[7.25rem] w-full object-cover sm:min-h-[11rem]"
                 />
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-founders.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-founders.jpg`}
                   alt="A Black woman and colleague working together at a computer"
                   width={1000}
                   height={667}
@@ -218,7 +218,7 @@ export default function HomePage() {
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <div className="mx-auto max-w-2xl sm:mx-0">
             <p className="eyebrow">A starting point for your stage of life</p>
-            <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Who Ukukhanya is for</h2>
+            <h2 id="pathways-heading" className="section-heading mt-2 text-2xl sm:text-3xl">Who Beacon is for</h2>
           </div>
           <p className="mx-auto max-w-sm text-sm leading-6 text-midnight sm:mx-0">You do not need to have everything figured out. Choose a starting point and explore at your own pace.</p>
         </div>
@@ -237,7 +237,7 @@ export default function HomePage() {
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <h3 className="font-bold text-midnight">What to expect in this preview</h3>
           <p className="mt-2 text-sm leading-6 text-midnight">
-            This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Skills Academy, career self-assessment, interview practice, Money Skills, and Growth Studio offer practical guidance, not accredited qualifications or guaranteed outcomes. Study pathways do not yet include a verified course catalogue or university deadlines, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you or replace official application information. Always confirm details directly with the institution, employer, or funder.
+            This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Skills Academy, career self-assessment, interview practice, Money Skills, and Growth Studio offer practical guidance, not accredited qualifications or guaranteed outcomes. Study pathways do not yet include a verified course catalogue or university deadlines, and there are no verified business-funding listings. Beacon does not apply to institutions or employers for you or replace official application information. Always confirm details directly with the institution, employer, or funder.
           </p>
         </div>
         <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
@@ -253,7 +253,7 @@ export default function HomePage() {
 
       <PublishedSiteContent
         contentType="homepage_feature"
-        heading="More from Ukukhanya"
+        heading="More from Beacon"
         eyebrow="Featured"
         className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"
       />
