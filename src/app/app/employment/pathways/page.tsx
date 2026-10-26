@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { EmploymentNav } from '@/components/EmploymentNav';
 import { PageIntro } from '@/components/PageIntro';
+import { StudyNav } from '@/components/StudyNav';
 
 const pathwayOptions = [
   { id: 'work', label: 'Find work', description: 'I want to apply for entry-level roles.' },
@@ -51,6 +51,7 @@ export default function PathwaysPage() {
       title: pathwayStep.title,
       detail: pathwayStep.detail,
       link: true,
+      linkHref: pathway === 'study' ? '/app/study#bursaries' : '/app/employment/opportunities',
     },
     {
       title: 'List evidence you already have',
@@ -72,8 +73,8 @@ export default function PathwaysPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <PageIntro eyebrow="Employment Hub" title="Skills and career path" description="Turn a goal into a research-backed next step. This planner helps you check real requirements; it does not assume you have a qualification gap." />
-      <EmploymentNav />
+      <PageIntro eyebrow="Study Hub" title="Study and career pathways" description="Turn a study or career goal into a research-backed next step. Check real requirements; the planner does not assume you have a qualification gap." />
+      <StudyNav />
 
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.3fr]">
         <section className="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
@@ -149,8 +150,8 @@ export default function PathwaysPage() {
                       <h3 className="text-sm font-semibold text-slate-900">{index + 1}. {action.title}</h3>
                       <p className="mt-1 text-sm leading-6 text-slate-700">{action.detail}</p>
                       {action.link && (
-                        <Link href="/app/employment/opportunities" className="mt-3 inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50">
-                          Browse verified opportunities
+                        <Link href={action.linkHref || '/app/study'} className="mt-3 inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50">
+                          {pathway === 'study' ? 'Browse bursaries and scholarships' : 'Browse verified opportunities'}
                         </Link>
                       )}
                     </div>

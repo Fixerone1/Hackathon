@@ -32,6 +32,7 @@ const focusLinks: Record<HomeFocus, Array<{ title: string; description: string; 
     { title: 'Update your profile', description: 'Make your matches more useful.', href: '/app/profile', Icon: ClipboardCheck },
   ],
   study: [
+    { title: 'Bursaries and scholarships', description: 'Find verified funding listings and official sources.', href: '/app/study#bursaries', Icon: GraduationCap },
     { title: 'Study pathways', description: 'Compare routes towards further study.', href: '/app/employment/pathways', Icon: Route },
     { title: 'Skills Academy', description: 'Find a practical skill to build.', href: '/app/employment/academy', Icon: BookOpen },
   ],
@@ -42,7 +43,7 @@ const focusLinks: Record<HomeFocus, Array<{ title: string; description: string; 
   ],
   business: [
     { title: 'Growth Studio', description: 'Shape an idea into a small test.', href: '/app/growth', Icon: Lightbulb },
-    { title: 'Study and career paths', description: 'Explore routes that support your plan.', href: '/app/employment/pathways', Icon: Route },
+    { title: 'Study and career paths', description: 'Explore routes that support your plan.', href: '/app/study', Icon: Route },
   ],
   money: [
     { title: 'Money Skills', description: 'Explore everyday money decisions.', href: '/app/money', Icon: Banknote },
@@ -168,7 +169,7 @@ export default function DashboardPage() {
   const focusAction = homeFocus === 'all'
     ? { label: forge.nextAction?.label || 'Choose your next step', href: forge.nextAction?.href || '/app/employment/opportunities' }
     : homeFocus === 'study'
-      ? { label: 'Explore study pathways', href: '/app/employment/pathways' }
+      ? { label: 'Explore study and bursary options', href: '/app/study' }
       : homeFocus === 'work'
         ? { label: 'View opportunity matches', href: '/app/employment/opportunities' }
         : homeFocus === 'business'

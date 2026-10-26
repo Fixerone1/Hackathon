@@ -6,6 +6,7 @@ import {
   ClipboardCheck,
   ContactRound,
   FileText,
+  GraduationCap,
   LayoutDashboard,
   Lightbulb,
   MessageCircle,
@@ -16,6 +17,7 @@ import {
 export const workspaceNavigation = [
   { href: '/app', label: 'Home', shortLabel: 'Home', Icon: LayoutDashboard },
   { href: '/app/employment', label: 'Work', shortLabel: 'Work', Icon: BriefcaseBusiness },
+  { href: '/app/study', label: 'Study', shortLabel: 'Study', Icon: GraduationCap },
   {
     href: '/app/money',
     label: 'Money Skills',
@@ -85,22 +87,31 @@ export const employmentNavigation = [
     tag: 'PRACTICE',
     focus: ['work'],
   },
+] as const;
+
+export const studyNavigation = [
   {
-    href: '/app/employment/academy',
-    label: 'Skills Academy',
-    Icon: BookOpen,
-    group: 'tools',
-    text: 'Build practical work-readiness skills through short lessons and knowledge checks.',
-    tag: 'PRACTICE LESSONS',
-    focus: ['study', 'work'],
+    href: '/app/study#bursaries',
+    label: 'Bursaries',
+    Icon: GraduationCap,
+    text: 'Browse verified bursary and scholarship listings, then confirm dates and eligibility with the funder.',
+    tag: 'STUDY FUNDING',
+    focus: ['study'],
   },
   {
     href: '/app/employment/pathways',
     label: 'Study & career pathways',
     Icon: Route,
-    group: 'tools',
-    text: 'Build a goal-led plan and verify requirements before choosing a course or opportunity.',
+    text: 'Turn a study goal into practical research steps and verify course requirements.',
     tag: 'PATHWAY PLANNER',
+    focus: ['study'],
+  },
+  {
+    href: '/app/employment/academy',
+    label: 'Skills Academy',
+    Icon: BookOpen,
+    text: 'Build practical skills through short lessons and knowledge checks.',
+    tag: 'PRACTICE LESSONS',
     focus: ['study'],
   },
 ] as const;
@@ -108,6 +119,7 @@ export const employmentNavigation = [
 export const employmentToolDirectory = [
   ...employmentNavigation.filter((item): item is typeof item & { text: string; tag: string; focus: readonly string[] } => 'text' in item)
     .map(({ href, label: title, Icon, text, tag, focus }) => ({ href, title, Icon, text, tag, focus })),
+  ...studyNavigation.map(({ href, label: title, Icon, text, tag, focus }) => ({ href, title, Icon, text, tag, focus })),
   ...workspaceNavigation.filter((item): item is typeof item & { text: string; tag: string; focus: readonly string[] } => 'text' in item)
     .map(({ href, label: title, Icon, text, tag, focus }) => ({ href, title, Icon, text, tag, focus })),
 ] as const;

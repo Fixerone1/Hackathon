@@ -21,7 +21,7 @@ export function HomeToolDirectory() {
   const [focus, setFocus] = useState<Focus>('all');
   const orderedTools = useMemo(() => {
     if (focus === 'all') return employmentToolDirectory;
-    return employmentToolDirectory.filter((tool) => tool.focus.includes(focus));
+    return employmentToolDirectory.filter((tool) => tool.focus.some((toolFocus) => toolFocus === focus));
   }, [focus]);
 
   useEffect(() => {

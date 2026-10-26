@@ -13,10 +13,11 @@ import {
   opportunityCategories,
   type LearnerOpportunityAction,
   type Opportunity,
+  type OpportunityCategory,
   type OpportunityProfile,
 } from '@/lib/opportunities';
 
-type OpportunityFeedProps = { mode?: 'matches' | 'applications' };
+type OpportunityFeedProps = { mode?: 'matches' | 'applications'; categoryFilter?: OpportunityCategory };
 type ActionRow = { opportunity_id: string; status: LearnerOpportunityAction; scheduled_apply_date: string | null };
 type AccountDetails = { name: string; email: string };
 const pageSize = 5;
@@ -40,6 +41,7 @@ const officialOpportunitySources = [
     href: 'https://www.nsfas.org.za/',
   },
 ];
+const officialStudySources = officialOpportunitySources.filter((source) => source.name === 'NSFAS' || source.name === 'SAYouth');
 
 function formatDate(value: string | null): string {
   if (!value) return 'No closing date listed';
@@ -147,13 +149,13 @@ function applicationProfileSummary(opportunity: Opportunity, profile: Opportunit
   ].join('\n');
 }
 
-export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
+export function OpportunityFeed({ mode = 'matches', categoryFilter }: OpportunityFeedProps) {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [profile, setProfile] = useState<OpportunityProfile>({});
   const [account, setAccount] = useState<AccountDetails>({ name: '', email: '' });
   const [actions, setActions] = useState<Record<string, LearnerOpportunityAction>>({});
   const [reminders, setReminders] = useState<Record<string, string>>({});
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState(categoryFilter || 'all');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -240,7 +242,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
       .filter((opportunity) => mode === 'applications' || !opportunity.closing_date || opportunity.closing_date >= today)
       .filter((opportunity) => mode === 'applications' || opportunity.verified_at >= verificationCutoff)
       .filter((opportunity) => mode !== 'applications' || Boolean(actions[opportunity.id]))
-      .filter((opportunity) => category === 'all' || opportunity.category === category)
+      .filter((opportunity) => categoryFilter ? opportunity.category === categoryFilter : category === 'all' || opportunity.category === category)
       .filter((opportunity) => !query || [
         opportunity.title,
         opportunity.organization,
@@ -255,10 +257,11 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
         action: actions[opportunity.id],
       }))
       .sort((left, right) => (right.score ?? -1) - (left.score ?? -1));
-  }, [actions, category, mode, opportunities, profile, searchQuery]);
+  }, [actions, category, categoryFilter, mode, opportunities, profile, searchQuery]);
 
   const pageCount = Math.max(1, Math.ceil(matches.length / pageSize));
   const pageMatches = matches.slice((page - 1) * pageSize, page * pageSize);
+  const visibleOpportunitySources = categoryFilter === 'bursary' ? officialStudySources : officialOpportunitySources;
 
   useEffect(() => {
     setPage(1);
@@ -472,9 +475,9 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
     <section aria-label={mode === 'applications' ? 'Saved opportunities and applications' : 'Personalized opportunities'}>
       <div className="mb-5 rounded-2xl border border-slate-200 bg-sunshine-light p-4 sm:p-5">
         <p className="mb-4 text-sm leading-6 text-slate-600">{mode === 'applications' ? 'Your saved opportunities and application progress.' : 'Search current listings from verified sources. Matches use the details in your profile; check each original advert before applying.'}</p>
-        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,0.55fr)]">
+        <div className={`grid gap-3 ${categoryFilter ? '' : 'sm:grid-cols-[minmax(0,1fr)_minmax(13rem,0.55fr)]'}`}>
           <div>
-            <label htmlFor="opportunity-search" className="label">Search opportunities</label>
+            <label htmlFor="opportunity-search" className="label">{categoryFilter === 'bursary' ? 'Search bursaries and scholarships' : 'Search opportunities'}</label>
             <input
               id="opportunity-search"
               className="input"
@@ -484,13 +487,13 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
               placeholder="Role, organisation, location, or skill"
             />
           </div>
-          <div>
+          {!categoryFilter && <div>
             <label htmlFor="opportunity-category" className="label">Opportunity type</label>
             <select id="opportunity-category" className="input" value={category} onChange={(event) => setCategory(event.target.value)}>
               <option value="all">All types</option>
               {opportunityCategories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
             </select>
-          </div>
+          </div>}
         </div>
       </div>
 
@@ -516,24 +519,28 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
             <h2 className="font-semibold text-midnight">
               {mode === 'applications'
                 ? 'Nothing saved yet'
-                : searchQuery.trim() || category !== 'all'
+                : categoryFilter === 'bursary'
+                  ? searchQuery.trim() ? 'No bursaries match this search' : 'No current verified bursaries or scholarships yet'
+                : searchQuery.trim() || (!categoryFilter && category !== 'all')
                   ? 'No opportunities match these filters'
                   : 'No current verified listings yet'}
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-700">
               {mode === 'applications'
                 ? 'Save a listing from your matches to keep it here, set a reminder, and track when you apply.'
-                : searchQuery.trim() || category !== 'all'
+                : categoryFilter === 'bursary'
+                  ? 'No current verified bursaries or scholarships are listed. Check official funders directly below.'
+                  : searchQuery.trim() || category !== 'all'
                   ? 'Try a different search or type. Filters only change what you see; they do not remove saved listings.'
                   : 'New listings appear here after they are checked against the original source. Until then, you can search these official opportunity sites directly.'}
             </p>
-            {(searchQuery.trim() || category !== 'all') && (
+            {(searchQuery.trim() || (!categoryFilter && category !== 'all')) && (
               <button
                 type="button"
                 className="btn-secondary mt-4 min-h-10"
                 onClick={() => {
                   setSearchQuery('');
-                  setCategory('all');
+                  setCategory(categoryFilter || 'all');
                 }}
               >
                 Clear filters
@@ -549,7 +556,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                 <p className="mt-1 text-sm leading-6 text-slate-600">These links open the provider’s site. Check current availability, requirements, and closing dates there.</p>
               </div>
               <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {officialOpportunitySources.map((source) => (
+                {visibleOpportunitySources.map((source) => (
                   <li key={source.href}>
                     <a
                       href={source.href}
