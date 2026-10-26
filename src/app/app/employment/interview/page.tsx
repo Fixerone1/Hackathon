@@ -63,7 +63,20 @@ export default function InterviewPage() {
           },
         }),
       });
-      const result = await response.json() as { text?: string; error?: string };
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        if (response.redirected) {
+          throw new Error('The interview feedback request was redirected. Please sign in again and retry.');
+        }
+        throw new Error(`Interview feedback returned a webpage instead of data (HTTP ${response.status}). The API may be missing from this deployment.`);
+      }
+
+      let result: { text?: string; error?: string };
+      try {
+        result = await response.json() as { text?: string; error?: string };
+      } catch {
+        throw new Error('Interview feedback returned an unreadable response. Please try again.');
+      }
       if (!response.ok || !result.text) {
         throw new Error(result.error || 'Interview feedback is unavailable right now.');
       }
