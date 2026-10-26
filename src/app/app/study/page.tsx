@@ -4,6 +4,7 @@ import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
 import { StudyProfileSummary } from '@/components/StudyProfileSummary';
+import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { studyNavigation } from '@/lib/navigation';
 
 export const metadata = { title: 'Study and bursaries' };
@@ -55,6 +56,13 @@ export default function StudyPage() {
         </div>
         <OpportunityFeed categoryFilter="bursary" />
       </section>
+
+      <PublishedSiteContent
+        contentType="opportunity_resource"
+        heading="Study events and useful information"
+        eyebrow="More ways to learn"
+        emptyMessage="There are no study events or information updates right now. Check back for new content."
+      />
 
       <p className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
         Bursary dates and eligibility can change. Verify details with the funder or institution and submit applications only through its official channel. <Link href="/app/profile" className="font-semibold text-midnight underline underline-offset-2">Update your saved education details</Link>.

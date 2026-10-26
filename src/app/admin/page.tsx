@@ -53,7 +53,7 @@ export default function AdminPage() {
               <div className="-mb-px flex flex-wrap gap-2" role="tablist" aria-label="Admin content sections">
                 {([
                   ['opportunities', 'Opportunities'],
-                  ['site-content', 'Site content'],
+                  ['site-content', 'Site content & events'],
                 ] as const).map(([value, label]) => (
                   <button
                     key={value}

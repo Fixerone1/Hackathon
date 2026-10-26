@@ -6,6 +6,7 @@ export const siteContentTypes = [
   { value: 'money_skill', label: 'Money Skills content', placement: 'Money Skills' },
   { value: 'growth_resource', label: 'Growth Studio content', placement: 'Growth Studio' },
   { value: 'employment_resource', label: 'Employment resource', placement: 'Employment Hub' },
+  { value: 'opportunity_resource', label: 'Seminar, event or useful information', placement: 'Opportunities and Study feeds' },
 ] as const;
 
 export type SiteContentType = (typeof siteContentTypes)[number]['value'];
@@ -19,6 +20,8 @@ export type SiteContent = {
   link_label: string | null;
   link_url: string | null;
   image_url: string | null;
+  event_date: string | null;
+  event_location: string | null;
   status: SiteContentStatus;
   sort_order: number;
   published_at: string | null;

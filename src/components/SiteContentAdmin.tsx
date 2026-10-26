@@ -12,6 +12,8 @@ type Draft = {
   link_label: string;
   link_url: string;
   image_url: string;
+  event_date: string;
+  event_location: string;
   status: SiteContentStatus;
   sort_order: string;
 };
@@ -23,6 +25,8 @@ const emptyDraft: Draft = {
   link_label: '',
   link_url: '',
   image_url: '',
+  event_date: '',
+  event_location: '',
   status: 'draft',
   sort_order: '0',
 };
@@ -30,6 +34,11 @@ const emptyDraft: Draft = {
 function contentError(error: unknown): string {
   if (error && typeof error === 'object' && 'code' in error && error.code === 'PGRST205') {
     return 'Supabase cannot find site_content. Apply migration 20261026007000_site_content.sql, then reload the API schema cache.';
+  }
+  if (error && typeof error === 'object' && 'code' in error && error.code === 'PGRST204'
+    && 'message' in error && typeof error.message === 'string'
+    && (error.message.includes('event_date') || error.message.includes('opportunity_resource'))) {
+    return `The opportunity information migration is missing. Apply migration 20261026018000_opportunity_resources.sql, then reload the Supabase API schema cache. Details: ${error.message}`;
   }
   return error instanceof Error ? error.message : 'The content could not be saved.';
 }
@@ -53,7 +62,7 @@ export function SiteContentAdmin() {
   async function loadContent() {
     const { data, error: queryError } = await getSupabase()
       .from('site_content')
-      .select('id,content_type,title,body,link_label,link_url,image_url,status,sort_order,published_at,created_at')
+      .select('id,content_type,title,body,link_label,link_url,image_url,event_date,event_location,status,sort_order,published_at,created_at')
       .order('content_type', { ascending: true })
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
@@ -67,7 +76,7 @@ export function SiteContentAdmin() {
       try {
         const { data, error: queryError } = await getSupabase()
           .from('site_content')
-          .select('id,content_type,title,body,link_label,link_url,image_url,status,sort_order,published_at,created_at')
+          .select('id,content_type,title,body,link_label,link_url,image_url,event_date,event_location,status,sort_order,published_at,created_at')
           .order('content_type', { ascending: true })
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: false });
@@ -131,6 +140,8 @@ export function SiteContentAdmin() {
         link_label: linkLabel || null,
         link_url: linkUrl || null,
         image_url: imageUrl || null,
+        event_date: draft.content_type === 'opportunity_resource' ? draft.event_date || null : null,
+        event_location: draft.content_type === 'opportunity_resource' ? draft.event_location.trim() || null : null,
         status: draft.status,
         sort_order: sortOrder,
         published_at: draft.status === 'draft'
@@ -213,7 +224,7 @@ export function SiteContentAdmin() {
       <section aria-labelledby="site-content-form-heading">
         <h2 id="site-content-form-heading" className="text-xl font-semibold text-midnight">{editingId ? 'Edit site content' : 'Create site content'}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Add announcements, resources, FAQs, or promotional content. Choose a content type to place it in the matching section; publish only after reviewing the text and links.
+          Publish learner announcements, learning resources, seminars, events, and other opportunity information. Application listings remain separate; content published as an opportunity resource appears in the Work and Study information feeds.
         </p>
         <form className="mt-5 grid gap-5 border-y border-slate-200 py-6 sm:grid-cols-2" onSubmit={saveContent}>
           <div>
@@ -240,6 +251,16 @@ export function SiteContentAdmin() {
             <textarea id="site-content-body" className="input min-h-36 resize-y" required minLength={10} maxLength={8000} rows={6} value={draft.body} onChange={(event) => setDraft((current) => ({ ...current, body: event.target.value }))} />
             <p className="mt-1 text-xs text-slate-500">Plain text only; line breaks are preserved.</p>
           </div>
+          {draft.content_type === 'opportunity_resource' && <>
+            <div>
+              <label htmlFor="site-content-event-date" className="label">Event or seminar date <span className="font-normal text-slate-500">(optional)</span></label>
+              <input id="site-content-event-date" className="input" type="date" value={draft.event_date} onChange={(event) => setDraft((current) => ({ ...current, event_date: event.target.value }))} />
+            </div>
+            <div>
+              <label htmlFor="site-content-event-location" className="label">Location or format <span className="font-normal text-slate-500">(optional)</span></label>
+              <input id="site-content-event-location" className="input" maxLength={160} placeholder="Online, Johannesburg, or venue details" value={draft.event_location} onChange={(event) => setDraft((current) => ({ ...current, event_location: event.target.value }))} />
+            </div>
+          </>}
           <div>
             <label htmlFor="site-content-link-label" className="label">Link label <span className="font-normal text-slate-500">(optional)</span></label>
             <input id="site-content-link-label" className="input" maxLength={80} placeholder="Read more" value={draft.link_label} onChange={(event) => setDraft((current) => ({ ...current, link_label: event.target.value }))} />
@@ -296,11 +317,12 @@ export function SiteContentAdmin() {
                     </div>
                     <p className="mt-1 text-xs font-semibold text-slate-600">{siteContentTypes.find((type) => type.value === item.content_type)?.label} · {destination}</p>
                     <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-700">{item.body}</p>
+                    {item.event_date && <p className="mt-2 text-sm font-medium text-slate-700">Date: {new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${item.event_date}T00:00:00Z`))}{item.event_location ? ` · ${item.event_location}` : ''}</p>}
                     <p className="mt-2 text-xs text-slate-500">{item.status === 'published' ? 'Published' : 'Created'} · {dateLabel(item.status === 'published' ? item.published_at : item.created_at)} · Display order {item.sort_order}</p>
                     {item.link_url && <a href={item.link_url} target="_blank" rel="noopener noreferrer" className="link mt-2 inline-block text-sm">{item.link_label || item.link_url}</a>}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <button type="button" className="btn-secondary min-h-9 px-3 py-1 text-sm" onClick={() => { setDraft({ content_type: item.content_type, title: item.title, body: item.body, link_label: item.link_label || '', link_url: item.link_url || '', image_url: item.image_url || '', status: item.status, sort_order: String(item.sort_order) }); setEditingId(item.id); setMessage(''); setError(''); }}>Edit</button>
+                    <button type="button" className="btn-secondary min-h-9 px-3 py-1 text-sm" onClick={() => { setDraft({ content_type: item.content_type, title: item.title, body: item.body, link_label: item.link_label || '', link_url: item.link_url || '', image_url: item.image_url || '', event_date: item.event_date || '', event_location: item.event_location || '', status: item.status, sort_order: String(item.sort_order) }); setEditingId(item.id); setMessage(''); setError(''); }}>Edit</button>
                     {item.status !== 'published' && <button type="button" className="btn-secondary min-h-9 px-3 py-1 text-sm" disabled={busyId === item.id} onClick={() => void changeStatus(item, 'published')}>Publish</button>}
                     {item.status === 'published' && <button type="button" className="btn-secondary min-h-9 px-3 py-1 text-sm" disabled={busyId === item.id} onClick={() => void changeStatus(item, 'draft')}>Unpublish</button>}
                     {item.status !== 'archived' && <button type="button" className="btn-secondary min-h-9 px-3 py-1 text-sm" disabled={busyId === item.id} onClick={() => void changeStatus(item, 'archived')}>Archive</button>}

@@ -1,6 +1,6 @@
 begin;
 
-select plan(36);
+select plan(37);
 
 insert into auth.users (
   id, aud, role, email, encrypted_password, confirmed_at,
@@ -53,8 +53,13 @@ insert into public.site_content (
 ) values
   ('30000000-0000-0000-0000-000000000001', 'homepage_feature', 'Published homepage feature', 'A public site content fixture for RLS checks.', 'published', now(), '10000000-0000-0000-0000-000000000003'),
   ('30000000-0000-0000-0000-000000000002', 'announcement', 'Published learner announcement', 'A published learner update fixture for RLS checks.', 'published', now(), '10000000-0000-0000-0000-000000000003'),
-  ('30000000-0000-0000-0000-000000000003', 'faq', 'Draft question fixture', 'An unpublished question fixture for RLS checks.', 'draft', null, '10000000-0000-0000-0000-000000000003')
+  ('30000000-0000-0000-0000-000000000003', 'faq', 'Draft question fixture', 'An unpublished question fixture for RLS checks.', 'draft', null, '10000000-0000-0000-0000-000000000003'),
+  ('30000000-0000-0000-0000-000000000004', 'opportunity_resource', 'Published study seminar', 'A seminar resource for opportunity feed checks.', 'published', now(), '10000000-0000-0000-0000-000000000003')
 on conflict (id) do nothing;
+
+update public.site_content
+set event_date = current_date + 7, event_location = 'Online'
+where id = '30000000-0000-0000-0000-000000000004';
 
 insert into public.learner_opportunity_actions (user_id, opportunity_id, status)
 values
@@ -86,6 +91,7 @@ select is((select count(*)::int from public.opportunities where id = '20000000-0
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'user_metadata role cannot expose a draft');
 select is((select count(*)::int from public.opportunities where id = '20000000-0000-0000-0000-000000000002'), 0, 'saving a draft cannot bypass admin-only draft access');
 select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000002'), 1, 'learner reads published workspace content');
+select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000004' and event_date = current_date + 7 and event_location = 'Online'), 1, 'learner reads published opportunity information and event details');
 select is((select count(*)::int from public.site_content where id = '30000000-0000-0000-0000-000000000003'), 0, 'learner cannot read draft site content');
 select throws_ok(
   $$insert into public.site_content (content_type, title, body, created_by) values ('announcement', 'Learner attempted content', 'Learners cannot publish site content.', '10000000-0000-0000-0000-000000000001')$$,
