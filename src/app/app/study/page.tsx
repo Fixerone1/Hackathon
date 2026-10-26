@@ -20,9 +20,9 @@ export default function StudyPage() {
       />
       <StudyNav />
 
-      <StudyProfileSummary />
-
       <StudyAdmissions />
+
+      <StudyProfileSummary />
 
       <section className="mb-8" aria-labelledby="study-tools-heading">
         <div className="mb-4">

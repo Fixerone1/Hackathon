@@ -89,7 +89,7 @@ export function StudyAdmissions() {
   const reminderDue = Boolean(returnDate && returnDate <= todayKey());
 
   return (
-    <section className="mb-8 scroll-mt-36" aria-labelledby="study-admissions-heading">
+    <section id="admissions" className="mb-8 scroll-mt-36" aria-labelledby="study-admissions-heading">
       <div className="mb-4">
         <p className="eyebrow">Plan ahead</p>
         <h2 id="study-admissions-heading" className="mt-1 text-xl font-bold text-midnight">University and TVET college applications</h2>

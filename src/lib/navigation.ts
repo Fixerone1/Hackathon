@@ -11,6 +11,7 @@ import {
   Lightbulb,
   MessageCircle,
   Route,
+  School,
   UserRound,
 } from 'lucide-react';
 
@@ -90,6 +91,14 @@ export const employmentNavigation = [
 ] as const;
 
 export const studyNavigation = [
+  {
+    href: '/app/study#admissions',
+    label: 'University & TVET applications',
+    Icon: School,
+    text: 'Prepare for university and TVET college applications, then check opening dates with each institution.',
+    tag: 'ADMISSIONS',
+    focus: ['study'],
+  },
   {
     href: '/app/study#bursaries',
     label: 'Bursaries',

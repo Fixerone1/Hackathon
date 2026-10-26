@@ -2,19 +2,32 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { studyNavigation } from '@/lib/navigation';
 import { normalizePathname } from '@/lib/normalizePathname';
 
 export function StudyNav() {
   const pathname = normalizePathname(usePathname() || '/');
+  const [hash, setHash] = useState('');
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
 
   return (
     <nav aria-label="Study sections" className="mb-6 border-b border-slate-200 pb-4">
       <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:text-left">Study tools</p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {studyNavigation.map(({ href, label, Icon }) => {
           const active = pathname === href.split('#')[0]
-            || (label === 'Bursaries' && pathname === '/app/study');
+            && (href.endsWith('#admissions')
+              ? hash === '#admissions'
+              : href.endsWith('#bursaries')
+                ? hash === '#bursaries' || !hash
+                : true);
           return (
             <Link
               key={label}

@@ -58,6 +58,7 @@ const roadmap: RoadmapStep[] = [
     action: 'Open Study',
     Icon: GraduationCap,
     tools: [
+      { label: 'University & TVET applications', description: 'Prepare and check application dates', href: '/app/study#admissions' },
       { label: 'Bursaries & scholarships', description: 'Find study funding', href: '/app/study#bursaries' },
       { label: 'Study pathways', description: 'Research possible routes', href: '/app/employment/pathways' },
       { label: 'Skills Academy', description: 'Learn practical skills', href: '/app/employment/academy' },
