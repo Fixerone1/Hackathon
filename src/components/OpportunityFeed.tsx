@@ -681,34 +681,34 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
                   </div>
                 </details>
 
-                <div className="mt-4 flex flex-col gap-2 border-t border-slate-200 pt-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary min-h-10 whitespace-nowrap px-3">
-                      View &amp; apply <ArrowUpRight size={16} aria-hidden="true" />
+                <div className="mt-4 border-t border-slate-200 pt-3">
+                  <div role="group" aria-label="Opportunity actions" className="grid grid-cols-5 items-stretch justify-items-stretch gap-1 sm:flex sm:justify-center sm:gap-2">
+                    <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
+                      <ArrowUpRight size={15} aria-hidden="true" />
+                      <span>View &amp; apply</span>
                     </a>
                     {action === 'applied' ? (
-                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
-                        <Heart size={16} aria-hidden="true" />Move to saved
+                      <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
+                        <Heart size={15} aria-hidden="true" /><span>Move to saved</span>
                       </button>
                     ) : (
-                      <button type="button" className="btn-secondary min-h-10 whitespace-nowrap px-3" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>
-                        <Check size={16} aria-hidden="true" />Mark as applied
+                      <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>
+                        <Check size={15} aria-hidden="true" /><span>Mark as applied</span>
                       </button>
                     )}
-                  </div>
-                  <div role="group" aria-label="Opportunity actions" className="flex flex-wrap gap-2">
-                    <button type="button" aria-pressed={action === 'saved'} disabled={busyId === opportunity.id || action === 'applied'}
+                    <button type="button" aria-pressed={action === 'saved'} aria-label={action === 'saved' ? 'Saved to plan; remove from saved opportunities' : 'Save to plan'} disabled={busyId === opportunity.id || action === 'applied'}
                       onClick={() => void setAction(opportunity.id, action === 'saved' ? null : 'saved')}
-                      className={`btn-secondary min-h-10 px-3 ${action === 'saved' ? 'border-sunshine-dark bg-sunshine-light text-midnight' : ''}`}>
-                      <Heart size={16} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" />{action === 'saved' ? 'Saved to plan' : 'Save to plan'}
+                      className={`btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm ${action === 'saved' ? 'border-sunshine-dark bg-sunshine-light text-midnight' : ''}`}>
+                      <Heart size={15} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" /><span>{action === 'saved' ? 'Saved to plan' : 'Save to plan'}</span>
                     </button>
-                    <button type="button" className="btn-secondary min-h-10 px-3" onClick={() => void shareOpportunity(opportunity)}>
-                      <Share2 size={16} aria-hidden="true" />Share
+                    <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" onClick={() => void shareOpportunity(opportunity)}>
+                      <Share2 size={15} aria-hidden="true" /><span>Share</span>
                     </button>
                     <button type="button" aria-expanded={openNoteId === opportunity.id}
+                      aria-label={openNoteId === opportunity.id ? 'Close private note' : 'Add private note'}
                       onClick={() => setOpenNoteId((current) => current === opportunity.id ? '' : opportunity.id)}
-                      className="btn-secondary min-h-10 px-3">
-                      <MessageCircle size={16} aria-hidden="true" />{openNoteId === opportunity.id ? 'Close note' : 'Private note'}
+                      className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
+                      <MessageCircle size={15} aria-hidden="true" /><span>{openNoteId === opportunity.id ? 'Close note' : 'Private note'}</span>
                     </button>
                   </div>
                 </div>
