@@ -5,11 +5,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
-import { ImagePlus, LogOut, Settings, UserRound } from 'lucide-react';
+import { Home, ImagePlus, LogIn, LogOut, Settings, UserPlus, UserRound } from 'lucide-react';
 
 type AccountUser = { id: string; name: string; email: string; avatarPath: string | null };
 
-export function AccountMenu({ compact = false, onUserChange }: { compact?: boolean; onUserChange?: (signedIn: boolean, userId?: string) => void }) {
+export function AccountMenu({ compact = false, publicNavigation = false, onUserChange }: { compact?: boolean; publicNavigation?: boolean; onUserChange?: (signedIn: boolean, userId?: string) => void }) {
   const router = useRouter();
   const [user, setUser] = useState<AccountUser | null>(null);
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -156,6 +156,38 @@ export function AccountMenu({ compact = false, onUserChange }: { compact?: boole
   }
 
   if (!user) {
+    if (publicNavigation) {
+      return (
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded={open}
+            onClick={() => setOpen((current) => !current)}
+            className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sunshine-dark"
+          >
+            <UserRound size={20} aria-hidden="true" />
+          </button>
+          {open && (
+            <nav aria-label="Main navigation" className="absolute right-0 top-full z-[70] mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-2 text-slate-800 shadow-xl">
+              <Link href="/" onClick={() => setOpen(false)} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition hover:bg-slate-50">
+                <Home size={17} aria-hidden="true" />
+                Home
+              </Link>
+              <Link href="/login" onClick={() => setOpen(false)} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition hover:bg-slate-50">
+                <LogIn size={17} aria-hidden="true" />
+                Sign in
+              </Link>
+              <Link href="/signup" onClick={() => setOpen(false)} className="mt-1 flex min-h-11 items-center gap-3 rounded-xl bg-[#2F2D29] px-3 text-sm font-semibold text-white transition hover:bg-black">
+                <UserPlus size={17} aria-hidden="true" />
+                Create account
+              </Link>
+            </nav>
+          )}
+        </div>
+      );
+    }
+
     return compact ? (
       <div className="flex items-center gap-1.5">
         <Link href="/login" aria-label="Sign in or create an account" title="Sign in or create an account" className="grid h-10 w-10 place-items-center rounded-full bg-white text-midnight ring-1 ring-[#FFF8B8] hover:bg-sunshine-light">

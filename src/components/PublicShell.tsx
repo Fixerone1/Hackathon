@@ -2,15 +2,13 @@
 
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
 import { useCallback, useState } from 'react';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { AccountMenu } from '@/components/AccountMenu';
 import { BrandLogo } from '@/components/BrandLogo';
 import { DashboardNotifications } from '@/components/DashboardNotifications';
 import { GooglePrivacyConsentBridge } from '@/components/GooglePrivacyConsentBridge';
 import { WorkspaceNav } from '@/components/WorkspaceNav';
-import { normalizePathname } from '@/lib/normalizePathname';
 
 function LinkedInMark() {
   return (
@@ -21,8 +19,6 @@ function LinkedInMark() {
 }
 
 export function PublicShell({ children, variant = 'public' }: { children: ReactNode; variant?: 'public' | 'workspace' }) {
-  const pathname = normalizePathname(usePathname() || '/');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [workspaceUserId, setWorkspaceUserId] = useState<string | null>(null);
   const linkedInUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
   const handleUserChange = useCallback((_signedIn: boolean, userId?: string) => {
@@ -40,31 +36,11 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             </span>
             <span className="text-base sm:text-lg">Ukukhanya</span>
           </Link>
-          {variant === 'public' ? (
-            <nav aria-label="Main navigation" className="hidden min-w-0 items-center justify-end gap-1 text-sm font-medium md:flex">
-              <AccountMenu compact onUserChange={handleUserChange} />
-            </nav>
-          ) : (
-            <div className="flex items-center gap-2">
-              {workspaceUserId && <DashboardNotifications userId={workspaceUserId} />}
-              <AccountMenu compact onUserChange={handleUserChange} />
-            </div>
-          )}
-          {variant === 'public' && (
-            <button type="button" className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-black hover:bg-slate-50 md:hidden" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
-              {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-            </button>
-          )}
-        </div>
-        {variant === 'public' && mobileMenuOpen && <nav aria-label="Mobile navigation" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
-          <div className="mx-auto grid max-w-6xl gap-1">
-            {[
-              ['/', 'Home'], ['/login', 'Sign in'], ['/signup', 'Create account'],
-            ].map(([href, label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setMobileMenuOpen(false)} className={`flex min-h-11 items-center justify-between rounded-lg px-3 text-sm ${pathname === href ? 'font-bold text-black' : 'text-slate-700 hover:bg-slate-50'}`}>
-              {label}{pathname === href && <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden="true" />}
-            </Link>)}
+          <div className="flex items-center gap-2">
+            {variant === 'workspace' && workspaceUserId && <DashboardNotifications userId={workspaceUserId} />}
+            <AccountMenu compact publicNavigation={variant === 'public'} onUserChange={handleUserChange} />
           </div>
-        </nav>}
+        </div>
       </header>
       {variant === 'workspace' && <WorkspaceNav />}
       <main id="main-content" className={`min-h-[50vh] bg-canvas ${variant === 'workspace' ? 'pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0' : ''}`}>{children}</main>
