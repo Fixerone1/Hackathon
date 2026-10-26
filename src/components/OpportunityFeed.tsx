@@ -689,33 +689,33 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
                 </details>
 
                 <div className="mt-4 border-t border-slate-200 pt-3">
-                  <div role="group" aria-label="Opportunity actions" className="grid grid-cols-5 items-stretch justify-items-stretch gap-1 sm:flex sm:justify-center sm:gap-2">
-                    <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
+                  <div role="group" aria-label="Opportunity actions" className="mx-auto grid w-full max-w-5xl grid-cols-5 items-stretch gap-2">
+                    <a href={opportunity.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
                       <ArrowUpRight size={15} aria-hidden="true" />
-                      <span>View &amp; apply</span>
+                      <span className="break-words">View &amp; apply</span>
                     </a>
                     {action === 'applied' ? (
-                      <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
-                        <Heart size={15} aria-hidden="true" /><span>Move to saved</span>
+                      <button type="button" className="btn-secondary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'saved')}>
+                        <Heart size={15} aria-hidden="true" /><span className="break-words">Move to saved</span>
                       </button>
                     ) : (
-                      <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>
-                        <Check size={15} aria-hidden="true" /><span>Mark as applied</span>
+                      <button type="button" className="btn-secondary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" disabled={busyId === opportunity.id} onClick={() => void setAction(opportunity.id, 'applied')}>
+                        <Check size={15} aria-hidden="true" /><span className="break-words">Mark as applied</span>
                       </button>
                     )}
                     <button type="button" aria-pressed={action === 'saved'} aria-label={action === 'saved' ? 'Saved to plan; remove from saved opportunities' : 'Save to plan'} disabled={busyId === opportunity.id || action === 'applied'}
                       onClick={() => void setAction(opportunity.id, action === 'saved' ? null : 'saved')}
-                      className={`btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm ${action === 'saved' ? 'border-sunshine-dark bg-sunshine-light text-midnight' : ''}`}>
-                      <Heart size={15} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" /><span>{action === 'saved' ? 'Saved to plan' : 'Save to plan'}</span>
+                      className={`btn-secondary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm ${action === 'saved' ? 'border-sunshine-dark bg-sunshine-light text-midnight' : ''}`}>
+                      <Heart size={15} fill={action === 'saved' ? 'currentColor' : 'none'} aria-hidden="true" /><span className="break-words">{action === 'saved' ? 'Saved to plan' : 'Save to plan'}</span>
                     </button>
-                    <button type="button" className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" onClick={() => void shareOpportunity(opportunity)}>
-                      <Share2 size={15} aria-hidden="true" /><span>Share</span>
+                    <button type="button" className="btn-secondary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm" onClick={() => void shareOpportunity(opportunity)}>
+                      <Share2 size={15} aria-hidden="true" /><span className="break-words">Share</span>
                     </button>
                     <button type="button" aria-expanded={openNoteId === opportunity.id}
                       aria-label={openNoteId === opportunity.id ? 'Close private note' : 'Add private note'}
                       onClick={() => setOpenNoteId((current) => current === opportunity.id ? '' : opportunity.id)}
-                      className="btn-secondary flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-[9px] leading-tight sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
-                      <MessageCircle size={15} aria-hidden="true" /><span>{openNoteId === opportunity.id ? 'Close note' : 'Private note'}</span>
+                      className="btn-secondary flex h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 text-center text-[9px] leading-tight sm:flex-row sm:gap-2 sm:px-3 sm:text-sm">
+                      <MessageCircle size={15} aria-hidden="true" /><span className="break-words">{openNoteId === opportunity.id ? 'Close note' : 'Private note'}</span>
                     </button>
                   </div>
                 </div>
