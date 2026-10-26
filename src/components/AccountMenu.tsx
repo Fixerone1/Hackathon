@@ -212,8 +212,8 @@ export function AccountMenu({ compact = false, publicNavigation = false, onUserC
       <button type="button" aria-label={`Open account menu for ${user.name}`} aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
         className={`flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 text-midnight transition hover:border-slate-300 hover:bg-sunshine-light ${compact ? 'h-10 w-10 justify-center p-0' : ''}`}>
-        <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-sunshine text-xs font-bold text-midnight">
-          {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full rounded-full object-cover" /> : initials || <UserRound size={17} aria-hidden="true" />}
+        <span className="relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-sunshine text-xs font-bold text-midnight">
+          {avatarUrl ? <img src={avatarUrl} alt="" className="absolute inset-0 block h-full w-full rounded-full object-cover" /> : initials || <UserRound size={17} aria-hidden="true" />}
         </span>
         {!compact && <span className="hidden max-w-28 truncate pr-2 text-sm font-semibold sm:block">{user.name}</span>}
       </button>
