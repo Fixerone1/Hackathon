@@ -136,7 +136,7 @@ export function DashboardNotifications({ userId }: { userId: string }) {
       </button>
       {open && (
         <section id="dashboard-notification-inbox" aria-label="New matching opportunities"
-          className="fixed inset-x-3 top-[calc(4.25rem+env(safe-area-inset-top))] bottom-[calc(5rem+env(safe-area-inset-bottom)+0.75rem)] z-[80] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 text-left text-midnight shadow-xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-[calc(4.5rem+env(safe-area-inset-top))] sm:max-h-[min(75vh,34rem)] sm:w-[min(24rem,calc(100vw-2rem))] md:absolute md:inset-x-auto md:right-0 md:top-full md:mt-2 md:max-h-[min(75vh,34rem)]">
+          className="fixed inset-x-3 top-[calc(4.25rem+env(safe-area-inset-top))] bottom-[calc(5rem+env(safe-area-inset-bottom)+0.75rem)] z-[80] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 text-left text-midnight shadow-xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-[calc(4.5rem+env(safe-area-inset-top))] sm:max-h-[min(75vh,34rem)] sm:w-[min(24rem,calc(100vw-2rem))] md:absolute md:inset-x-auto md:right-[-3rem] md:top-full md:mt-2 md:max-h-[min(75vh,34rem)]">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="font-bold">Your reminders and matches</h2>
