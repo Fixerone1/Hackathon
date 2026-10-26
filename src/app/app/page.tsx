@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
-import { ArrowRight, Banknote, BriefcaseBusiness, Compass, GraduationCap, Lightbulb, Sparkles } from 'lucide-react';
+import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Compass, GraduationCap, Lightbulb, Sparkles } from 'lucide-react';
 
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
 type StarterAction = { id: string; label: string; area: string; href: string };
@@ -37,6 +37,14 @@ function validFocus(value: string | null): value is HomeFocus {
   return value === 'all' || value === 'study' || value === 'work' || value === 'business' || value === 'money';
 }
 
+function localDateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' }).format(new Date(`${value}T12:00:00`));
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const forge = useForge();
@@ -52,6 +60,29 @@ export default function DashboardPage() {
   const FocusIcon = focusOption.Icon;
   const tip = topicTips[homeFocus];
   const progressCount = `${completed.length} of ${starterActions.length}`;
+  const savedCount = forge.actions.filter((action) => action.status === 'saved').length;
+  const appliedCount = forge.actions.filter((action) => action.status === 'applied').length;
+  const profileSections = [
+    Boolean(forge.profile.highest_qualification),
+    Boolean(forge.profile.field_of_study || forge.profile.subjects?.length),
+    Boolean(forge.profile.province),
+    Boolean(forge.profile.target_role),
+    Boolean(forge.profile.skills?.length || forge.profile.skill_ratings?.length),
+    Boolean(forge.profile.personal_goal),
+  ];
+  const profileProgress = Math.round(profileSections.filter(Boolean).length * 100 / profileSections.length);
+  const today = localDateKey(new Date());
+  const nextDeadline = forge.actions
+    .filter((action) => action.status === 'saved')
+    .flatMap((action) => [
+      ...(action.scheduled_apply_date && action.scheduled_apply_date >= today
+        ? [{ date: action.scheduled_apply_date, label: 'Your reminder', title: action.opportunities.title }]
+        : []),
+      ...(action.opportunities.closing_date && action.opportunities.closing_date >= today
+        ? [{ date: action.opportunities.closing_date, label: 'Closing date', title: action.opportunities.title }]
+        : []),
+    ])
+    .sort((left, right) => left.date.localeCompare(right.date))[0];
   const shouldUseForgeAction = Boolean(forge.nextAction && (
     forge.nextAction.href === '/app/employment/applications'
     || (homeFocus === 'all' && !forge.preferences.personalisation_paused)
@@ -149,6 +180,49 @@ export default function DashboardPage() {
             <Link href={nextAction.href} className="btn-primary mt-4 min-h-11 w-full sm:w-auto">Continue <ArrowRight size={16} aria-hidden="true" /></Link>
           </aside>
         </div>
+      </section>
+
+      <section className="mb-6" aria-labelledby="dashboard-progress-heading">
+        <div className="mb-3">
+          <p className="eyebrow">Your progress</p>
+          <h2 id="dashboard-progress-heading" className="mt-1 text-lg font-bold text-midnight">A quick look at where you are</h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Link href="/app/profile" className="group rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
+            <span className="flex items-center justify-between gap-3">
+              <span className="text-sm font-medium text-slate-600">Profile basics</span>
+              <span className="text-lg font-bold text-midnight">{profileProgress}%</span>
+            </span>
+            <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+              <span className="block h-full rounded-full bg-slate-700 transition-[width]" style={{ width: `${profileProgress}%` }} />
+            </span>
+            <span className="mt-2 flex items-center justify-between text-xs text-slate-500">
+              {profileSections.filter(Boolean).length} of {profileSections.length} useful details
+              <ArrowRight size={14} className="text-slate-500 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            </span>
+          </Link>
+          <Link href="/app/employment/applications" className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
+            <span>
+              <span className="block text-sm font-medium text-slate-600">Saved to revisit</span>
+              <span className="mt-1 block text-2xl font-bold text-midnight">{savedCount}</span>
+            </span>
+            <span className="text-right text-xs text-slate-500">Your saved<br />opportunities <ArrowRight size={14} className="ml-auto mt-1 transition-transform group-hover:translate-x-1" aria-hidden="true" /></span>
+          </Link>
+          <Link href="/app/employment/applications" className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
+            <span>
+              <span className="block text-sm font-medium text-slate-600">Marked as applied</span>
+              <span className="mt-1 block text-2xl font-bold text-midnight">{appliedCount}</span>
+            </span>
+            <span className="text-right text-xs text-slate-500">Track your<br />application progress <ArrowRight size={14} className="ml-auto mt-1 transition-transform group-hover:translate-x-1" aria-hidden="true" /></span>
+          </Link>
+        </div>
+        {nextDeadline && (
+          <Link href="/app/employment/applications" className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm transition hover:border-amber-400">
+            <CalendarDays size={18} className="shrink-0 text-amber-800" aria-hidden="true" />
+            <span className="min-w-0 flex-1"><strong className="text-amber-950">{nextDeadline.label} · {formatDate(nextDeadline.date)}</strong><span className="block truncate text-amber-900">{nextDeadline.title}</span></span>
+            <span className="inline-flex items-center gap-1 font-semibold text-amber-950">Review <ArrowRight size={15} aria-hidden="true" /></span>
+          </Link>
+        )}
       </section>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(16rem,0.8fr)]">
