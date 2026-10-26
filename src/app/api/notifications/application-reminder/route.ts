@@ -50,8 +50,8 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         from: sender,
         to: [user.email],
-        subject: 'Your Ukukhanya application reminder',
-        text: `You planned to return to ${title} on ${date}. Open your Ukukhanya workspace to review your saved opportunity.`,
+        subject: 'Your Beacon application reminder',
+        text: `You planned to return to ${title} on ${date}. Open your Beacon workspace to review your saved opportunity.`,
       }),
     });
     if (!response.ok) {

@@ -39,7 +39,7 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
       {variant === 'workspace' && <WorkspaceNav />}
       <main id="main-content" className={`min-h-[50vh] bg-canvas ${variant === 'workspace' ? 'pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0' : ''}`}>{children}</main>
       <footer className="site-footer relative isolate overflow-hidden">
-        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-people.jpg`} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />
         <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
         <div className="relative mx-auto max-w-6xl px-4 pb-6 pt-10 sm:px-6 sm:pb-7 sm:pt-12 lg:px-8">
           <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:gap-14">

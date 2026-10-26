@@ -10,8 +10,9 @@ import { PageAccessGuard } from '@/components/PageAccessGuard';
 
 const browserStorageMigration = `(() => {
   const prefixes = /^(careerforge|ukukhanya)-/i;
-  for (const storage of [window.localStorage, window.sessionStorage]) {
+  for (const storageName of ['localStorage', 'sessionStorage']) {
     try {
+      const storage = window[storageName];
       for (let index = storage.length - 1; index >= 0; index -= 1) {
         const oldKey = storage.key(index);
         if (!oldKey || !prefixes.test(oldKey)) continue;
@@ -29,22 +30,22 @@ const browserStorageMigration = `(() => {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Beacon',
+    default: 'Home | Beacon',
     template: '%s | Beacon',
   },
-  description: 'Build career readiness, money confidence, and a plan for your next opportunity.',
+  description: 'Find work opportunities, build money confidence, and grow your next idea. Beacon helps South African youth take a clear next step.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   openGraph: {
     type: 'website',
     siteName: 'Beacon',
     title: 'Beacon | Light your way forward',
-    description: 'Build career readiness, money confidence, and a plan for your next opportunity.',
+    description: 'Find work opportunities, build money confidence, and grow your next idea. Beacon helps South African youth take a clear next step.',
     locale: 'en_ZA',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Beacon | Light your way forward',
-    description: 'Build career readiness, money confidence, and a plan for your next opportunity.',
+    description: 'Find work opportunities, build money confidence, and grow your next idea. Beacon helps South African youth take a clear next step.',
   },
 };
 

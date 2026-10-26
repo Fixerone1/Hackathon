@@ -18,10 +18,13 @@
   --gray-700: #334155;
   --gray-900: #0F172A;
   --success: #12B76A;
+  --success-text: #027A48;
   --success-bg: #E7F8EF;
   --warning: #F79009;
+  --warning-text: #B54708;
   --warning-bg: #FEF0DB;
   --error: #D92D20;
+  --error-text: #B42318;
   --error-bg: #FDECEA;
   --growth-green: #12B76A;
   --color-black: var(--ink);
@@ -87,7 +90,7 @@ body {
     @apply rounded-xl border border-slate-200 bg-white p-5 shadow-card;
   }
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
     @apply btn text-black;
@@ -107,7 +110,7 @@ body {
     background-color: var(--beacon-yellow-600);
   }
   .input {
-    @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
+    @apply min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-ink placeholder:text-slate-400 focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-black;
@@ -159,6 +162,7 @@ body {
 :focus-visible {
   outline: 3px solid var(--deep-blue);
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--white);
 }
 
 .tracking-tight,
@@ -247,36 +251,6 @@ html.reduce-motion *::after {
 
 html.larger-text body {
   font-size: 112.5%;
-}
-
-[class*="border-slate-"],
-[class*="border-yellow-"],
-[class*="border-sunshine"],
-[class*="border-amber-"],
-[class*="border-red-"],
-[class*="border"][class*="FFF8B8"],
-[class*="border"][class*="FFE500"],
-[class*="border-t-yellow"],
-[class*="border-b-yellow"],
-[class*="border-l-yellow"],
-[class*="border-r-yellow"],
-[class*="border-x-yellow"],
-[class*="border-y-yellow"],
-[class*="border-t-sunshine"],
-[class*="border-b-sunshine"],
-[class*="border-l-sunshine"],
-[class*="border-r-sunshine"],
-[class*="border-x-sunshine"],
-[class*="border-y-sunshine"] {
-  border-color: var(--color-line);
-}
-
-[class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-yellow-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-sunshine"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-amber-"] > :not([hidden]) ~ :not([hidden]),
-[class*="divide-red-"] > :not([hidden]) ~ :not([hidden]) {
-  border-color: var(--color-line);
 }
 
 /* Print: CV preview only */

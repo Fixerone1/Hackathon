@@ -12,9 +12,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#FFC400',
     icons: [
       {
-        src: `${basePath}/logo.webp`,
-        sizes: '192x192',
-        type: 'image/webp',
+        src: `${basePath}/logo/beacon.svg`,
+        sizes: 'any',
+        type: 'image/svg+xml',
       },
     ],
   };

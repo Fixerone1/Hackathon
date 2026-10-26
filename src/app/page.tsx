@@ -109,21 +109,21 @@ export default function HomePage() {
             <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-2 shadow-[0_18px_48px_rgba(10,10,10,0.12)] sm:p-3">
               <div className="grid grid-cols-[1.2fr_0.8fr] grid-rows-2 gap-2 overflow-hidden rounded-[1.25rem] sm:gap-3">
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-people.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-people.jpg`}
                   alt="A diverse group of young people smiling together"
                   width={519}
                   height={345}
                   className="row-span-2 h-full min-h-[15rem] w-full object-cover sm:min-h-[23rem]"
                 />
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-students.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-students.jpg`}
                   alt="Students sharing ideas around a laptop in a library"
                   width={1000}
                   height={667}
                   className="h-full min-h-[7.25rem] w-full object-cover sm:min-h-[11rem]"
                 />
                 <img
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/careerforge-founders.jpg`}
+                  src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/beacon-founders.jpg`}
                   alt="A Black woman and colleague working together at a computer"
                   width={1000}
                   height={667}

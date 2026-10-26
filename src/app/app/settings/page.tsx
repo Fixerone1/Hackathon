@@ -54,7 +54,7 @@ const defaults: Preferences = {
 };
 
 const forgeDefaults: ForgePreferences = {
-  forge_name: 'Forge',
+  forge_name: 'Beacon Guide',
   tone: 'straight_up',
   language: 'en-ZA',
   data_light: false,
