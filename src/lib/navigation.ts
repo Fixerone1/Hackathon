@@ -80,8 +80,8 @@ export const employmentNavigation = [
     label: 'Skills Academy',
     Icon: BookOpen,
     group: 'tools',
-    text: 'Lessons and course credentials are not available in this preview yet.',
-    tag: 'NOT ACTIVE YET',
+    text: 'Build practical work-readiness skills through short lessons and knowledge checks.',
+    tag: 'PRACTICE LESSONS',
     focus: ['study', 'work'],
   },
   {
