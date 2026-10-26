@@ -491,7 +491,7 @@ export function OpportunityFeed({ mode = 'matches' }: OpportunityFeedProps) {
 
       {matches.length === 0 && !error ? (
         <div className="space-y-6">
-          <div className="rounded-2xl border-2 border-sunshine bg-sunshine-light/40 p-5 sm:p-6">
+          <div className="rounded-2xl border border-slate-200 bg-sunshine-light/40 p-5 sm:p-6">
             <h2 className="font-semibold text-midnight">
               {mode === 'applications'
                 ? 'Nothing saved yet'

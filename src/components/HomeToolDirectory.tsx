@@ -37,14 +37,14 @@ export function HomeToolDirectory() {
 
   return (
     <div className="mt-7">
-      <div role="group" aria-label="Filter tools by goal" className="flex gap-2 overflow-x-auto pb-2">
+      <div role="group" aria-label="Filter tools by goal" className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {focusOptions.map(({ id, label, Icon }) => (
           <button
             key={id}
             type="button"
             aria-pressed={focus === id}
             onClick={() => chooseFocus(id)}
-            className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-semibold transition-colors ${focus === id ? 'border-black bg-black text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400'}`}
+            className={`inline-flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-lg border px-2 text-xs font-semibold transition-colors last:col-span-2 last:mx-auto last:w-1/2 sm:last:col-span-auto sm:last:mx-0 sm:last:w-auto sm:px-3 sm:text-sm ${focus === id ? 'border-black bg-black text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400'}`}
           >
             <Icon size={16} aria-hidden="true" />{label}
           </button>

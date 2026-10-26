@@ -234,7 +234,7 @@ export default function HomePage() {
             </article>
           ))}
         </div>
-        <div className="mt-6 rounded-2xl border-2 border-sunshine bg-white p-5 sm:p-6">
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <h3 className="font-bold text-midnight">What to expect in this preview</h3>
           <p className="mt-2 text-sm leading-6 text-midnight">
             This is an early preview. Opportunity listings are curated and checked before publication, but the feed may be empty, availability can change, and a match is not guaranteed. Each listing links to its original source. Skills Academy, career self-assessment, interview practice, Money Skills, and Growth Studio offer practical guidance, not accredited qualifications or guaranteed outcomes. Study pathways do not yet include a verified course catalogue or university deadlines, and there are no verified business-funding listings. Ukukhanya does not apply to institutions or employers for you or replace official application information. Always confirm details directly with the institution, employer, or funder.
