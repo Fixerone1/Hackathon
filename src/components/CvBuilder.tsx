@@ -164,6 +164,8 @@ export function CvBuilder() {
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [saveState, setSaveState] = useState('');
+  const [milestoneComplete, setMilestoneComplete] = useState(false);
+  const [milestoneBusy, setMilestoneBusy] = useState(false);
   const [error, setError] = useState('');
   const [aiFeedback, setAiFeedback] = useState('');
   const [aiBusy, setAiBusy] = useState(false);
@@ -177,15 +179,17 @@ export function CvBuilder() {
     async function load() {
       try {
         const supabase = getSupabase();
-        const [authResult, profileResult, cvResult] = await Promise.all([
+        const [authResult, profileResult, cvResult, milestoneResult] = await Promise.all([
           supabase.auth.getUser(),
           supabase.from('learner_profiles').select('*').maybeSingle(),
           supabase.from('learner_cv_details').select('phone,summary,experience,professional_title,education,projects,achievements,website,cv_data').maybeSingle(),
+          supabase.from('learner_milestones').select('milestone_id').eq('milestone_id', 'cv_builder').maybeSingle(),
         ]);
         if (authResult.error) throw authResult.error;
         if (!authResult.data.user) throw new Error('Sign in again to use your CV builder.');
         if (profileResult.error) throw profileResult.error;
         if (cvResult.error) throw cvResult.error;
+        if (milestoneResult.error) throw milestoneResult.error;
         if (!active) return;
         const profile = (profileResult.data || {}) as CvProfileSeed;
         const legacy = cvResult.data as Record<string, unknown> | null;
@@ -195,6 +199,7 @@ export function CvBuilder() {
           { name: profile.display_name || profileName(authResult.data.user), email: authResult.data.user.email || '' },
           legacy,
         ));
+        setMilestoneComplete(Boolean(milestoneResult.data));
         setError('');
         setLoaded(true);
       } catch (caught) {
@@ -258,6 +263,31 @@ export function CvBuilder() {
     setError('');
     setAiFeedback('');
   };
+
+  async function completeCvMilestone() {
+    setMilestoneBusy(true);
+    setError('');
+    try {
+      await saveQueue.current.catch(() => undefined);
+      await persist(data);
+      const supabase = getSupabase();
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError) throw authError;
+      if (!authData.user) throw new Error('Sign in again to save your CV milestone.');
+      const { error: milestoneError } = await supabase.from('learner_milestones').upsert({
+        user_id: authData.user.id,
+        milestone_id: 'cv_builder',
+        completed_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,milestone_id' });
+      if (milestoneError) throw milestoneError;
+      setMilestoneComplete(true);
+      setSaveState('All changes saved');
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Your CV milestone could not be saved.');
+    } finally {
+      setMilestoneBusy(false);
+    }
+  }
 
   const plainText = useMemo(() => cvPlainText(data), [data]);
   const aiReviewText = useMemo(() => buildCvOutput({
@@ -616,6 +646,18 @@ export function CvBuilder() {
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
               <div className="h-full rounded-full bg-sunshine-dark transition-all" style={{ width: `${completeness}%` }} />
             </div>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-sunshine-light/50 p-4">
+            <p className="font-semibold text-midnight">Profile milestone</p>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Your CV stays saved privately in your account. Mark this milestone when you’re ready, then return to your profile to find it again.</p>
+            <button
+              type="button"
+              className={milestoneComplete ? 'btn-secondary mt-3 min-h-10' : 'btn-primary mt-3 min-h-10'}
+              onClick={() => void completeCvMilestone()}
+              disabled={milestoneBusy || milestoneComplete}
+            >
+              {milestoneBusy ? 'Saving milestone…' : milestoneComplete ? 'CV milestone complete' : 'Mark CV as complete'}
+            </button>
           </div>
           <ul className="space-y-2">
             {checks.map((check) => (

@@ -1,4 +1,5 @@
 import { PageIntro } from '@/components/PageIntro';
+import { EmploymentNav } from '@/components/EmploymentNav';
 import { SkillsPassportBuilder } from '@/components/SkillsPassportBuilder';
 
 export const metadata = { title: 'Skills Passport' };
@@ -11,6 +12,7 @@ export default function SkillsPassportPage() {
         title="Skills Passport"
         description="Build a shareable portfolio with real examples, then choose exactly what an employer can see."
       />
+      <EmploymentNav />
       <SkillsPassportBuilder />
     </div>
   );

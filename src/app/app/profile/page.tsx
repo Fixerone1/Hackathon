@@ -72,6 +72,11 @@ type ProfileApiResponse = {
   next_step: string;
 };
 
+function hasSavedCvData(value: unknown): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  return Object.entries(value).some(([key, item]) => key !== 'referencesDisplay' && typeof item === 'string' && item.trim().length > 0);
+}
+
 const emptyProfile: ProfileDraft = {
   display_name: '', pronouns: '', about_me: '', personal_goal: '', interests_text: '',
   highest_qualification: '', qualification_status: '', field_of_study: '', qualification_year: '',
@@ -146,6 +151,10 @@ export default function ProfilePage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [plannedOpportunities, setPlannedOpportunities] = useState<PlannedOpportunity[]>([]);
+  const [cvMilestone, setCvMilestone] = useState<{ completedAt: string | null; hasSavedData: boolean }>({
+    completedAt: null,
+    hasSavedData: false,
+  });
   const [plannerDates, setPlannerDates] = useState<Record<string, string>>({});
   const [plannerBusyId, setPlannerBusyId] = useState('');
   const [plannerError, setPlannerError] = useState('');
@@ -157,16 +166,24 @@ export default function ProfilePage() {
     async function loadProfile() {
       try {
         const supabase = getSupabase();
-        const [{ data, error }, plannerResult] = await Promise.all([
+        const [{ data, error }, plannerResult, cvResult, milestoneResult] = await Promise.all([
           supabase.from('learner_profiles').select('*').maybeSingle(),
           supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date,opportunities!inner(id,title,organization,source_url,closing_date)'),
+          supabase.from('learner_cv_details').select('cv_data').maybeSingle(),
+          supabase.from('learner_milestones').select('completed_at').eq('milestone_id', 'cv_builder').maybeSingle(),
         ]);
         if (error) throw error;
+        if (cvResult.error) throw cvResult.error;
+        if (milestoneResult.error) throw milestoneResult.error;
         const savedProfile = (data || {}) as ProfileApiResponse['profile'];
         if (!active) return;
         setProfile(toDraft(savedProfile));
         setStrength(profileStrength(savedProfile));
         setNextStep(profileNextStep(savedProfile));
+        setCvMilestone({
+          completedAt: milestoneResult.data?.completed_at || null,
+          hasSavedData: hasSavedCvData(cvResult.data?.cv_data),
+        });
         if (plannerResult.error) {
           setPlannerError(plannerResult.error.message);
         } else {
@@ -333,6 +350,28 @@ export default function ProfilePage() {
           <Link href="/app/passport" className="btn-primary min-h-10 w-full px-3 text-xs"><Share2 size={15} aria-hidden="true" />Build a Skills Passport</Link>
         </div>
       </header>
+
+      <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="profile-milestones-heading">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="eyebrow">Your progress</p>
+            <h2 id="profile-milestones-heading" className="mt-1 text-lg font-bold text-midnight">Profile milestones</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Your CV is saved privately to your account, so you can return and update it whenever you need.</p>
+          </div>
+          <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:min-w-64">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm font-semibold text-midnight">Create a CV</span>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${cvMilestone.completedAt ? 'bg-emerald-100 text-emerald-800' : cvMilestone.hasSavedData ? 'bg-amber-100 text-amber-900' : 'bg-slate-200 text-slate-700'}`}>
+                {cvMilestone.completedAt ? 'Completed' : cvMilestone.hasSavedData ? 'In progress' : 'Not started'}
+              </span>
+            </div>
+            {cvMilestone.completedAt && <p className="text-xs text-slate-600">Completed {new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' }).format(new Date(cvMilestone.completedAt))}</p>}
+            <Link href="/app/employment/cv" className="link mt-1 text-sm">
+              {cvMilestone.hasSavedData || cvMilestone.completedAt ? 'Open your saved CV' : 'Start your CV'}
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.85fr)] xl:gap-8">
         <section className="min-w-0 rounded-2xl border border-slate-200 bg-surface p-4 shadow-card sm:p-6" aria-labelledby="step-heading">

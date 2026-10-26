@@ -5,6 +5,12 @@ import { usePathname } from 'next/navigation';
 import { normalizePathname } from '@/lib/normalizePathname';
 import { workspaceNavigation } from '@/lib/navigation';
 
+function isWorkspaceSectionActive(href: string, pathname: string): boolean {
+  if (href === '/app') return pathname === href;
+  if (href === '/app/employment') return pathname.startsWith(href) || pathname === '/app/passport';
+  return pathname.startsWith(href);
+}
+
 export function WorkspaceNav() {
   const pathname = normalizePathname(usePathname() || '/');
 
@@ -13,7 +19,7 @@ export function WorkspaceNav() {
       <nav aria-label="Workspace sections" className="sticky top-[68px] z-20 hidden border-b border-slate-200 bg-white md:block">
         <div className="mx-auto grid max-w-6xl grid-cols-5 gap-2 px-4 py-2 lg:px-8">
           {workspaceNavigation.map(({ href, label, shortLabel, Icon }) => {
-            const active = href === '/app' ? pathname === href : pathname.startsWith(href);
+            const active = isWorkspaceSectionActive(href, pathname);
             return (
               <Link
                 key={href}
@@ -33,7 +39,7 @@ export function WorkspaceNav() {
       <nav aria-label="Workspace sections" className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(10,10,10,0.08)] backdrop-blur md:hidden">
         <div className="mx-auto grid w-full max-w-xl grid-cols-5">
           {workspaceNavigation.map(({ href, label, shortLabel, Icon }) => {
-            const active = href === '/app' ? pathname === href : pathname.startsWith(href);
+            const active = isWorkspaceSectionActive(href, pathname);
             return (
               <Link
                 key={href}

@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { employmentNavigation } from '@/lib/navigation';
+import { normalizePathname } from '@/lib/normalizePathname';
 
 export function EmploymentNav() {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname() || '/');
   const primaryTabs = employmentNavigation.filter((item) => item.group === 'main');
   const toolTabs = employmentNavigation.filter((item) => item.group === 'tools');
 
