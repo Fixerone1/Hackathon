@@ -46,7 +46,6 @@ export function PublicShell({ children, variant = 'public' }: { children: ReactN
             </nav>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="hidden text-sm font-medium text-slate-600 sm:inline">Learner workspace</span>
               {workspaceUserId && <DashboardNotifications userId={workspaceUserId} />}
               <AccountMenu compact onUserChange={handleUserChange} />
             </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { EmploymentNav } from '@/components/EmploymentNav';
+import { PageIntro } from '@/components/PageIntro';
 
 const progressStorageKey = 'careerforge-skills-academy-progress-v1';
 
@@ -181,11 +182,7 @@ export default function AcademyPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Employment Hub</p>
-      <h1 className="mt-1 text-3xl font-semibold text-midnight">Skills Academy</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-        Build practical work-readiness skills with short lessons and knowledge checks. Your progress is saved on this device.
-      </p>
+      <PageIntro eyebrow="Employment Hub" title="Skills Academy" description="Build practical work-readiness skills with short lessons and knowledge checks. Your progress is saved on this device." />
       <EmploymentNav />
 
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.5fr]">

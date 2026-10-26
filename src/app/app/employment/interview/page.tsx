@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { EmploymentNav } from '@/components/EmploymentNav';
+import { PageIntro } from '@/components/PageIntro';
 
 const practiceQuestions = [
   {
@@ -147,11 +148,7 @@ export default function InterviewPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Employment Hub</p>
-      <h1 className="mt-1 text-3xl font-semibold text-midnight">Interview coach</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-        Practise an answer, then get specific feedback to help you tell a clear story and show what you can do.
-      </p>
+      <PageIntro eyebrow="Employment Hub" title="Interview coach" description="Practise an answer, then get specific feedback to help you tell a clear story and show what you can do." />
       <EmploymentNav />
 
       <div className="grid gap-6 lg:grid-cols-[1.35fr_0.85fr]">

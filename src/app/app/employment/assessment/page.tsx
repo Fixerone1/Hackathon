@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { EmploymentNav } from '@/components/EmploymentNav';
+import { PageIntro } from '@/components/PageIntro';
 
 const skillGroups = {
   problemSolving: 'Problem solving',
@@ -95,11 +96,7 @@ export default function AssessmentPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Employment Hub</p>
-      <h1 className="mt-1 text-3xl font-semibold text-midnight">Skills assessment</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-        This quick check helps you understand the strengths you are already using and the areas where you could grow next.
-      </p>
+      <PageIntro eyebrow="Employment Hub" title="Skills assessment" description="This quick check helps you understand the strengths you are already using and the areas where you could grow next." />
       <EmploymentNav />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.5fr_0.9fr]">

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { EmploymentNav } from '@/components/EmploymentNav';
+import { PageIntro } from '@/components/PageIntro';
 
 const pathwayOptions = [
   { id: 'work', label: 'Find work', description: 'I want to apply for entry-level roles.' },
@@ -71,11 +72,7 @@ export default function PathwaysPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <p className="eyebrow">Employment Hub</p>
-      <h1 className="mt-1 text-3xl font-semibold text-midnight">Skills and career path</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-        Turn a goal into a research-backed next step. This planner helps you check real requirements; it does not assume you have a qualification gap.
-      </p>
+      <PageIntro eyebrow="Employment Hub" title="Skills and career path" description="Turn a goal into a research-backed next step. This planner helps you check real requirements; it does not assume you have a qualification gap." />
       <EmploymentNav />
 
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.3fr]">

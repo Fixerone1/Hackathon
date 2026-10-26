@@ -12,7 +12,7 @@ export function WorkspaceNav() {
     <>
       <nav aria-label="Workspace sections" className="sticky top-[68px] z-20 hidden border-b border-slate-200 bg-white md:block">
         <div className="mx-auto grid max-w-6xl grid-cols-5 gap-2 px-4 py-2 lg:px-8">
-          {workspaceNavigation.map(({ href, label, Icon }) => {
+          {workspaceNavigation.map(({ href, label, shortLabel, Icon }) => {
             const active = href === '/app' ? pathname === href : pathname.startsWith(href);
             return (
               <Link
@@ -22,7 +22,8 @@ export function WorkspaceNav() {
                 className={`flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border px-2 text-xs transition-colors lg:text-sm ${active ? 'border-sunshine bg-sunshine-light font-bold text-black' : 'border-transparent font-medium text-slate-700 hover:border-slate-200 hover:bg-slate-50'}`}
               >
                 <Icon size={18} strokeWidth={active ? 2.1 : 1.8} className="shrink-0" aria-hidden="true" />
-                <span className="truncate">{label}</span>
+                <span className="truncate lg:hidden">{shortLabel}</span>
+                <span className="hidden truncate lg:inline">{label}</span>
                 {active && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sunshine-dark" aria-hidden="true" />}
               </Link>
             );

@@ -62,8 +62,8 @@ export const employmentNavigation = [
     label: 'CV builder',
     Icon: FileText,
     group: 'tools',
-    text: 'The CV builder is not active in this preview yet.',
-    tag: 'NOT ACTIVE YET',
+    text: 'Build a tailored CV from your profile and export an editable document.',
+    tag: 'CV TOOL',
     focus: ['work'],
   },
   {
