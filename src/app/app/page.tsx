@@ -3,204 +3,80 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { OpportunityFeed } from '@/components/OpportunityFeed';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
-import { getSupabase } from '@/lib/supabase';
 import { useForge } from '@/components/ForgeContext';
-import { ArrowRight, Banknote, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, ClipboardCheck, Compass, FileText, GraduationCap, Lightbulb, Route, type LucideIcon } from 'lucide-react';
+import { getSupabase } from '@/lib/supabase';
+import { ArrowRight, Banknote, BriefcaseBusiness, Compass, GraduationCap, Lightbulb, Sparkles } from 'lucide-react';
 
-type CurrentUser = { id: string };
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
+type StarterAction = { id: string; label: string; area: string; href: string };
 
-const focusDetails: Record<HomeFocus, { label: string; message: string; Icon: typeof Compass }> = {
-  all: { label: 'Your journey', message: 'Start with study, explore work, build money confidence, and grow an idea at your own pace.', Icon: Compass },
-  study: { label: 'Study and learning', message: 'Explore bursaries, study pathways, and practical learning opportunities.', Icon: GraduationCap },
-  work: { label: 'Work and opportunities', message: 'Build work readiness, find opportunities, and keep track of applications.', Icon: BriefcaseBusiness },
-  business: { label: 'Growth Studio', message: 'Shape a business idea into a practical experiment and next step.', Icon: Lightbulb },
-  money: { label: 'Money confidence', message: 'Build useful everyday money skills and set goals that work for you.', Icon: Banknote },
-};
-
-const starterActions = [
+const starterActions: StarterAction[] = [
   { id: 'profile', label: 'Add your skills and experience', area: 'Work', href: '/app/profile' },
-  { id: 'budget', label: 'Set a monthly savings goal', area: 'Money', href: '/app/money' },
-  { id: 'idea', label: 'Write down one business idea to test', area: 'Growth', href: '/app/growth' },
+  { id: 'budget', label: 'Set a monthly savings goal', area: 'Money Skills', href: '/app/money' },
+  { id: 'idea', label: 'Write down one business idea to test', area: 'Growth Studio', href: '/app/growth' },
 ];
 
-const focusLinks: Record<HomeFocus, Array<{ title: string; description: string; href: string; Icon: LucideIcon }>> = {
-  all: [
-    { title: 'Explore bursaries', description: 'Find funding and study options.', href: '/app/study', Icon: GraduationCap },
-    { title: 'Explore work opportunities', description: 'Browse verified listings.', href: '/app/employment/opportunities', Icon: BriefcaseBusiness },
-    { title: 'Build money skills', description: 'Plan a budget and savings goal.', href: '/app/money', Icon: Banknote },
-    { title: 'Grow an idea', description: 'Explore a practical business next step.', href: '/app/growth', Icon: Lightbulb },
-  ],
-  study: [
-    { title: 'Bursaries and scholarships', description: 'Find verified funding listings and official sources.', href: '/app/study#bursaries', Icon: GraduationCap },
-    { title: 'Study pathways', description: 'Compare routes towards further study.', href: '/app/employment/pathways', Icon: Route },
-    { title: 'Skills Academy', description: 'Find a practical skill to build.', href: '/app/employment/academy', Icon: BookOpen },
-  ],
-  work: [
-    { title: 'Opportunity matches', description: 'Review verified openings and dates.', href: '/app/employment/opportunities', Icon: BriefcaseBusiness },
-    { title: 'My applications', description: 'Pick up where you left off.', href: '/app/employment/applications', Icon: ClipboardCheck },
-    { title: 'Skills Passport', description: 'Share selected skills and work samples.', href: '/app/passport', Icon: FileText },
-  ],
-  business: [
-    { title: 'Growth Studio', description: 'Shape an idea into a small test.', href: '/app/growth', Icon: Lightbulb },
-    { title: 'Study and career paths', description: 'Explore routes that support your plan.', href: '/app/study', Icon: Route },
-  ],
-  money: [
-    { title: 'Money Skills', description: 'Explore everyday money decisions.', href: '/app/money', Icon: Banknote },
-    { title: 'Starter plan', description: 'Review your saved next steps.', href: '/app#actions-heading', Icon: FileText },
-  ],
+const focusOptions: { value: HomeFocus; label: string; href: string; Icon: typeof Compass }[] = [
+  { value: 'all', label: 'Everything', href: '/app/study', Icon: Compass },
+  { value: 'study', label: 'Study', href: '/app/study', Icon: GraduationCap },
+  { value: 'work', label: 'Work', href: '/app/employment', Icon: BriefcaseBusiness },
+  { value: 'money', label: 'Money Skills', href: '/app/money', Icon: Banknote },
+  { value: 'business', label: 'Growth Studio', href: '/app/growth', Icon: Lightbulb },
+];
+
+const topicTips: Record<HomeFocus, { text: string; otherLabel: string; otherHref: string }> = {
+  all: { text: 'Small, steady steps count. Choose one useful action today and come back to the rest when you’re ready.', otherLabel: 'Explore Study', otherHref: '/app/study' },
+  study: { text: 'Before applying for funding, check the official provider’s deadline, eligibility rules, and required documents.', otherLabel: 'Try Money Skills', otherHref: '/app/money' },
+  work: { text: 'Tailor your CV to the role and use examples that show what you did, not just your responsibilities.', otherLabel: 'Explore Study pathways', otherHref: '/app/employment/pathways' },
+  money: { text: 'Tracking a few everyday expenses for a week can help you make a budget that reflects your real routine.', otherLabel: 'Explore Growth Studio', otherHref: '/app/growth' },
+  business: { text: 'Before spending money on an idea, ask a few potential customers what they need and what they use now.', otherLabel: 'Explore Work opportunities', otherHref: '/app/employment/opportunities' },
 };
-function localDateKey(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
 
-function dateFromKey(value: string): Date {
-  return new Date(`${value}T12:00:00`);
-}
-
-function DashboardApplicationCalendar({ actions }: { actions: ReturnType<typeof useForge>['actions'] }) {
-  const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
-  const [selectedDate, setSelectedDate] = useState(() => localDateKey(new Date()));
-  const [locale, setLocale] = useState('en-ZA');
-  useEffect(() => {
-    if (typeof navigator !== 'undefined' && navigator.language) setLocale(navigator.language);
-  }, []);
-  const today = localDateKey(new Date());
-  const saved = actions.filter((action) => action.status === 'saved');
-  const events = saved.flatMap((action) => [
-    ...(action.scheduled_apply_date ? [{ id: `${action.opportunity_id}-return`, date: action.scheduled_apply_date, kind: 'Come back to apply' }] : []),
-    ...(action.opportunities.closing_date ? [{ id: `${action.opportunity_id}-closing`, date: action.opportunities.closing_date, kind: 'Advert closes' }] : []),
-  ].map((event) => ({ ...event, title: action.opportunities.title, organization: action.opportunities.organization })));
-  const monthLength = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-  const region = locale.split('-')[1]?.toUpperCase();
-  const sundayFirstRegions = new Set(['US', 'CA', 'JP', 'MX', 'BR', 'PH', 'IL']);
-  const weekStart = sundayFirstRegions.has(region || '') ? 0 : 1;
-  const offset = (new Date(month.getFullYear(), month.getMonth(), 1).getDay() - weekStart + 7) % 7;
-  const selectedEvents = events.filter((event) => event.date === selectedDate);
-  const dueSaved = saved
-    .filter((action) => action.scheduled_apply_date)
-    .sort((left, right) => (left.scheduled_apply_date || '').localeCompare(right.scheduled_apply_date || ''));
-  const overdueCount = dueSaved.filter((action) => (action.scheduled_apply_date || '') < today).length;
-  const todayCount = dueSaved.filter((action) => action.scheduled_apply_date === today).length;
-
-  return (
-    <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card" aria-labelledby="dashboard-calendar-heading">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-sunshine px-5 py-4 text-black sm:px-6">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-black">Your saved opportunities</p>
-          <h2 id="dashboard-calendar-heading" className="mt-1 text-xl font-semibold text-black">Application calendar</h2>
-          <p className="mt-1 text-sm text-black/75">Return dates and closing dates, in your local time.</p>
-        </div>
-        <Link href="/app/profile" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-black/20 bg-white/60 px-3 text-sm font-semibold text-black transition hover:bg-white">Open full planner <ArrowRight size={15} aria-hidden="true" /></Link>
-      </div>
-
-      {saved.length === 0 && <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
-        <p className="text-sm text-slate-600">Save an opportunity to plan when you want to return to it.</p>
-        <Link href="/app/employment/opportunities" className="btn-secondary min-h-10">Browse opportunities</Link>
-      </div>}
-      <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(17rem,0.9fr)]">
-        <div className="min-w-0">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h3 className="flex items-center gap-2 font-semibold text-black"><CalendarDays size={18} aria-hidden="true" />{new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(month)}</h3>
-            <div className="flex gap-1">
-              <button type="button" className="btn-secondary min-h-9 px-2" aria-label="Previous month" onClick={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}><ChevronLeft size={17} aria-hidden="true" /></button>
-              <button type="button" className="btn-secondary min-h-9 px-2" aria-label="Next month" onClick={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}><ChevronRight size={17} aria-hidden="true" /></button>
-            </div>
-          </div>
-          <div className="grid grid-cols-7 gap-1" role="grid" aria-label="Saved opportunity dates">
-            {Array.from({ length: 7 }, (_, index) => new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(2023, 0, 1 + weekStart + index))).map((day) => <div key={day} className="pb-1 text-center text-[10px] font-bold uppercase text-slate-500 sm:text-xs" role="columnheader">{day}</div>)}
-            {Array.from({ length: offset }, (_, index) => <div key={`empty-${index}`} className="min-h-11 sm:min-h-14" aria-hidden="true" />)}
-            {Array.from({ length: monthLength }, (_, index) => {
-              const date = localDateKey(new Date(month.getFullYear(), month.getMonth(), index + 1));
-              const dateEvents = events.filter((event) => event.date === date);
-              const selected = selectedDate === date;
-              return <button key={date} type="button" role="gridcell" aria-pressed={selected} aria-label={`${new Intl.DateTimeFormat(locale, { dateStyle: 'full' }).format(dateFromKey(date))}${dateEvents.length ? `, ${dateEvents.length} saved opportunity dates` : ''}`} onClick={() => setSelectedDate(date)} className={`flex min-h-11 flex-col items-center justify-center rounded-xl p-1 transition-colors sm:min-h-14 ${selected ? 'bg-yellow text-black shadow-sm' : date === today ? 'bg-black text-white' : 'text-slate-700 hover:bg-slate-100'}`}>
-                <span className="text-xs font-semibold sm:text-sm">{index + 1}</span>
-                <span className="mt-1 flex h-1.5 gap-0.5">
-                  {dateEvents.slice(0, 3).map((event) => <span key={event.id} className={`h-1.5 w-1.5 rounded-full ${event.kind === 'Come back to apply' ? 'bg-yellow-700' : 'bg-slate-500'}`} />)}
-                </span>
-              </button>;
-            })}
-          </div>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-200 pt-3 text-xs text-slate-600">
-            <span className="font-semibold"><strong className="text-red-700">{overdueCount}</strong> overdue</span>
-            <span className="font-semibold"><strong className="text-yellow-800">{todayCount}</strong> due today</span>
-            <span>{dueSaved.length - overdueCount - todayCount} upcoming</span>
-            <span className="ml-auto inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-yellow-700" />Return date <span className="ml-2 h-1.5 w-1.5 rounded-full bg-slate-500" />Closing date</span>
-          </div>
-        </div>
-        <div className="min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5" aria-live="polite">
-          <p className="text-xs font-bold uppercase text-slate-500">Selected day</p>
-          <h3 className="mt-1 font-semibold text-black">{new Intl.DateTimeFormat(locale, { dateStyle: 'full' }).format(dateFromKey(selectedDate))}</h3>
-          {selectedEvents.length === 0 ? <p className="mt-3 text-sm leading-6 text-slate-600">Nothing saved for this day. Choose another date or add a return date to one of your saved posts.</p> : <ul className="mt-3 divide-y divide-slate-200">
-            {selectedEvents.map((event) => <li key={event.id} className="flex gap-3 py-3"><span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${event.kind === 'Come back to apply' ? 'bg-yellow-600' : 'bg-slate-500'}`} /><div><p className="text-[10px] font-bold uppercase text-slate-500">{event.kind}</p><p className="mt-1 text-sm font-semibold text-black">{event.title}</p><p className="text-xs text-slate-600">{event.organization}</p></div></li>)}
-          </ul>}
-          {dueSaved.length > 0 && <div className="mt-4 border-t border-slate-200 pt-3">
-            <h4 className="text-xs font-bold uppercase text-slate-500">Next return dates</h4>
-            <ul className="mt-1 divide-y divide-slate-200">
-              {dueSaved.slice(0, 4).map((action) => {
-                const date = action.scheduled_apply_date || '';
-                const status = date < today ? 'Overdue' : date === today ? 'Due today' : 'Upcoming';
-                return <li key={action.opportunity_id} className="py-2"><div className="flex items-start justify-between gap-2"><p className="text-sm font-medium text-black">{action.opportunities.title}</p><span className={`shrink-0 text-[10px] font-bold ${status === 'Overdue' ? 'text-red-700' : status === 'Due today' ? 'text-yellow-800' : 'text-slate-500'}`}>{status}</span></div><p className="mt-0.5 text-xs text-slate-600">{date ? new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(dateFromKey(date)) : ''}</p></li>;
-              })}
-            </ul>
-          </div>}
-          <Link href="/app/profile" className="link mt-4 inline-flex text-sm">Manage dates</Link>
-        </div>
-      </div>
-    </section>
-  );
+function validFocus(value: string | null): value is HomeFocus {
+  return value === 'all' || value === 'study' || value === 'work' || value === 'business' || value === 'money';
 }
 
 export default function DashboardPage() {
   const router = useRouter();
   const forge = useForge();
-  const [user, setUser] = useState<CurrentUser | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [completed, setCompleted] = useState<string[]>([]);
   const [storageWarning, setStorageWarning] = useState('');
   const [authUnavailable, setAuthUnavailable] = useState(false);
   const [homeFocus, setHomeFocus] = useState<HomeFocus>('all');
-  const progress = Math.round((completed.length / starterActions.length) * 100);
+  const [saving, setSaving] = useState(false);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  const focusDetail = focusDetails[homeFocus];
-  const FocusIcon = focusDetail.Icon;
-  const focusAction = homeFocus === 'all'
-    ? { label: forge.nextAction?.label || 'Choose your next step', href: forge.nextAction?.href || '/app/employment/opportunities' }
-    : homeFocus === 'study'
-      ? { label: 'Explore study and bursary options', href: '/app/study' }
-      : homeFocus === 'work'
-        ? { label: 'View opportunity matches', href: '/app/employment/opportunities' }
-        : homeFocus === 'business'
-          ? { label: 'Develop a business idea', href: '/app/growth' }
-          : { label: 'Explore money skills', href: '/app/money' };
-
-  function changeFocus(focus: HomeFocus) {
-    setHomeFocus(focus);
-    localStorage.setItem('careerforge-home-focus', focus);
-  }
+  const focusOption = focusOptions.find((option) => option.value === homeFocus) || focusOptions[0];
+  const FocusIcon = focusOption.Icon;
+  const tip = topicTips[homeFocus];
+  const progressCount = `${completed.length} of ${starterActions.length}`;
+  const shouldUseForgeAction = Boolean(forge.nextAction && (
+    forge.nextAction.href === '/app/employment/applications'
+    || (homeFocus === 'all' && !forge.preferences.personalisation_paused)
+  ));
+  const nextAction = shouldUseForgeAction && forge.nextAction
+    ? forge.nextAction
+    : homeFocus === 'all'
+      ? { label: 'Start with Study', reason: 'Study is one useful place to begin. You can explore work, money skills, and business ideas here too.', href: '/app/study' }
+      : { label: `Explore ${focusOption.label}`, reason: tip.text, href: focusOption.href };
 
   useEffect(() => {
     let active = true;
     async function loadDashboard() {
       try {
         const storedFocus = localStorage.getItem('careerforge-home-focus');
-        if (storedFocus === 'study' || storedFocus === 'work' || storedFocus === 'business' || storedFocus === 'money') setHomeFocus(storedFocus);
+        if (validFocus(storedFocus) && active) setHomeFocus(storedFocus);
         const supabase = getSupabase();
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError || !authData.user) {
           router.replace('/login');
           return;
         }
-        if (active) {
-          setUser({ id: authData.user.id });
-        }
         const progressResult = await supabase.from('learner_progress').select('checklist').maybeSingle();
         if (progressResult.error) {
-          if (active) setStorageWarning('Your progress could not be loaded. Check that the Supabase migrations are applied.');
+          if (active) setStorageWarning('Your checklist could not be loaded. Check that the Supabase migrations are applied.');
         } else if (active) {
           const checklist = Array.isArray(progressResult.data?.checklist) ? progressResult.data.checklist as string[] : [];
           setCompleted(checklist.filter((id) => starterActions.some((action) => action.id === id)));
@@ -215,159 +91,115 @@ export default function DashboardPage() {
     return () => { active = false; };
   }, [router]);
 
-  function toggleAction(id: string) {
-    if (!user) return;
+  function changeFocus(focus: HomeFocus) {
+    setHomeFocus(focus);
+    localStorage.setItem('careerforge-home-focus', focus);
+  }
+
+  async function toggleAction(id: string) {
+    if (!forge.userId || saving) return;
     const updated = completed.includes(id) ? completed.filter((item) => item !== id) : [...completed, id];
     setCompleted(updated);
-    getSupabase().from('learner_progress').upsert({ user_id: user.id, checklist: updated }, { onConflict: 'user_id' })
-      .then(({ error }) => {
-        if (error) setStorageWarning('Your change could not be saved. Check the Supabase data setup.');
-        else setStorageWarning('');
-      });
+    setSaving(true);
+    setStorageWarning('');
+    try {
+      const { error } = await getSupabase().from('learner_progress').upsert(
+        { user_id: forge.userId, checklist: updated },
+        { onConflict: 'user_id' },
+      );
+      if (error) throw error;
+    } catch (caught) {
+      setCompleted(completed);
+      setStorageWarning(caught instanceof Error ? `Your checklist change could not be saved: ${caught.message}` : 'Your checklist change could not be saved.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (authUnavailable) {
     return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600 sm:px-6 lg:px-8" role="alert">Authentication is unavailable. Check the Supabase configuration and try again.</div>;
   }
-  if (checkingSession || !user) {
+  if (checkingSession || !forge.userId) {
     return <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600 sm:px-6 lg:px-8" role="status">Checking your session...</div>;
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10 lg:px-8">
-      <section className="mb-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7" aria-labelledby="dashboard-heading">
-        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.72fr)]">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700"><FocusIcon size={14} aria-hidden="true" />{focusDetail.label} <span aria-hidden="true">·</span> {forge.stage}</p>
-            <h1 id="dashboard-heading" className="mt-4 text-3xl font-bold leading-tight text-midnight sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">{focusDetail.message}</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href={forge.preferences.personalisation_paused && homeFocus === 'all' ? '/app/study' : focusAction.href} className="btn-primary min-h-11">
-                {forge.preferences.personalisation_paused && homeFocus === 'all' ? 'Start with Study' : focusAction.label} <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-              <Link href="/app/profile" className="btn-secondary min-h-11">Update my profile</Link>
-            </div>
-          </div>
-          <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5" aria-label="Suggested next step and plan progress">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">One useful action</p>
-            <h2 className="mt-2 text-lg font-semibold text-midnight">
-              {forge.preferences.personalisation_paused ? 'Choose a small step that suits you' : forge.nextAction?.label || 'Choose a small step that suits you'}
-            </h2>
+    <div className="mx-auto max-w-4xl px-4 py-7 sm:px-6 md:py-9 lg:px-8">
+      <header className="mb-6">
+        <p className="eyebrow">Your home</p>
+        <h1 className="mt-2 text-3xl font-bold leading-tight text-midnight sm:text-4xl">{greeting}, {forge.firstName || 'there'}.</h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Pick up where you left off. Your reminder and next step are here.</p>
+      </header>
+
+      {forge.recentWin && <p className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status"><strong>Nice progress.</strong> {forge.recentWin}</p>}
+
+      <section className="mb-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="next-step-heading">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-500"><Sparkles size={15} aria-hidden="true" /> Your next step <span aria-hidden="true">·</span> <FocusIcon size={14} aria-hidden="true" /> {focusOption.label} focus</p>
+            <h2 id="next-step-heading" className="mt-2 text-xl font-bold text-midnight">{nextAction.label}</h2>
             <details className="mt-2 text-sm text-slate-600">
-              <summary className="min-h-8 cursor-pointer font-medium text-midnight underline underline-offset-2">Why this suggestion?</summary>
-              <p className="mt-2 leading-6">
-                {forge.preferences.personalisation_paused
-                  ? 'Personalisation is paused, so this suggestion is not based on your profile or saved activity.'
-                  : forge.nextAction?.reason || 'No open action is recorded, so choose whichever step feels useful.'}
-              </p>
+              <summary className="min-h-8 cursor-pointer font-medium text-midnight underline underline-offset-2">Why this step?</summary>
+              <p className="mt-2 leading-6">{homeFocus === 'all' && forge.preferences.personalisation_paused ? 'Personal suggestions are paused. This general starting point is not based on your profile or activity.' : nextAction.reason}</p>
             </details>
-            <div className="mt-5 border-t border-slate-200 pt-4">
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="font-medium text-slate-700">Starter plan</span>
-                <span className="font-semibold text-midnight">{completed.length}/{starterActions.length} done</span>
-              </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Starter plan progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-                <div className="h-full rounded-full bg-sunshine-dark transition-[width]" style={{ width: `${progress}%` }} />
-              </div>
-              <p className="mt-1 text-xs text-slate-500">{progress}% complete</p>
-            </div>
-          </aside>
+          </div>
+          <Link href={nextAction.href} className="btn-primary min-h-11 w-full sm:w-auto">Continue <ArrowRight size={16} aria-hidden="true" /></Link>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
+          <label htmlFor="home-focus" className="text-sm font-semibold text-slate-700">Tailor Home to:</label>
+          <select id="home-focus" className="input min-h-10 w-full sm:w-auto sm:min-w-44" value={homeFocus} onChange={(event) => changeFocus(event.target.value as HomeFocus)}>
+            {focusOptions.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+          </select>
+          <span className="text-xs text-slate-500">Your choice is remembered on this device.</span>
         </div>
       </section>
 
-      {forge.recentWin && <p className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900" role="status">A recent win: {forge.recentWin}</p>}
-
-      <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="journey-heading">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+      <section className="mb-5 grid gap-4 sm:grid-cols-2">
+        <article className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">A useful tip for {focusOption.label === 'Everything' ? 'your journey' : focusOption.label}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-700">{tip.text}</p>
+        </article>
+        <article className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-5">
           <div>
-            <p className="eyebrow">Choose your direction</p>
-            <h2 id="journey-heading" className="mt-1 text-xl font-bold text-midnight">Your journey, one step at a time</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Start with study, then explore work, money skills, or growing an idea. You can switch focus whenever you like.</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Explore another path</p>
+            <p className="mt-2 text-sm leading-6 text-slate-700">Your current focus is one part of the journey. Take a look at something different whenever you’re ready.</p>
           </div>
-          <Link href="/app/settings" className="link text-sm">Personalize Home</Link>
-        </div>
-        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4" role="group" aria-label="Choose a journey area">
-          {([
-            ['study', 'Study', 'Explore education and bursaries', GraduationCap],
-            ['work', 'Work', 'Build skills and find opportunities', BriefcaseBusiness],
-            ['money', 'Money Skills', 'Plan and practise with money', Banknote],
-            ['business', 'Growth Studio', 'Turn an idea into a test', Lightbulb],
-          ] as const).map(([focus, label, description, Icon], index) => (
-            <button key={focus} type="button" aria-pressed={homeFocus === focus} onClick={() => changeFocus(focus)} className={`group min-h-32 rounded-xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-midnight ${homeFocus === focus ? 'border-midnight bg-slate-50 ring-1 ring-midnight' : 'border-slate-200 bg-white hover:border-slate-400'}`}>
-              <span className="flex items-center justify-between">
-                <span className={`grid h-10 w-10 place-items-center rounded-lg ${homeFocus === focus ? 'bg-midnight text-white' : 'bg-sunshine-light text-midnight'}`}><Icon size={19} aria-hidden="true" /></span>
-                <span className="text-xs font-semibold text-slate-500">0{index + 1}</span>
-              </span>
-              <span className="mt-3 block font-semibold text-midnight">{label}</span>
-              <span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span>
-            </button>
+          <Link href={tip.otherHref} className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-midnight underline underline-offset-4 hover:text-slate-600">{tip.otherLabel} <ArrowRight size={15} aria-hidden="true" /></Link>
+        </article>
+      </section>
+
+      <details className="mb-5 rounded-2xl border border-slate-200 bg-white shadow-card">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+          <span>
+            <span className="block font-semibold text-midnight">Your starter plan</span>
+            <span className="mt-1 block text-xs text-slate-500">{progressCount} actions complete</span>
+          </span>
+          <span className="text-sm font-semibold text-midnight">View checklist</span>
+        </summary>
+        <ul className="divide-y divide-slate-200 border-t border-slate-200 px-5">
+          {starterActions.map((action) => (
+            <li key={action.id} className="flex items-center gap-3 py-3">
+              <input
+                id={`starter-action-${action.id}`}
+                type="checkbox"
+                checked={completed.includes(action.id)}
+                disabled={saving}
+                onChange={() => void toggleAction(action.id)}
+                className="h-5 w-5 shrink-0 accent-sunshine-dark"
+              />
+              <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
+                {action.label}<span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
+              </Link>
+              <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
+            </li>
           ))}
-        </div>
-        <div className="mt-5 border-t border-slate-200 pt-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-semibold text-midnight">{homeFocus === 'all' ? 'Quick links across your journey' : `${focusDetail.label}: quick links`}</h3>
-            {homeFocus !== 'all' && <button type="button" onClick={() => changeFocus('all')} className="min-h-9 text-sm font-semibold text-slate-600 underline underline-offset-2 hover:text-midnight">Show all areas</button>}
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {focusLinks[homeFocus].map(({ title, description, href, Icon }) => <Link key={href} href={href} className="group flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-400 hover:bg-white">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-midnight shadow-sm"><Icon size={18} aria-hidden="true" /></span>
-              <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-midnight">{title}</span><span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span></span>
-              <ArrowRight size={16} className="shrink-0 text-slate-500 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-            </Link>)}
-          </div>
-        </div>
-      </section>
+        </ul>
+      </details>
 
-      <div className="mb-8 grid items-start gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(16rem,0.65fr)]">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6" aria-labelledby="actions-heading">
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">Small steps add up</p>
-              <h2 id="actions-heading" className="mt-1 text-xl font-bold text-midnight">Your starter plan</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-600">Choose a task to open its tool, then tick it off when you’re done.</p>
-            </div>
-            <span className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-midnight">{completed.length} of {starterActions.length} complete</span>
-          </div>
-          <ul className="divide-y divide-slate-200 border-y border-slate-200">
-            {starterActions.map((action) => (
-              <li key={action.id} className="flex items-center gap-3 py-4">
-                <input
-                  id={`starter-action-${action.id}`}
-                  type="checkbox"
-                  checked={completed.includes(action.id)}
-                  onChange={() => toggleAction(action.id)}
-                  aria-label={`Mark ${action.label} ${completed.includes(action.id) ? 'incomplete' : 'complete'}`}
-                  className="h-5 w-5 shrink-0 accent-sunshine-dark"
-                />
-                <Link href={action.href} className={`min-w-0 flex-1 text-sm font-medium underline-offset-2 hover:underline ${completed.includes(action.id) ? 'text-slate-500 line-through' : 'text-midnight'}`}>
-                  {action.label}
-                  <span className="mt-1 block text-xs font-normal text-slate-500">{action.area}</span>
-                </Link>
-                <Link href={action.href} aria-label={`Open ${action.area}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-midnight"><ArrowRight size={17} aria-hidden="true" /></Link>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-xs leading-5 text-slate-500">Your checklist is saved to your account and only you can access it.</p>
-        </section>
-        <PublishedSiteContent contentType="announcement" heading="Updates & announcements" eyebrow="From Ukukhanya" display="list" className="!my-0" />
-      </div>
+      <PublishedSiteContent contentType="announcement" heading="Updates from Ukukhanya" className="!my-0" display="list" />
 
-      <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:p-6" aria-labelledby="matches-heading">
-        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
-          <div>
-            <p className="eyebrow">Opportunity connector</p>
-            <h2 id="matches-heading" className="section-heading mt-2">Your matches today</h2>
-            <p className="section-description">Explore verified listings and choose the ones that fit your next step.</p>
-          </div>
-          <Link href="/app/employment/opportunities" className="link text-sm">See all opportunities</Link>
-        </div>
-        <div className="mt-6 border-t border-slate-200 pt-5">
-          <OpportunityFeed />
-        </div>
-      </section>
-
-      <DashboardApplicationCalendar actions={forge.actions} />
-      {storageWarning && <p role="status" className="mb-4 text-sm text-amber-800">{storageWarning}</p>}
+      {storageWarning && <p role="alert" className="mt-4 text-sm text-amber-800">{storageWarning}</p>}
+      <p className="mt-5 text-xs leading-5 text-slate-500">Your checklist is private to your account. Dates and application details should always be confirmed with the official provider.</p>
     </div>
   );
 }

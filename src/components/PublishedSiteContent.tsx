@@ -35,9 +35,10 @@ export function PublishedSiteContent({
     let active = true;
     async function load() {
       try {
-        const { data, error: queryError } = await getSupabase()
-          .from('site_content')
-          .select('id,content_type,title,body,link_label,link_url,image_url,event_date,event_location,status,sort_order,published_at,created_at')
+        const contentQuery = types.includes('opportunity_resource')
+          ? getSupabase().from('site_content').select('id,content_type,title,body,link_label,link_url,image_url,event_date,event_location,status,sort_order,published_at,created_at')
+          : getSupabase().from('site_content').select('id,content_type,title,body,link_label,link_url,image_url,status,sort_order,published_at,created_at');
+        const { data, error: queryError } = await contentQuery
           .in('content_type', types)
           .eq('status', 'published')
           .lte('published_at', new Date().toISOString())
