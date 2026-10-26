@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
-import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Compass, GraduationCap, Lightbulb, Sparkles } from 'lucide-react';
+import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Check, Compass, GraduationCap, Lightbulb, Sparkles, type LucideIcon } from 'lucide-react';
 
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
 type StarterAction = { id: string; label: string; area: string; href: string };
@@ -32,6 +32,75 @@ const topicTips: Record<HomeFocus, { text: string; otherLabel: string; otherHref
   money: { text: 'Tracking a few everyday expenses for a week can help you make a budget that reflects your real routine.', otherLabel: 'Explore Growth Studio', otherHref: '/app/growth' },
   business: { text: 'Before spending money on an idea, ask a few potential customers what they need and what they use now.', otherLabel: 'Explore Work opportunities', otherHref: '/app/employment/opportunities' },
 };
+
+type RoadmapTool = { label: string; description: string; href: string };
+type RoadmapStep = {
+  focus: Exclude<HomeFocus, 'all'>;
+  number: string;
+  title: string;
+  description: string;
+  href: string;
+  action: string;
+  Icon: LucideIcon;
+  tools: RoadmapTool[];
+};
+
+const roadmap: RoadmapStep[] = [
+  {
+    focus: 'study',
+    number: '01',
+    title: 'Explore study',
+    description: 'Look into further study, funding, and skills that can help you move forward.',
+    href: '/app/study',
+    action: 'Open Study',
+    Icon: GraduationCap,
+    tools: [
+      { label: 'Bursaries & scholarships', description: 'Find study funding', href: '/app/study#bursaries' },
+      { label: 'Study pathways', description: 'Research possible routes', href: '/app/employment/pathways' },
+      { label: 'Skills Academy', description: 'Learn practical skills', href: '/app/employment/academy' },
+    ],
+  },
+  {
+    focus: 'work',
+    number: '02',
+    title: 'Prepare for work',
+    description: 'Build your profile, practise work skills, and keep track of applications.',
+    href: '/app/employment',
+    action: 'Open Work',
+    Icon: BriefcaseBusiness,
+    tools: [
+      { label: 'Skills assessment', description: 'Reflect on your strengths', href: '/app/employment/assessment' },
+      { label: 'CV builder', description: 'Create or update your CV', href: '/app/employment/cv' },
+      { label: 'Opportunities', description: 'Browse verified listings', href: '/app/employment/opportunities' },
+    ],
+  },
+  {
+    focus: 'money',
+    number: '03',
+    title: 'Build money skills',
+    description: 'Practise budgeting, setting goals, and making everyday money decisions.',
+    href: '/app/money',
+    action: 'Open Money Skills',
+    Icon: Banknote,
+    tools: [
+      { label: 'Budget planner', description: 'Map income and expenses', href: '/app/money' },
+      { label: 'Savings goals', description: 'Plan a goal at your pace', href: '/app/money' },
+    ],
+  },
+  {
+    focus: 'business',
+    number: '04',
+    title: 'Grow an idea',
+    description: 'Explore entrepreneurship and turn an idea into a small, practical test.',
+    href: '/app/growth',
+    action: 'Open Growth Studio',
+    Icon: Lightbulb,
+    tools: [
+      { label: 'Idea workshop', description: 'Shape an idea and audience', href: '/app/growth' },
+      { label: 'Plan a small test', description: 'Choose a practical next step', href: '/app/growth' },
+    ],
+  },
+];
 
 function validFocus(value: string | null): value is HomeFocus {
   return value === 'all' || value === 'study' || value === 'work' || value === 'business' || value === 'money';
@@ -71,6 +140,14 @@ export default function DashboardPage() {
     Boolean(forge.profile.personal_goal),
   ];
   const profileProgress = Math.round(profileSections.filter(Boolean).length * 100 / profileSections.length);
+  const studyStarted = Boolean(forge.profile.highest_qualification || forge.profile.field_of_study || forge.profile.subjects?.length);
+  const workStarted = Boolean(forge.profile.target_role || forge.profile.skills?.length || forge.profile.skill_ratings?.length || savedCount || appliedCount);
+  const roadmapStatus: Record<Exclude<HomeFocus, 'all'>, string> = {
+    study: studyStarted ? 'Profile started' : 'Ready to explore',
+    work: workStarted ? 'In progress' : 'Ready to explore',
+    money: completed.includes('budget') ? 'Starter step done' : 'Ready when you are',
+    business: completed.includes('idea') ? 'Starter step done' : 'Ready when you are',
+  };
   const today = localDateKey(new Date());
   const nextDeadline = forge.actions
     .filter((action) => action.status === 'saved')
@@ -180,6 +257,55 @@ export default function DashboardPage() {
             <Link href={nextAction.href} className="btn-primary mt-4 min-h-11 w-full sm:w-auto">Continue <ArrowRight size={16} aria-hidden="true" /></Link>
           </aside>
         </div>
+      </section>
+
+      <section className="mb-7" aria-labelledby="journey-roadmap-heading">
+        <div className="mb-4 max-w-3xl">
+          <p className="eyebrow">A guide to the workspace</p>
+          <h2 id="journey-roadmap-heading" className="mt-1 text-xl font-bold text-midnight sm:text-2xl">Your roadmap</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Start with study, prepare for work, build money skills, or grow an idea. There’s no wrong order—open a tool when it feels useful, and your progress will be reflected here.</p>
+        </div>
+        <ol className="grid gap-4 lg:grid-cols-2">
+          {roadmap.map(({ focus, number, title, description, href, action, Icon, tools }) => {
+            const isCurrentFocus = homeFocus === focus;
+            const status = roadmapStatus[focus];
+            return (
+              <li key={focus}>
+                <article className={`h-full rounded-2xl border bg-white shadow-card transition ${isCurrentFocus ? 'border-slate-500 ring-1 ring-slate-300' : 'border-slate-200'}`}>
+                  <div className="flex items-start gap-3 p-4 sm:p-5">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-midnight"><Icon size={21} aria-hidden="true" /></span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wide text-slate-500">Step {number}</span>
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700">{status}</span>
+                        {isCurrentFocus && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800"><Check size={13} aria-hidden="true" /> Your focus</span>}
+                      </div>
+                      <h3 className="mt-1 text-lg font-bold text-midnight">{title}</h3>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">{description}</p>
+                    </div>
+                  </div>
+                  <div className="border-t border-slate-100 px-4 py-3 sm:px-5">
+                    <p className="mb-2 text-xs font-semibold text-slate-500">TOOLS IN THIS STEP</p>
+                    <ul className="grid gap-1 sm:grid-cols-2">
+                      {tools.map((tool) => (
+                        <li key={`${tool.label}-${tool.href}`}>
+                          <Link href={tool.href} className="group flex min-h-11 items-center justify-between gap-2 rounded-lg px-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-midnight">
+                            <span className="min-w-0"><span className="block font-semibold">{tool.label}</span><span className="block text-xs text-slate-500">{tool.description}</span></span>
+                            <ArrowRight size={15} className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 sm:px-5">
+                    <Link href={href} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-midnight px-3 text-sm font-semibold text-white transition hover:bg-slate-700">{action} <ArrowRight size={15} aria-hidden="true" /></Link>
+                    {!isCurrentFocus && <button type="button" onClick={() => changeFocus(focus)} className="min-h-10 px-2 text-sm font-medium text-slate-600 underline underline-offset-2 hover:text-midnight">Make my focus</button>}
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
       </section>
 
       <section className="mb-6" aria-labelledby="dashboard-progress-heading">
