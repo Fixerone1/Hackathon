@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { DashboardApplicationCalendar } from '@/components/DashboardApplicationCalendar';
+import { JourneyProgress } from '@/components/JourneyProgress';
 import { HomeArrow } from '@/components/HomeArrow';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
@@ -57,6 +58,7 @@ const roadmap: RoadmapStep[] = [
     action: 'Open Study',
     Icon: GraduationCap,
     tools: [
+      { label: 'University & TVET applications', description: 'Prepare and check application dates', href: '/app/study#admissions' },
       { label: 'Bursaries & scholarships', description: 'Find study funding', href: '/app/study#bursaries' },
       { label: 'Study pathways', description: 'Research possible routes', href: '/app/employment/pathways' },
       { label: 'Skills Academy', description: 'Learn practical skills', href: '/app/employment/academy' },
@@ -260,6 +262,8 @@ export default function DashboardPage() {
           </aside>
         </div>
       </section>
+
+      <JourneyProgress profileProgress={profileProgress} appliedCount={appliedCount} />
 
       <section className="mb-7" aria-labelledby="journey-roadmap-heading">
         <div className="mb-4 max-w-3xl">

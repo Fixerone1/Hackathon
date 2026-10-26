@@ -5,6 +5,7 @@ import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
 import { StudyProfileSummary } from '@/components/StudyProfileSummary';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
+import { StudyAdmissions } from '@/components/StudyAdmissions';
 import { studyNavigation } from '@/lib/navigation';
 
 export const metadata = { title: 'Study and bursaries' };
@@ -18,6 +19,8 @@ export default function StudyPage() {
         description="Find bursary listings, explore study pathways, and keep your education details together as you plan."
       />
       <StudyNav />
+
+      <StudyAdmissions />
 
       <StudyProfileSummary />
 
