@@ -6,7 +6,7 @@ import { normalizePathname } from '@/lib/normalizePathname';
 import { workspaceNavigation } from '@/lib/navigation';
 
 function isWorkspaceSectionActive(href: string, pathname: string): boolean {
-  if (href === '/app') return pathname === href;
+  if (href === '/app') return pathname === href || pathname === '/app/my-space';
   if (href === '/app/study') {
     return pathname === href
       || pathname.startsWith(`${href}/`)

@@ -292,6 +292,11 @@ export function OpportunityFeed({ mode = 'matches', categoryFilter }: Opportunit
         else delete updated[opportunityId];
         return updated;
       });
+      setMessage(status === 'saved'
+        ? 'Saved. Find it in My Space.'
+        : status === 'applied'
+          ? 'Application progress updated in My Space.'
+          : 'Removed from your saved items.');
       try {
         await syncGoogleCalendar();
       } catch (caught) {

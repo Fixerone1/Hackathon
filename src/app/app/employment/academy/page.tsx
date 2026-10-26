@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
+import { SaveItemButton } from '@/components/SaveItemButton';
 
 const progressStorageKey = 'beacon:skills-academy-progress-v1';
 const activityStorageKey = 'beacon:skills-academy-activity-v1';
@@ -251,7 +252,10 @@ export default function AcademyPage() {
         <main>
           <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-7">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{selectedLesson.category} · {selectedLesson.duration}</p>
-            <h2 className="mt-2 text-2xl font-bold text-black">{selectedLesson.title}</h2>
+            <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
+              <h2 className="text-2xl font-bold text-black">{selectedLesson.title}</h2>
+              <SaveItemButton itemType="lesson" itemId={selectedLesson.id} title={selectedLesson.title} link="/app/employment/academy" />
+            </div>
             <p className="mt-2 text-sm leading-6 text-slate-600">{selectedLesson.summary}</p>
 
             <div className="mt-6 space-y-5">

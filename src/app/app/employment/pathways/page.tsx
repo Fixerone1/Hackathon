@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
 import { StudyNav } from '@/components/StudyNav';
+import { saveLearnerDraft } from '@/lib/drafts';
+import { getSupabase } from '@/lib/supabase';
 
 const pathwayOptions = [
   { id: 'work', label: 'Find work', description: 'I want to apply for entry-level roles.' },
@@ -45,16 +47,47 @@ export default function PathwaysPage() {
       }
     } catch (caught) {
       setDraftError(caught instanceof Error ? `Your pathway draft could not be loaded: ${caught.message}` : 'Your pathway draft could not be loaded.');
-    } finally {
-      setDraftLoaded(true);
     }
+    let active = true;
+    async function loadAccountDraft() {
+      try {
+        const supabase = getSupabase();
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user) throw new Error('Sign in again to load your saved pathway.');
+        const { data, error: draftError } = await supabase.from('drafts').select('data').eq('user_id', authData.user.id).eq('kind', 'pathway').eq('ref_id', 'default').gt('expires_at', new Date().toISOString()).maybeSingle();
+        if (draftError) throw draftError;
+        if (!active || !data?.data || typeof data.data !== 'object' || Array.isArray(data.data)) return;
+        const draft = data.data as Record<string, unknown>;
+        setGoal(typeof draft.goal === 'string' ? draft.goal : '');
+        setCurrentEvidence(typeof draft.currentEvidence === 'string' ? draft.currentEvidence : '');
+        if (isPathwayType(draft.pathway)) setPathway(draft.pathway);
+        setCheckedActions(Array.isArray(draft.checkedActions)
+          ? [...new Set(draft.checkedActions.filter((item): item is number => Number.isInteger(item) && item >= 0 && item < 4))]
+          : []);
+      } catch (caught) {
+        if (active) setDraftError(caught instanceof Error ? `Your pathway draft could not be synced: ${caught.message}` : 'Your pathway draft could not be synced.');
+      } finally {
+        if (active) setDraftLoaded(true);
+      }
+    }
+    void loadAccountDraft();
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     if (!draftLoaded) return;
     try {
-      localStorage.setItem(draftStorageKey, JSON.stringify({ goal, currentEvidence, pathway, checkedActions }));
-      setDraftError('');
+      const draftData = { goal, currentEvidence, pathway, checkedActions };
+      localStorage.setItem(draftStorageKey, JSON.stringify(draftData));
+      if (!goal.trim() && !currentEvidence.trim() && checkedActions.length === 0) return;
+      const timeout = window.setTimeout(() => {
+        const progress = Math.round((checkedActions.length + Number(Boolean(goal.trim())) + Number(Boolean(currentEvidence.trim()))) / 6 * 100);
+        void saveLearnerDraft({ kind: 'pathway', title: `Pathway plan${goal.trim() ? `: ${goal.trim().slice(0, 80)}` : ''}`, progress, data: draftData })
+          .then(() => setDraftError(''))
+          .catch((caught: unknown) => setDraftError(caught instanceof Error ? `Your pathway draft could not be saved: ${caught.message}` : 'Your pathway draft could not be saved.'));
+      }, 700);
+      return () => window.clearTimeout(timeout);
     } catch (caught) {
       setDraftError(caught instanceof Error ? `Your pathway draft could not be saved: ${caught.message}` : 'Your pathway draft could not be saved.');
     }

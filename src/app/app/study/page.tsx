@@ -6,6 +6,7 @@ import { StudyNav } from '@/components/StudyNav';
 import { StudyProfileSummary } from '@/components/StudyProfileSummary';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
 import { StudyAdmissions } from '@/components/StudyAdmissions';
+import { SaveItemButton } from '@/components/SaveItemButton';
 import { studyNavigation } from '@/lib/navigation';
 
 export const metadata = { title: 'Study and bursaries' };
@@ -32,8 +33,8 @@ export default function StudyPage() {
         </div>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {studyNavigation.map(({ href, label, Icon, text, tag }) => (
-            <li key={label}>
-              <Link href={href} className="group flex h-full min-h-40 flex-col rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-card sm:p-5">
+            <li key={label} className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-slate-400 hover:shadow-card sm:p-5">
+              <Link href={href} className="group flex min-h-32 flex-col">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-bold tracking-[0.12em] text-slate-600">{tag}</span>
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-sunshine-light text-midnight">
@@ -46,6 +47,9 @@ export default function StudyPage() {
                   Open <ArrowRight size={14} aria-hidden="true" />
                 </span>
               </Link>
+              <div className="mt-3 border-t border-slate-100 pt-3">
+                <SaveItemButton itemType="tool" itemId={href} title={label} link={href} />
+              </div>
             </li>
           ))}
         </ul>

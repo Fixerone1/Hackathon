@@ -9,7 +9,7 @@ import { JourneyProgress } from '@/components/JourneyProgress';
 import { HomeArrow } from '@/components/HomeArrow';
 import { useForge } from '@/components/ForgeContext';
 import { getSupabase } from '@/lib/supabase';
-import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Check, Compass, GraduationCap, Lightbulb, Sparkles, type LucideIcon } from 'lucide-react';
+import { ArrowRight, Banknote, BriefcaseBusiness, CalendarDays, Check, Compass, FileText, GraduationCap, Lightbulb, Sparkles, type LucideIcon } from 'lucide-react';
 
 type HomeFocus = 'all' | 'study' | 'work' | 'business' | 'money';
 type StarterAction = { id: string; label: string; area: string; href: string };
@@ -319,7 +319,14 @@ export default function DashboardPage() {
           <p className="eyebrow">Your progress</p>
           <h2 id="dashboard-progress-heading" className="mt-1 text-lg font-bold text-midnight">A quick look at where you are</h2>
         </div>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/app/my-space" className="group flex items-center justify-between gap-3 rounded-xl border border-sunshine bg-sunshine-light/40 p-4 shadow-card transition hover:border-sunshine-dark">
+            <span>
+              <span className="block text-sm font-semibold text-midnight">My Space</span>
+              <span className="mt-1 block text-xs text-slate-600">Saved items, applications &amp; drafts</span>
+            </span>
+            <FileText size={21} className="shrink-0 text-midnight" aria-hidden="true" />
+          </Link>
           <Link href="/app/profile" className="group rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:border-slate-400">
             <span className="flex items-center justify-between gap-3">
               <span className="text-sm font-medium text-slate-600">Profile basics</span>

@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PageIntro } from '@/components/PageIntro';
 import { PublishedSiteContent } from '@/components/PublishedSiteContent';
+import { saveLearnerDraft } from '@/lib/drafts';
+import { getSupabase } from '@/lib/supabase';
+import { SaveItemButton } from '@/components/SaveItemButton';
 
 const validationQuestions = [
   'Does the problem affect enough people?',
@@ -53,16 +56,58 @@ export default function GrowthStudioPage() {
       }
     } catch (caught) {
       setDraftError(caught instanceof Error ? `Your idea draft could not be loaded: ${caught.message}` : 'Your idea draft could not be loaded.');
-    } finally {
-      setDraftLoaded(true);
     }
+    let active = true;
+    async function loadAccountDraft() {
+      try {
+        const supabase = getSupabase();
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user) throw new Error('Sign in again to load your saved idea.');
+        const { data, error: draftError } = await supabase.from('drafts').select('data').eq('user_id', authData.user.id).eq('kind', 'growth').eq('ref_id', 'default').gt('expires_at', new Date().toISOString()).maybeSingle();
+        if (draftError) throw draftError;
+        if (!active || !data?.data || typeof data.data !== 'object' || Array.isArray(data.data)) return;
+        const draft = data.data as Record<string, unknown>;
+        const savedAnswers = draft.answers && typeof draft.answers === 'object' && !Array.isArray(draft.answers)
+          ? draft.answers as Record<string, unknown>
+          : {};
+        const stages = ['I only have an idea', 'I already have customers or users', 'I am ready to launch'];
+        setAnswers({
+          idea: typeof savedAnswers.idea === 'string' ? savedAnswers.idea : '',
+          problem: typeof savedAnswers.problem === 'string' ? savedAnswers.problem : '',
+          audience: typeof savedAnswers.audience === 'string' ? savedAnswers.audience : '',
+          unique: typeof savedAnswers.unique === 'string' ? savedAnswers.unique : '',
+          stage: typeof savedAnswers.stage === 'string' && stages.includes(savedAnswers.stage) ? savedAnswers.stage : defaultAnswers.stage,
+        });
+        setCheckedQuestions(Array.isArray(draft.checkedQuestions)
+          ? [...new Set(draft.checkedQuestions.filter((item): item is number => Number.isInteger(item) && item >= 0 && item < validationQuestions.length))]
+          : []);
+      } catch (caught) {
+        if (active) setDraftError(caught instanceof Error ? `Your idea draft could not be synced: ${caught.message}` : 'Your idea draft could not be synced.');
+      } finally {
+        if (active) setDraftLoaded(true);
+      }
+    }
+    void loadAccountDraft();
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     if (!draftLoaded) return;
     try {
-      localStorage.setItem(draftStorageKey, JSON.stringify({ answers, checkedQuestions }));
-      setDraftError('');
+      const draftData = { answers, checkedQuestions };
+      localStorage.setItem(draftStorageKey, JSON.stringify(draftData));
+      const answeredCount = [answers.idea, answers.problem, answers.audience, answers.unique].filter((value) => value.trim()).length;
+      const started = answeredCount > 0 || checkedQuestions.length > 0 || answers.stage !== defaultAnswers.stage;
+      if (!started) return;
+      const timeout = window.setTimeout(() => {
+        const progress = Math.round((answeredCount + checkedQuestions.length + Number(answers.stage !== defaultAnswers.stage)) / 10 * 100);
+        const title = answers.idea.trim() ? `Growth idea: ${answers.idea.trim().slice(0, 80)}` : 'Growth Studio idea';
+        void saveLearnerDraft({ kind: 'growth', title, progress, data: draftData })
+          .then(() => setDraftError(''))
+          .catch((caught: unknown) => setDraftError(caught instanceof Error ? `Your idea draft could not be saved: ${caught.message}` : 'Your idea draft could not be saved.'));
+      }, 700);
+      return () => window.clearTimeout(timeout);
     } catch (caught) {
       setDraftError(caught instanceof Error ? `Your idea draft could not be saved: ${caught.message}` : 'Your idea draft could not be saved.');
     }
@@ -203,6 +248,7 @@ export default function GrowthStudioPage() {
               <div className="rounded-2xl border border-yellow-300 bg-yellow-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Your idea in one sentence</p>
                 <p className="mt-3 text-sm leading-7 text-slate-800">{ideaSummary}</p>
+                {answers.idea.trim() && <div className="mt-3"><SaveItemButton itemType="idea" itemId="growth-idea" title={answers.idea.trim().slice(0, 160)} link="/app/growth" /></div>}
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">

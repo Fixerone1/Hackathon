@@ -18,6 +18,7 @@ import {
   type CvProfileSeed,
 } from '@/lib/cv-builder';
 import { southAfricanProvinces } from '@/lib/opportunities';
+import { saveLearnerDraft } from '@/lib/drafts';
 
 type FieldName = keyof CvData;
 
@@ -158,6 +159,25 @@ function profileName(authUser: { user_metadata?: Record<string, unknown>; email?
   return typeof metadataName === 'string' ? metadataName : authUser.email?.split('@')[0] || '';
 }
 
+function cvDraftProgress(data: CvData) {
+  const checks = [
+    Boolean(data.role.trim()),
+    Boolean(data.opportunityTypes.trim()),
+    Boolean(data.fullName.trim()),
+    Boolean(data.phone.trim()),
+    Boolean(data.email.trim()),
+    Boolean(data.workStatus.trim() && data.availableFrom.trim() && data.licenceCode.trim()),
+    Boolean(data.headline.trim() || data.summary.trim()),
+    Boolean(data.strongestEvidence.trim()),
+    Boolean(data.formalExperience.trim() || data.informalExperienceDetails.trim()),
+    Boolean(data.schoolDetails.trim() || data.postSchoolEducation.trim()),
+    Boolean(data.technicalSkills.trim() || data.softwareSkills.trim()),
+    Boolean(data.skillProof.trim()),
+    Boolean(data.languages.trim()),
+  ];
+  return Math.round(checks.filter(Boolean).length * 100 / checks.length);
+}
+
 export function CvBuilder() {
   const [data, setData] = useState<CvData>(emptyCvData);
   const [section, setSection] = useState<CvSection>('Role');
@@ -179,26 +199,35 @@ export function CvBuilder() {
     async function load() {
       try {
         const supabase = getSupabase();
-        const [authResult, profileResult, cvResult, milestoneResult] = await Promise.all([
+        const [authResult, profileResult, cvResult, milestoneResult, draftResult] = await Promise.all([
           supabase.auth.getUser(),
           supabase.from('learner_profiles').select('*').maybeSingle(),
           supabase.from('learner_cv_details').select('phone,summary,experience,professional_title,education,projects,achievements,website,cv_data').maybeSingle(),
           supabase.from('learner_milestones').select('milestone_id').eq('milestone_id', 'cv_builder').maybeSingle(),
+          supabase.from('drafts').select('data').eq('kind', 'cv').eq('ref_id', 'master').gt('expires_at', new Date().toISOString()).maybeSingle(),
         ]);
         if (authResult.error) throw authResult.error;
         if (!authResult.data.user) throw new Error('Sign in again to use your CV builder.');
         if (profileResult.error) throw profileResult.error;
         if (cvResult.error) throw cvResult.error;
         if (milestoneResult.error) throw milestoneResult.error;
+        if (draftResult.error) throw draftResult.error;
         if (!active) return;
         const profile = (profileResult.data || {}) as CvProfileSeed;
         const legacy = cvResult.data as Record<string, unknown> | null;
+        const savedDraft = draftResult.data?.data && typeof draftResult.data.data === 'object' && !Array.isArray(draftResult.data.data)
+          ? draftResult.data.data as Record<string, unknown>
+          : {};
+        const savedCvData = savedDraft.cv_data || legacy?.cv_data;
         setData(prefillCvData(
-          legacy?.cv_data,
+          savedCvData,
           profile,
           { name: profile.display_name || profileName(authResult.data.user), email: authResult.data.user.email || '' },
           legacy,
         ));
+        if (typeof savedDraft.section === 'string' && cvSections.includes(savedDraft.section as CvSection)) {
+          setSection(savedDraft.section as CvSection);
+        }
         setMilestoneComplete(Boolean(milestoneResult.data));
         setError('');
         setLoaded(true);
@@ -231,7 +260,14 @@ export function CvBuilder() {
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id' });
     if (saveError) throw saveError;
-  }, []);
+    await saveLearnerDraft({
+      kind: 'cv',
+      refId: 'master',
+      title: 'CV draft',
+      progress: cvDraftProgress(next),
+      data: { cv_data: next, section },
+    });
+  }, [section]);
 
   useEffect(() => {
     if (!loaded) return;

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { EmploymentNav } from '@/components/EmploymentNav';
 import { PageIntro } from '@/components/PageIntro';
+import { SaveItemButton } from '@/components/SaveItemButton';
 
 const practiceQuestions = [
   {
@@ -171,6 +172,9 @@ export default function InterviewPage() {
           </div>
 
           <h2 className="mt-5 text-xl font-bold leading-8 text-black">{question.prompt}</h2>
+          <div className="mt-3">
+            <SaveItemButton itemType="interview_question" itemId={String(questionIndex)} title={question.prompt} link="/app/employment/interview" />
+          </div>
 
           <form onSubmit={requestFeedback} className="mt-5">
             <label htmlFor="practice-answer" className="mb-2 block text-sm font-semibold text-slate-800">Your answer</label>

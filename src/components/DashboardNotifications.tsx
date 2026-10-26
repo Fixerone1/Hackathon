@@ -7,7 +7,8 @@ import { getSupabase } from '@/lib/supabase';
 import { matchOpportunity, normalizeOpportunity, type Opportunity, type OpportunityProfile } from '@/lib/opportunities';
 
 type InboxItem = { opportunity: Opportunity; score: number | null; reasons: string[] };
-type InboxReminder = { id: string; opportunityId: string; date: string; title: string; organization: string };
+type InboxReminder = { id: string; opportunityId: string; date: string; title: string; organization: string; href?: string };
+type UserReminder = { id: string; target_type: 'saved_item' | 'application' | 'draft' | 'opportunity'; target_id: string; remind_at: string };
 type ActionWithOpportunity = {
   opportunity_id: string;
   status: string;
@@ -50,14 +51,29 @@ export function DashboardNotifications({ userId }: { userId: string }) {
     async function load() {
       try {
         const supabase = getSupabase();
-        const [opportunityResult, profileResult, actionResult] = await Promise.all([
+        const [opportunityResult, profileResult, actionResult, userReminderResult] = await Promise.all([
           supabase.from('opportunities').select('*').eq('status', 'published').order('created_at', { ascending: false }).limit(50),
           supabase.from('learner_profiles').select('target_role,highest_qualification,qualification_status,qualification_year,field_of_study,subjects,skills,skill_ratings,experience_months,experience_by_area,province,city,nqf_level,languages,certifications,work_authorization,availability_start_date,shift_preferences,hours_available_per_week,target_income_monthly,target_income_monthly_max,employment_status,drivers_license,own_transport,willing_to_relocate,remote_ok,computer_or_data_access').maybeSingle(),
           supabase.from('learner_opportunity_actions').select('opportunity_id,status,scheduled_apply_date,opportunities!inner(title,organization)').eq('status', 'saved').not('scheduled_apply_date', 'is', null),
+          supabase.from('reminders').select('id,target_type,target_id,remind_at').eq('channel', 'in_app').is('sent_at', null),
         ]);
         if (opportunityResult.error) throw opportunityResult.error;
         if (profileResult.error) throw profileResult.error;
         if (actionResult.error) throw actionResult.error;
+        if (userReminderResult.error) throw userReminderResult.error;
+        const userReminders = (userReminderResult.data || []) as UserReminder[];
+        const savedReminderIds = [...new Set(userReminders.filter(({ target_type }) => target_type === 'saved_item').map(({ target_id }) => target_id))];
+        const applicationReminderIds = [...new Set(userReminders.filter(({ target_type }) => target_type === 'application').map(({ target_id }) => target_id.split(':')[0]))];
+        const [savedItemResult, applicationResult] = await Promise.all([
+          savedReminderIds.length
+            ? supabase.from('saved_items').select('id,title,link').in('id', savedReminderIds)
+            : Promise.resolve({ data: [], error: null }),
+          applicationReminderIds.length
+            ? supabase.from('applications').select('id,title,employer').in('id', applicationReminderIds)
+            : Promise.resolve({ data: [], error: null }),
+        ]);
+        if (savedItemResult.error) throw savedItemResult.error;
+        if (applicationResult.error) throw applicationResult.error;
         const storageKey = `beacon:opportunities-viewed-${userId}`;
         const reminderStorageKey = `beacon:reminders-viewed-${userId}`;
         const savedLastViewed = localStorage.getItem(storageKey);
@@ -76,7 +92,7 @@ export function DashboardNotifications({ userId }: { userId: string }) {
         setItems(freshMatches);
         setLastViewed(savedLastViewed || '');
         setSeenReminderIds(savedSeenReminders ? JSON.parse(savedSeenReminders) as string[] : []);
-        setReminders(((actionResult.data || []) as unknown as ActionWithOpportunity[]).flatMap((action) => {
+        const opportunityReminders = ((actionResult.data || []) as unknown as ActionWithOpportunity[]).flatMap((action) => {
           if (!action.scheduled_apply_date) return [];
           const opportunity = Array.isArray(action.opportunities) ? action.opportunities[0] : action.opportunities;
           if (!opportunity) return [];
@@ -87,7 +103,37 @@ export function DashboardNotifications({ userId }: { userId: string }) {
             title: opportunity.title,
             organization: opportunity.organization,
           }];
-        }));
+        });
+        const savedById = new Map((savedItemResult.data || []).map((item) => [item.id, item]));
+        const applicationsById = new Map((applicationResult.data || []).map((item) => [item.id, item]));
+        const currentUserReminders = userReminders.flatMap((reminder) => {
+          const date = reminder.remind_at.slice(0, 10);
+          if (date > dateTick) return [];
+          if (reminder.target_type === 'saved_item') {
+            const item = savedById.get(reminder.target_id);
+            return item ? [{
+              id: reminder.id,
+              opportunityId: '',
+              date,
+              title: item.title,
+              organization: '',
+              href: item.link,
+            }] : [];
+          }
+          if (reminder.target_type === 'application') {
+            const application = applicationsById.get(reminder.target_id.split(':')[0]);
+            return application ? [{
+              id: reminder.id,
+              opportunityId: '',
+              date,
+              title: application.title,
+              organization: application.employer,
+              href: '/app/my-space?tab=applications',
+            }] : [];
+          }
+          return [];
+        });
+        setReminders([...opportunityReminders, ...currentUserReminders]);
         setError('');
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : 'New opportunities could not be checked.');
@@ -162,7 +208,7 @@ export function DashboardNotifications({ userId }: { userId: string }) {
                         <p className="text-[11px] font-bold uppercase text-amber-900">{reminder.date === dateTick ? 'Due today' : `Overdue · ${dateLabel(reminder.date)}`}</p>
                         <p className="mt-1 text-sm font-semibold text-midnight">{reminder.title}</p>
                         <p className="text-xs text-slate-600">{reminder.organization}</p>
-                        <Link href="/app/profile" onClick={() => setOpen(false)} className="mt-2 inline-flex min-h-9 items-center text-xs font-bold underline underline-offset-2">Open planner</Link>
+                        <Link href={reminder.href || '/app/profile'} onClick={() => setOpen(false)} className="mt-2 inline-flex min-h-9 items-center text-xs font-bold underline underline-offset-2">Open planner</Link>
                       </li>
                     ))}
                   </ul>
