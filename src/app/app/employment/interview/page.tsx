@@ -30,11 +30,52 @@ const practiceQuestions = [
   },
 ];
 
+function buildLocalFeedback(answer: string) {
+  const lowerAnswer = answer.toLowerCase();
+  const starChecks = [
+    {
+      label: 'Situation',
+      found: /\b(when|during|while|last year|last month|one day|there was|at the time)\b/.test(lowerAnswer),
+      tip: 'Briefly explain when and where this happened.',
+    },
+    {
+      label: 'Task',
+      found: /\b(needed to|responsible for|my role|asked me to|had to|the goal was|my task)\b/.test(lowerAnswer),
+      tip: 'Clarify what needed to be done and what your responsibility was.',
+    },
+    {
+      label: 'Action',
+      found: /\b(i (?:then |also |first )?(?:decided|asked|made|created|organised|organized|planned|helped|spoke|checked|fixed|worked|led|supported|completed|followed|learned|learnt|took|used|contacted|explained|found|started|managed))\b/.test(lowerAnswer),
+      tip: 'Describe the specific steps you personally took, using “I” where appropriate.',
+    },
+    {
+      label: 'Result',
+      found: /\b(as a result|the result|which meant|we achieved|completed|improved|increased|reduced|saved|delivered|learned|learnt|finished|successfully)\b/.test(lowerAnswer),
+      tip: 'End with what changed, what you achieved, or what you learned.',
+    },
+  ];
+  const foundCount = starChecks.filter((item) => item.found).length;
+  const wordCount = answer.trim().split(/\s+/).length;
+  const missingTips = starChecks.filter((item) => !item.found).map((item) => `- ${item.label}: ${item.tip}`);
+
+  return [
+    `STAR check: ${foundCount} of 4 parts detected in your answer (${wordCount} words).`,
+    ...starChecks.map((item) => `${item.found ? 'Present' : 'Could add'} - ${item.label}`),
+    '',
+    missingTips.length > 0
+      ? `To strengthen your answer:\n${missingTips.join('\n')}`
+      : 'Your answer includes cues for all four STAR parts. Make sure the result is specific and that your own contribution is clear.',
+    '',
+    'This is an on-device writing guide, not an AI judgement. Review the STAR prompts and use your real experience to fill any gaps.',
+  ].join('\n');
+}
+
 export default function InterviewPage() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [targetRole, setTargetRole] = useState('');
   const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [feedbackSource, setFeedbackSource] = useState<'ai' | 'local' | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const question = practiceQuestions[questionIndex];
@@ -49,6 +90,14 @@ export default function InterviewPage() {
     setBusy(true);
     setError('');
     setFeedback('');
+    setFeedbackSource(null);
+
+    if (process.env.NEXT_PUBLIC_STATIC_EXPORT === 'true') {
+      setFeedback(buildLocalFeedback(answer));
+      setFeedbackSource('local');
+      setBusy(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/ai', {
@@ -64,11 +113,10 @@ export default function InterviewPage() {
         }),
       });
       const contentType = response.headers.get('content-type') || '';
-      if (!contentType.includes('application/json')) {
-        if (response.redirected) {
-          throw new Error('The interview feedback request was redirected. Please sign in again and retry.');
-        }
-        throw new Error(`Interview feedback returned a webpage instead of data (HTTP ${response.status}). The API may be missing from this deployment.`);
+      if (response.status === 405 || !contentType.includes('application/json')) {
+        setFeedback(buildLocalFeedback(answer));
+        setFeedbackSource('local');
+        return;
       }
 
       let result: { text?: string; error?: string };
@@ -81,6 +129,7 @@ export default function InterviewPage() {
         throw new Error(result.error || 'Interview feedback is unavailable right now.');
       }
       setFeedback(result.text);
+      setFeedbackSource('ai');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Interview feedback is unavailable right now.');
     } finally {
@@ -92,6 +141,7 @@ export default function InterviewPage() {
     setQuestionIndex(index);
     setAnswer('');
     setFeedback('');
+    setFeedbackSource(null);
     setError('');
   }
 
@@ -154,7 +204,7 @@ export default function InterviewPage() {
 
           {feedback && (
             <section aria-live="polite" className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-              <h3 className="font-bold text-slate-900">Coach feedback</h3>
+              <h3 className="font-bold text-slate-900">{feedbackSource === 'local' ? 'Your STAR review' : 'Coach feedback'}</h3>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-800">{feedback}</p>
             </section>
           )}
