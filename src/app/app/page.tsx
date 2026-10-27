@@ -36,73 +36,47 @@ const topicTips: Record<HomeFocus, { text: string; otherLabel: string; otherHref
   business: { text: 'Before spending money on an idea, ask a few potential customers what they need and what they use now.', otherLabel: 'Explore Work opportunities', otherHref: '/app/employment/opportunities' },
 };
 
-type RoadmapTool = { label: string; description: string; href: string };
-type RoadmapStep = {
+type GoalArea = {
   focus: Exclude<HomeFocus, 'all'>;
-  number: string;
   title: string;
   description: string;
   href: string;
   action: string;
   Icon: LucideIcon;
-  tools: RoadmapTool[];
 };
 
-const roadmap: RoadmapStep[] = [
+const goalAreas: GoalArea[] = [
   {
     focus: 'study',
-    number: '01',
     title: 'Explore study',
     description: 'Look into further study, funding, and skills that can help you move forward.',
     href: '/app/study',
-    action: 'Open Study',
+    action: 'Explore Study',
     Icon: GraduationCap,
-    tools: [
-      { label: 'University & TVET applications', description: 'Prepare and check application dates', href: '/app/study#admissions' },
-      { label: 'Bursaries & scholarships', description: 'Find study funding', href: '/app/study#bursaries' },
-      { label: 'Study pathways', description: 'Research possible routes', href: '/app/employment/pathways' },
-      { label: 'Skills Academy', description: 'Learn practical skills', href: '/app/employment/academy' },
-    ],
   },
   {
     focus: 'work',
-    number: '02',
     title: 'Prepare for work',
     description: 'Build your profile, practise work skills, and keep track of applications.',
     href: '/app/employment',
-    action: 'Open Work',
+    action: 'Explore Work',
     Icon: BriefcaseBusiness,
-    tools: [
-      { label: 'Skills assessment', description: 'Reflect on your strengths', href: '/app/employment/assessment' },
-      { label: 'CV builder', description: 'Create or update your CV', href: '/app/employment/cv' },
-      { label: 'Opportunities', description: 'Browse verified listings', href: '/app/employment/opportunities' },
-    ],
   },
   {
     focus: 'money',
-    number: '03',
     title: 'Build money skills',
     description: 'Practise budgeting, setting goals, and making everyday money decisions.',
     href: '/app/money',
-    action: 'Open Money Skills',
+    action: 'Explore Money Skills',
     Icon: Banknote,
-    tools: [
-      { label: 'Budget planner', description: 'Map income and expenses', href: '/app/money' },
-      { label: 'Savings goals', description: 'Plan a goal at your pace', href: '/app/money' },
-    ],
   },
   {
     focus: 'business',
-    number: '04',
     title: 'Grow an idea',
     description: 'Explore entrepreneurship and turn an idea into a small, practical test.',
     href: '/app/growth',
-    action: 'Open Growth Studio',
+    action: 'Explore Growth Studio',
     Icon: Lightbulb,
-    tools: [
-      { label: 'Idea workshop', description: 'Shape an idea and audience', href: '/app/growth' },
-      { label: 'Plan a small test', description: 'Choose a practical next step', href: '/app/growth' },
-    ],
   },
 ];
 
@@ -146,7 +120,7 @@ export default function DashboardPage() {
   const profileProgress = Math.round(profileSections.filter(Boolean).length * 100 / profileSections.length);
   const studyStarted = Boolean(forge.profile.highest_qualification || forge.profile.field_of_study || forge.profile.subjects?.length);
   const workStarted = Boolean(forge.profile.target_role || forge.profile.skills?.length || forge.profile.skill_ratings?.length || savedCount || appliedCount);
-  const roadmapStatus: Record<Exclude<HomeFocus, 'all'>, string> = {
+  const areaStatus: Record<Exclude<HomeFocus, 'all'>, string> = {
     study: studyStarted ? 'Profile started' : 'Ready to explore',
     work: workStarted ? 'In progress' : 'Ready to explore',
     money: completed.includes('budget') ? 'Starter step done' : 'Ready when you are',
@@ -265,16 +239,16 @@ export default function DashboardPage() {
 
       <JourneyProgress profileProgress={profileProgress} appliedCount={appliedCount} />
 
-      <section className="mb-7" aria-labelledby="journey-roadmap-heading">
+      <section className="mb-7" aria-labelledby="workspace-areas-heading">
         <div className="mb-4 max-w-3xl">
-          <p className="eyebrow">A guide to the workspace</p>
-          <h2 id="journey-roadmap-heading" className="mt-1 text-xl font-bold text-midnight sm:text-2xl">Your roadmap</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">Start with study, prepare for work, build money skills, or grow an idea. There’s no wrong order—open a tool when it feels useful, and your progress will be reflected here.</p>
+          <p className="eyebrow">Explore by goal</p>
+          <h2 id="workspace-areas-heading" className="mt-1 text-xl font-bold text-midnight sm:text-2xl">Where would you like to start?</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Choose an area to see the tools and next steps for that goal. There’s no required order, and you can explore a different area whenever you’re ready.</p>
         </div>
-        <ol className="grid gap-4 lg:grid-cols-2">
-          {roadmap.map(({ focus, number, title, description, href, action, Icon, tools }) => {
+        <ul className="grid gap-4 lg:grid-cols-2">
+          {goalAreas.map(({ focus, title, description, href, action, Icon }) => {
             const isCurrentFocus = homeFocus === focus;
-            const status = roadmapStatus[focus];
+            const status = areaStatus[focus];
             return (
               <li key={focus}>
                 <article className={`h-full rounded-2xl border bg-white shadow-card transition ${isCurrentFocus ? 'border-slate-500 ring-1 ring-slate-300' : 'border-slate-200'}`}>
@@ -282,26 +256,12 @@ export default function DashboardPage() {
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-midnight"><Icon size={21} aria-hidden="true" /></span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-bold uppercase tracking-wide text-slate-500">Step {number}</span>
                         <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700">{status}</span>
                         {isCurrentFocus && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800"><Check size={13} aria-hidden="true" /> Your focus</span>}
                       </div>
                       <h3 className="mt-1 text-lg font-bold text-midnight">{title}</h3>
                       <p className="mt-1 text-sm leading-5 text-slate-600">{description}</p>
                     </div>
-                  </div>
-                  <div className="border-t border-slate-100 px-4 py-3 sm:px-5">
-                    <p className="mb-2 text-xs font-semibold text-slate-500">TOOLS IN THIS STEP</p>
-                    <ul className="grid gap-1 sm:grid-cols-2">
-                      {tools.map((tool) => (
-                        <li key={`${tool.label}-${tool.href}`}>
-                          <Link href={tool.href} className="group flex min-h-11 items-center justify-between gap-2 rounded-lg px-2 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-midnight">
-                            <span className="min-w-0"><span className="block font-semibold">{tool.label}</span><span className="block text-xs text-slate-500">{tool.description}</span></span>
-                            <HomeArrow />
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                   <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-3 sm:px-5">
                     <Link href={href} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-midnight px-3 text-sm font-semibold text-white transition hover:bg-slate-700">{action} <ArrowRight size={15} className="text-white" aria-hidden="true" /></Link>
@@ -311,7 +271,7 @@ export default function DashboardPage() {
               </li>
             );
           })}
-        </ol>
+        </ul>
       </section>
 
       <section className="mb-6" aria-labelledby="dashboard-progress-heading">
