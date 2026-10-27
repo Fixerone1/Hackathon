@@ -24,9 +24,9 @@ export function StudyNav() {
         {studyNavigation.map(({ href, label, Icon }) => {
           const active = pathname === href.split('#')[0]
             && (href.endsWith('#admissions')
-              ? hash === '#admissions'
+              ? hash === '#admissions' || !hash
               : href.endsWith('#bursaries')
-                ? hash === '#bursaries' || !hash
+                ? hash === '#bursaries'
                 : true);
           return (
             <Link
